@@ -1,0 +1,186 @@
+\documentclass{llncs}
+%\documentclass[10pt, conference, compsocconf]{IEEEtran}
+
+% From ESORICS'13 CFP
+% Submitted papers should be at most 16 pages (using 10-point font), excluding 
+% the bibliography and well-marked appendices, and at most 20 pages total.
+
+\usepackage{listings}
+\usepackage{url}
+
+\usepackage{amssymb}
+\usepackage[usenames]{color}
+\definecolor{lightred}{rgb}{1,0.8,0.8}
+\newcommand{\todo}[1]{\colorbox{red}{\textcolor{white}{\sffamily\bfseries\scriptsize TODO}} \textcolor{red}{#1} \textcolor{red}{$\blacktriangleleft$}}
+
+
+\title{Monitor distribution}
+
+\begin{document}
+
+
+% \author{\IEEEauthorblockN{Jonas Magazinius} 
+% \IEEEauthorblockA{Department ofComputer Science\\ 
+% Chalmers University of Technology\\ 
+% Gothenburg, Sweden\\
+% jonas.magazinius@chalmers.se} 
+% \and 
+% \IEEEauthorblockN{Billy Rios} 
+% \IEEEauthorblockA{dept. name of organization\\ 
+% name of organization, acronyms acceptable\\ 
+% City, United States of America\\ 
+% Email: name@xyz.com} 
+% \and 
+% \IEEEauthorblockN{Andrei Sabelfeld} 
+% \IEEEauthorblockA{Department of Computer Science\\ 
+% Chalmers University of Technology\\ 
+% Gothenburg, Sweden\\ 
+% andrei@chalmers.se} 
+% }
+
+\maketitle
+
+
+
+\begin{abstract}
+Various implementations of ways to distribute a monitor to the clients.
+\end{abstract}
+
+
+% \begin{IEEEkeywords}
+% Web Security; Polyglot; Injection; Cross-domain.
+% \end{IEEEkeywords}
+
+
+
+
+
+
+
+
+% 1-2 pages
+\section{Introduction}
+\label{sec:intro}
+
+% 1 pages
+\section{Mashups}
+\label{sec:mash}
+
+Describe mashups, difficulties in mashup security and information flows in mashups.
+
+% 2-3 pages 
+\section{Architecture}
+\label{sec:arch}
+
+Describe various monitor distribution techniques.
+
+\subsection{Shadowing}
+
+Inline the monitor into the JavaScript code. Appealing idea, previous work for 
+toy languages, but difficult in practice. Abandoned due to complexity with 
+coercion in expressions.
+
+\subsection{Plugin}
+
+Plugin replaces JavaScript interpretation. Install plugin and you're done.
+\begin{list}
+\item- Browser dependent
+- Intrusive to the browser
+- Cumbersome for user to setup/configure
+- General, every browsed page
+\end{list}
+
+\subsection{Proxy}
+
+Proxy injects monitor into every page and wraps all JavaScript. Setup the proxy 
+and you're done.
+- Practically the same monitor as the plugin
+- Browser independent
+- Less intrusive to the browser, simple proxy setup
+- Less cumbersome to setup
+- Server-side configuration
+- General, every browsed page
+
+\subsection{Service}
+
+Service injects browsed pages with the monitor and references to itself, and 
+wraps all JavaScript. Browse through service and you're done.
+- More intrusive in HTML content, rewrite links and external references 
+- Browser independent
+- Not intrusive to the browser
+- Even less cumbersome to setup, browse to server URL
+- Server-side and client-side configuration possible
+- Less general, only browsed pages
+
+\subsection{Integrator}
+
+The mashup integrator includes the monitor and decides which JavaScript should 
+run within the monitor. (Don't mention sandbox.) You're done.
+- No setup
+- Not intrusive to the browser
+- Not general
+- Deliberately intrusive to HTML
+- Integrator configuration, no user control
+- Run independent part of the code outside the monitor, possible performance gains
+
+
+% 4 pages 
+\section{Implementation}
+\label{sec:impl}
+
+Describe features and drawbacks with each implementation.
+
+\subsection{Plugin}
+
+- rewrite all or some, client-side configuration
+- innerHTML
+- difficult to mimic execution order in the page parsing
+- document.write
+- firefox challenges
+- execution order (script inclusion heavy but possible)
+- execution contexts no problem (SVG and CSS uses native JavaScript)
+
+\subsection{Proxy}
+
+- rewrite all or nothing, problem with passing configuration to proxy
+- DOM parsing to find scripts, compared to regular expressions
+- difficult to identify all contexts (SVG, CSS and PDF can be rewritten, not flash)
+
+\subsection{Service}
+
+- rewrite all or some, can pass configuration through cookie
+- piggybacking, wildcard DNS compared to URL parameter
+- disable SOP, domain relaxing
+- DOM parsing to find scripts, compared to regular expressions
+- difficult to identify all contexts (SVG, CSS and PDF can be rewritten, not flash)
+
+\subsection{Integrator}
+
+- rewrite some, integrator driven, no or limited user configuration
+- no need for parsing, integrator decides
+- well defined per site policy
+- site could allow user to configure policy
+- requires developer understanding of the monitor
+- future reflection of monitored code?
+
+
+% 2-3 pages 
+\section{Case study}
+\label{sec:case}
+
+- mlcalc.com
+- newyorker.com
+- mockup vs. real deal
+
+%1 page 
+\section{Related work}
+\label{sec:related}
+
+%1 page 
+\section{Conclusions}
+\label{sec:conc}
+
+% Less than 4 pages 
+\bibliographystyle{plain}
+\bibliography{literature}
+\end{document}

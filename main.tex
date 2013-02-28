@@ -14,29 +14,20 @@
 \newcommand{\todo}[1]{\colorbox{red}{\textcolor{white}{\sffamily\bfseries\scriptsize TODO}} \textcolor{red}{#1} \textcolor{red}{$\blacktriangleleft$}}
 
 
-\title{Monitor distribution}
+\title{Architectures for Inlining Information-Flow Monitors in Web Applications}
+
+%%%%%%%%%%%%%%%% Schedule %%%%%%%%%%%%%%%%%%%%%%%%
+\if 0
+March 28 - paper shipped
+March 27 - final polish
+March 20 - mashup and case studies + intro and conclusions
+March 13 - architecture and implementation done + related work
+March 6 - most implementation done
+\fi
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
 
-
-% \author{\IEEEauthorblockN{Jonas Magazinius} 
-% \IEEEauthorblockA{Department ofComputer Science\\ 
-% Chalmers University of Technology\\ 
-% Gothenburg, Sweden\\
-% jonas.magazinius@chalmers.se} 
-% \and 
-% \IEEEauthorblockN{Billy Rios} 
-% \IEEEauthorblockA{dept. name of organization\\ 
-% name of organization, acronyms acceptable\\ 
-% City, United States of America\\ 
-% Email: name@xyz.com} 
-% \and 
-% \IEEEauthorblockN{Andrei Sabelfeld} 
-% \IEEEauthorblockA{Department of Computer Science\\ 
-% Chalmers University of Technology\\ 
-% Gothenburg, Sweden\\ 
-% andrei@chalmers.se} 
-% }
 
 \maketitle
 
@@ -83,12 +74,12 @@ coercion in expressions.
 \subsection{Plugin}
 
 Plugin replaces JavaScript interpretation. Install plugin and you're done.
-\begin{list}
+\begin{itemize}
 \item- Browser dependent
 - Intrusive to the browser
 - Cumbersome for user to setup/configure
 - General, every browsed page
-\end{list}
+\end{itemize}
 
 \subsection{Proxy}
 

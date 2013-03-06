@@ -74,6 +74,8 @@ Describe mashups, difficulties in mashup security and information flows in mashu
 
 Describe various monitor distribution techniques.
 
+% Design choices and motivation
+
 \subsection{Shadowing}
 
 Inline the monitor into the JavaScript code. Appealing idea, previous work for 
@@ -83,45 +85,51 @@ coercion in expressions.
 \subsection{Plugin}
 
 Plugin replaces JavaScript interpretation. Install plugin and you're done.
-\begin{list}
+\begin{itemize}
 \item- Browser dependent
-- Intrusive to the browser
-- Cumbersome for user to setup/configure
-- General, every browsed page
-\end{list}
+\item- Intrusive to the browser
+\item- Cumbersome for user to setup/configure
+\item- General, every browsed page
+\end{itemize}
 
 \subsection{Proxy}
 
 Proxy injects monitor into every page and wraps all JavaScript. Setup the proxy 
 and you're done.
-- Practically the same monitor as the plugin
-- Browser independent
-- Less intrusive to the browser, simple proxy setup
-- Less cumbersome to setup
-- Server-side configuration
-- General, every browsed page
+\begin{itemize}
+\item- Practically the same monitor as the plugin
+\item- Browser independent
+\item- Less intrusive to the browser, simple proxy setup
+\item- Less cumbersome to setup
+\item- Server-side configuration
+\item- General, every browsed page
+\end{itemize}
 
 \subsection{Service}
 
 Service injects browsed pages with the monitor and references to itself, and 
 wraps all JavaScript. Browse through service and you're done.
-- More intrusive in HTML content, rewrite links and external references 
-- Browser independent
-- Not intrusive to the browser
-- Even less cumbersome to setup, browse to server URL
-- Server-side and client-side configuration possible
-- Less general, only browsed pages
+\begin{itemize}
+\item- More intrusive in HTML content, rewrite links and external references 
+\item- Browser independent
+\item- Not intrusive to the browser
+\item- Even less cumbersome to setup, browse to server URL
+\item- Server-side and client-side configuration possible
+\item- Less general, only browsed pages
+\end{itemize}
 
 \subsection{Integrator}
 
 The mashup integrator includes the monitor and decides which JavaScript should 
 run within the monitor. (Don't mention sandbox.) You're done.
-- No setup
-- Not intrusive to the browser
-- Not general
-- Deliberately intrusive to HTML
-- Integrator configuration, no user control
-- Run independent part of the code outside the monitor, possible performance gains
+\begin{itemize}
+\item- No setup
+\item- Not intrusive to the browser
+\item- Not general
+\item- Deliberately intrusive to HTML
+\item- Integrator configuration, no user control
+\item- Run independent part of the code outside the monitor, possible performance gains
+\end{itemize}
 
 
 % 4 pages 
@@ -130,47 +138,62 @@ run within the monitor. (Don't mention sandbox.) You're done.
 
 Describe features and drawbacks with each implementation.
 
+% Implementation details
+
 \subsection{Plugin}
 
-- rewrite all or some, client-side configuration
-- innerHTML
-- difficult to mimic execution order in the page parsing
-- document.write
-- firefox challenges
-- execution order (script inclusion heavy but possible)
-- execution contexts no problem (SVG and CSS uses native JavaScript)
+\begin{itemize}
+\item- rewrite all or some, client-side configuration
+\item- innerHTML
+\item- difficult to mimic execution order in the page parsing
+\item- document.write
+\item- firefox challenges
+\item- execution order (script inclusion heavy but possible)
+\item- execution contexts no problem (SVG and CSS uses native JavaScript)
+\end{itemize}
 
-\subsection{Proxy}
+\subsection{HTTP Proxy}
 
-- rewrite all or nothing, problem with passing configuration to proxy
-- DOM parsing to find scripts, compared to regular expressions
-- difficult to identify all contexts (SVG, CSS and PDF can be rewritten, not flash)
+\begin{itemize}
+\item- Proxy implemented in NodeJS
+\item- rewrite all or nothing, problem with passing configuration to proxy
+\item- DOM parsing to find scripts, compared to regular expressions
+\item- difficult to identify all contexts (SVG, CSS and PDF can be rewritten, not flash)
+\end{itemize}
 
-\subsection{Service}
 
-- rewrite all or some, can pass configuration through cookie
-- piggybacking, wildcard DNS compared to URL parameter
-- disable SOP, domain relaxing
-- DOM parsing to find scripts, compared to regular expressions
-- difficult to identify all contexts (SVG, CSS and PDF can be rewritten, not flash)
+
+\subsection{Web proxy (Service)}
+
+\begin{itemize}
+\item- rewrite all or some, can pass configuration through cookie
+\item- piggybacking, wildcard DNS compared to URL parameter
+\item- disable SOP, domain relaxing
+\item- DOM parsing to find scripts, compared to regular expressions
+\item- difficult to identify all contexts (SVG, CSS and PDF can be rewritten, not flash)
+\end{itemize}
 
 \subsection{Integrator}
 
-- rewrite some, integrator driven, no or limited user configuration
-- no need for parsing, integrator decides
-- well defined per site policy
-- site could allow user to configure policy
-- requires developer understanding of the monitor
-- future reflection of monitored code?
+\begin{itemize}
+\item- rewrite some, integrator driven, no or limited user configuration
+\item- no need for parsing, integrator decides
+\item- well defined per site policy
+\item- site could allow user to configure policy
+\item- requires developer understanding of the monitor
+\item- future reflection of monitored code?
+\end{itemize}
 
 
 % 2-3 pages 
 \section{Case study}
 \label{sec:case}
 
-- mlcalc.com
-- newyorker.com
-- mockup vs. real deal
+\begin{itemize}
+\item- mlcalc.com
+\item- newyorker.com
+\item- mockup vs. real deal
+\end{itemize}
 
 %1 page 
 \section{Related work}

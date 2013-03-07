@@ -53,6 +53,8 @@ Various implementations of ways to distribute a monitor to the clients.
 \section{Introduction}
 \label{sec:intro}
 
+\todo{Daniel: I assume that we give a description on IF and monitors for IF in general in this section}
+
 % 1 pages
 \section{Mashups}
 \label{sec:mash}
@@ -63,25 +65,50 @@ Describe mashups, difficulties in mashup security and information flows in mashu
 \section{Architecture}
 \label{sec:arch}
 
-Describe various monitor distribution techniques.
+The fact that the monitor is written in JavaScript unlocks a number of
+different deployment options. In particular it allows the monitor to be run as
+as browser extension, or as a part of the web page itself.  In this section we
+give an overview of the different available approaches, and discuss their
+relative strengths.
 
-% Design choices and motivation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Shadowing}
+\todo{Daniel: me must make sure to differentiate between the inlining ala older papers and the inlining we do here.}
 
 Inline the monitor into the JavaScript code. Appealing idea, previous work for 
 toy languages, but difficult in practice. Abandoned due to complexity with 
 coercion in expressions.
 
-\subsection{Plugin}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Plugin replaces JavaScript interpretation. Install plugin and you're done.
-\begin{itemize}
-\item- Browser dependent
-\item- Intrusive to the browser
-\item- Cumbersome for user to setup/configure
-\item- General, every browsed page
-\end{itemize}
+\todo{Daniel: changed the name - plugins are things like Flash etc}
+\subsection{Browser extension}
+%
+Modern browsers allow the functionality of the browser to be enriched via
+\emph{extensions} typically written in JavaScript. This allows for the monitor
+to be executed as part of an extension, which in turn allows for the use of the
+monitor as the execution engine of web pages. The idea was pioneered by the
+Zaphod\cite{Zaphod} extension for Firefox.  The basic idea is to turn of the
+standard JavaScript interpreter by disallowing JavaScript in the preferences
+and listen to the appropriate page load event. Once the event is received the
+page is traversed and all scripts are executed using the replacement engine,
+e.g., the monitor. 
+
+The main benefit of extensions is that once installed the engine is changed for
+all pages without further interaction needed from the user. However, this
+installation requirement is also the method's main disadvantage. Not only does
+it require the user to download, install and setup the extension, it also 
+requires the user to trust the extension. In order to be able to enrich the 
+functionality of the browser the extensions run with the same privileges as the
+browser. By allowing the monitor to run as part of an extension we allow it to
+run with elevated privileges. Thus, we must trust the
+monitor not only to provide information flow control, but not allow for 
+the interpreted code to exploit the privileges of the monitor. In the extension
+scenario, a breach of the monitor puts more than the information flow control
+at stake.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Proxy}
 
@@ -131,7 +158,7 @@ Describe features and drawbacks with each implementation.
 
 % Implementation details
 
-\subsection{Plugin}
+\subsection{Browser extension}
 
 \begin{itemize}
 \item- rewrite all or some, client-side configuration

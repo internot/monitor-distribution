@@ -96,17 +96,17 @@ page is traversed and all scripts are executed using the replacement engine,
 e.g., the monitor. 
 
 The main benefit of extensions is that once installed the engine is changed for
-all pages without further interaction needed from the user. However, this
-installation requirement is also the method's main disadvantage. Not only does
-it require the user to download, install and setup the extension, it also 
-requires the user to trust the extension. In order to be able to enrich the 
+all pages without further interaction needed from the user. However, the
+installation requirement is also the method's main disadvantage. Not only is
+the extension browser specific and require the user to download, install and
+setup the extension, it also requires the user to trust the monitor beyond
+providing information flow control. In order to be able to enrich the
 functionality of the browser the extensions run with the same privileges as the
 browser. By allowing the monitor to run as part of an extension we allow it to
-run with elevated privileges. Thus, we must trust the
-monitor not only to provide information flow control, but not allow for 
-the interpreted code to exploit the privileges of the monitor. In the extension
-scenario, a breach of the monitor puts more than the information flow control
-at stake.
+run with elevated privileges. Thus, we must trust the monitor not only to
+provide information flow control, but not allow for the interpreted code to
+exploit the privileges of the monitor. In the extension scenario, a breach of
+the monitor puts more than the information flow control at stake.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -158,17 +158,85 @@ Describe features and drawbacks with each implementation.
 
 % Implementation details
 
-\subsection{Browser extension}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{itemize}
-\item- rewrite all or some, client-side configuration
-\item- innerHTML
-\item- difficult to mimic execution order in the page parsing
-\item- document.write
-\item- firefox challenges
-\item- execution order (script inclusion heavy but possible)
-\item- execution contexts no problem (SVG and CSS uses native JavaScript)
-\end{itemize}
+\subsection{Browser extension}
+%
+\todo{Daniel: Some reiteration here, but I don't see a way around it} The
+monitor we make use of in this work is JSFlow~\cite{}. JSFlow is bundled
+together with a Firefox extension based on Zaphod~\cite{Zaphod}. The extension
+works by turning off the standard execution engine for JavaScript, and hooking
+itself to the appropriate page events. There are a number of challenges
+pertaining to the implementation of the extension.
+
+\paragraph{Execution time}
+
+When web pages are loaded, the scripts of the pages are executed as they are
+encountered while parsing the web page. This means that the DOM tree of the
+page might not have been fully constructed when the scripts execute.  For
+scripts that interact with the DOM tree this is important, in particular if the
+script injects nodes into the tree. The consequence of this is that it is not
+entirely satisfactory to listen to the \emph{DOMContentLoaded} event and
+thereafter traverse the fully parsed DOM tree looking for scripts to execute.
+Rather, we need to receive events precisely when the scripts are added to the
+DOM tree during the parsing process. This can be be achieved with DOM
+MutationEvents. However, the DOM MutationEvents are deprecated due to
+efficiency issues and are going to be replaced with a notion of
+MutationObserver.  If the replacement notion can be used to execute scripts at
+the time of addition to the DOM tree remains an open question due to event
+grouping, i.e., when the mutation observer receives a collection of events
+bundled together for performance reasons. 
+
+
+\paragraph{document.write} The problem of execution time is particularly
+prominent for scripts using \emph{document.write}. The semantics of
+\emph{document.write} is loosely specified saying that \emph{document.write}
+writes into a string into the current position of the document.  Intuitively,
+\emph{document.write} writes into the character stream that is fed to the HTML
+parser, which, for obvious reason can have drastic effects on the parsing of
+the page.  However, in Firefox there is a bigger obstacle for
+\emph{document.write}. For security reasons \emph{document.write} is not
+allowed to be executed from the extension context.  Hence, an extension cannot
+easily provide the full functionality of \emph{document.write}.  Thankfully,
+few web pages make use of the full functionality of \emph{document.write} ---
+it is mostly used to inject scripts into the page while the page is loading. It
+is fairly easy to identify such use of \emph{document.write} and provide
+support for this use.
+
+
+\paragraph{Browser specifics}
+
+\todo{Daniel: this is actually true regardless of deployment method - should we be more open with that?}
+
+Browser extensions are inherently browser specific. In addition, while the
+execution environment provided by different browsers are mostly standard
+compliant there are small deviations. Such deviations must be reflected in 
+the monitor, which, to a certain extend, makes the monitor browser specific.
+One solution in to have the monitor detect its execution environment
+and adapt accordingly. While possible, it is a big undertaking to support
+a wide selection of (versions of) browsers.
+
+
+On the positive side it should be mentioned that otherwise challenging features
+like \emph{innerHTML} are essentially for free for extension based deployment.
+
+\todo{Daniel: crosslink with other deployment methods?} \paragraph{innerHTML}
+%
+\emph{innerHTML} is a property on all DOM nodes which allows the text
+representation of the node to be changed. Any change of the \emph{innerHTML}
+property causes the content of the node to be changed by parsing the changed
+property. For other deployment methods this means that the value written to
+\emph{innerHTML} must be validated, and possibly changed before the write is
+allowed to occur.  For the extension based deployment this is not the case.
+Since the standard JavaScript execution engine is turned off it is safe to
+write to the \emph{innerHTML} property. The write will trigger the parser to
+rebuild the content of the node, but no scripts will be executed.  Any occuring
+scripts can be dealt with in a manner analogous to the scripts on a loading
+page.
+
+\todo{Daniel: Don't really know what to say w.r.t. : execution contexts no problem (SVG and CSS uses native JavaScript)}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{HTTP Proxy}
 

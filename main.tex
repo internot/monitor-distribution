@@ -65,9 +65,11 @@ Describe mashups, difficulties in mashup security and information flows in mashu
 \section{Architecture}
 \label{sec:arch}
 
+\todo{Jonas: Nowhere do we actually discuss the monitor or its implementation}
+
 The fact that the monitor is written in JavaScript unlocks a number of
 different deployment options. In particular it allows the monitor to be run as
-as browser extension, or as a part of the web page itself.  In this section we
+a browser extension, or as a part of the web page itself.  In this section we
 give an overview of the different available approaches, and discuss their
 relative strengths.
 
@@ -110,7 +112,7 @@ the monitor puts more than the information flow control at stake.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Proxy}
+\subsection{HTTP proxy}
 
 Proxy injects monitor into every page and wraps all JavaScript. Setup the proxy 
 and you're done.
@@ -123,7 +125,7 @@ and you're done.
 \item- General, every browsed page
 \end{itemize}
 
-\subsection{Service}
+\subsection{Web proxy}
 
 Service injects browsed pages with the monitor and references to itself, and 
 wraps all JavaScript. Browse through service and you're done.
@@ -135,6 +137,22 @@ wraps all JavaScript. Browse through service and you're done.
 \item- Server-side and client-side configuration possible
 \item- Less general, only browsed pages
 \end{itemize}
+
+
+A \emph{web proxy} is essentially a web application that allow a user to relay requests, 
+through the web application, to other web pages. The difference compared to an 
+HTTP proxy is that it does not require the user to configure the browser to use a 
+proxy. Typically, the user navigates to the web application and enters the URL in 
+an input field. The URL is then sent to the server which in turn makes the request to the 
+target URL. To simplify further 
+browsing, the response is rewritten to inline the URL of the web proxy 
+into all outgoing references on the retrieved page; this way, when the user 
+follows a link on the page, the request will again be relayed the web proxy. 
+The modified response is returned to the user. 
+There are multiple ways a web proxy can be designed, and each design choice 
+has its benefits and drawbacks, especially with respect to the same origin policy.
+
+\paragraph{Target URL}
 
 \subsection{Integrator}
 
@@ -157,6 +175,8 @@ run within the monitor. (Don't mention sandbox.) You're done.
 Describe features and drawbacks with each implementation.
 
 % Implementation details
+\subsection{Monitor}
+\todo{Jonas: I think we should have a separate subsection here, describing the monitor and why/how it can be reused in all of the implementations}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -235,6 +255,7 @@ scripts can be dealt with in a manner analogous to the scripts on a loading
 page.
 
 \todo{Daniel: Don't really know what to say w.r.t. : execution contexts no problem (SVG and CSS uses native JavaScript)}
+\todo{Jonas: Might not need to say anything. It is in relation to the other approaches which has to identify and rewrite all the contexts that can execute JS, so that you can't sneak code passed the monitor.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -252,12 +273,18 @@ page.
 \subsection{Web proxy (Service)}
 
 \begin{itemize}
-\item- rewrite all or some, can pass configuration through cookie
-\item- piggybacking, wildcard DNS compared to URL parameter
-\item- disable SOP, domain relaxing
-\item- DOM parsing to find scripts, compared to regular expressions
-\item- difficult to identify all contexts (SVG, CSS and PDF can be rewritten, not flash)
+\item What is a web proxy
+\item How can a web proxy help in distributing the monitor
+\item 
+\item Delivering the associated cookies
+\item Same-origin policy in respect to different design choices
+\item rewrite all or some, can pass configuration through cookie
+\item piggybacking, wildcard DNS compared to URL parameter
+\item disable SOP, domain relaxing
+\item DOM parsing to find scripts, compared to regular expressions
+\item difficult to identify all contexts (SVG, CSS and PDF can be rewritten, not flash)
 \end{itemize}
+
 
 The web proxy was implemented in Node.js. 
 

@@ -2,6 +2,7 @@
 @string{IEEE = "IEEE Computer Society Press"}
 @string{SV   = "Springer-Verlag"}
 @string{AW   = "Addison-Wesley"}
+@string{TISSEC = "ACM Transactions on Information and System Security"}
 
 %Series
 @string{LNCS = "LNCS"}
@@ -17,6 +18,7 @@
 @string{SCP = "Science of Computer Programming"}
 
 %Conferenes
+@string{ECOOP ="European Conference on Object-Oriented Programming"}
 @string{ACSAC = "Proc. Annual Computer Security Applications Conference"}
 @string{WWW = "Proc. International Conference on World Wide Web"}
 @string{NDSS  = "Proc. Network and Distributed System Security Symposium"}
@@ -38,64 +40,6 @@
 @string{USENIXSEC ="Proc. USENIX Security Symposium"}
 @string{PLDI="Proc. ACM SIGPLAN Conference on Programming language Design and Implementation"}
 @string{ICICS="Proc. International Conference on Information and Communications Security"}
-
-@string{proc = "Proc. "}
-@string{n1 = "1st "}
-@string{n2 = "2nd "}
-@string{n3 = "3rd "}
-@string{n4 = "4th "}
-@string{n5 = "5th "}
-@string{n6 = "6th "}
-@string{n7 = "7th "}
-@string{n8 = "8th "}
-@string{n9 = "9th "}
-@string{n10 = "10th "}
-@string{n11 = "11th "}
-@string{n12 = "12th "}
-@string{n13 = "13th "}
-@string{n14 = "14th "}
-@string{n15 = "15th "}
-@string{n16 = "16th "}
-@string{n17 = "17th "}
-@string{n18 = "18th "}
-@string{n19 = "19th "}
-@string{n20 = "20th "}
-@string{n21 = "21st "}
-@string{n22 = "22nd "}
-@string{n23 = "23rd "}
-@string{n24 = "24th "}
-@string{n25 = "25th "}
-@string{n26 = "26th "}
-@string{n27 = "27th "}
-@string{n28 = "28th "}
-@string{n29 = "29th "}
-@string{n30 = "30th "}
-@string{n31 = "31st "}
-@string{n32 = "32nd "}
-@string{n33 = "33rd "}
-@string{n34 = "34th "}
-@string{n35 = "35th "}
-@string{n36 = "36th "}
-@string{n37 = "37th "}
-@string{n38 = "38th "}
-@string{n39 = "39th "}
-
-@string{OSDINAME = "{USENIX} Symp. on Operating Systems Design and Implementation (OSDI)"}
-@string{OSDI = proc # OSDINAME}
-@string{OSDI06 = proc # n7 # OSDINAME}
-
-
-@string{SOSP11 = proc # n11 # "{ACM} Symp. on Operating System Principles (SOSP)"}
-@string{SOSP13 = proc # n13 # "{ACM} Symp. on Operating System Principles (SOSP)"}
-@string{SOSP14 = proc # n14 # "{ACM} Symp. on Operating System Principles (SOSP)"}
-@string{SOSP15 = proc # n15 # "{ACM} Symp. on Operating System Principles (SOSP)"}
-@string{SOSP16 = proc # n16 # "{ACM} Symp. on Operating System Principles (SOSP)"}
-@string{SOSP17 = proc # n17 # "{ACM} Symp. on Operating System Principles (SOSP)"}
-@string{SOSP18 = proc # n18 # "{ACM} Symp. on Operating System Principles (SOSP)"}
-@string{SOSP20 = proc # n20 # "{ACM} Symp. on Operating System Principles (SOSP)"}
-@string{SOSP21 = proc # n21 # "{ACM} Symp. on Operating System Principles (SOSP)"}
-@string{SOSP22 = proc # n22 # "{ACM} Symp. on Operating System Principles (SOSP)"}
-
 
 
 @inproceedings{Abadi+:Core,
@@ -870,6 +814,25 @@ pages = "623-656"
   year =	 2005
 }
 
+@InProceedings{Li:Mao:Zdancewic:FAST03,
+    author = "P. Li and Y. Mao and S. Zdancewic",
+    title =  "Information Integrity Policies",
+    booktitle = "Workshop on Formal Aspects in Security and Trust (FAST'03)", 
+    year = 2003,
+}
+
+@article{Hoare:CACM69,
+ author = {Hoare, C. A. R.},
+ title = {An axiomatic basis for computer programming},
+ journal = CACM,
+ volume = {12},
+ number = {10},
+ year = {1969},
+ pages = {576--580},
+ publisher = ACM,
+ address = {New York, NY, USA},
+ }
+
 @inproceedings{Honda+:ESOP00,
   author =	 "K. Honda and V. Vasconcelos and N. Yoshida",
   title =	 "Secure Information Flow as Typed Process Behaviour",
@@ -1431,7 +1394,7 @@ pages = "623-656"
   title =	 "Simple Object Access Protocol ({SOAP}) 1.1",
   month =	 may,
   year =	 2000,
-  howpublished = "http://www.w3.org/TR/SOAP/"
+  howpublished = "\url{http://www.w3.org/TR/SOAP/}"
 }
 
 @inproceedings{Sabelfeld:Mantel:SAS02,
@@ -1865,19 +1828,28 @@ pages = "623-656"
   address =	 "Palo Alto, CA"
 }
 
+@book{TAPL,
+ author = {Pierce, Benjamin C.},
+ title = {Types and programming languages},
+ year = {2002},
+ isbn = {0-262-16209-1},
+ publisher = {MIT Press},
+ address = {Cambridge, MA, USA},
+} 
+
 @unpublished{jif,
     author = "A. C. Myers and L. Zheng and S. Zdancewic and
               S. Chong and N. Nystrom",
     title = "{Jif}: {J}ava Information Flow",
     note = "Software release. Located at \url{http://www.cs.cornell.edu/jif}",
     month = jul,
-    year = "2001--2009"
+    year = 2001
 }
 
 @unpublished{FlowCaml,
     author = "V. Simonet",
     title = "The {Flow} {Caml} System",
-    note = "Software release. Located at \url{http://cristal.inria.fr/~simonet/soft/flowcaml/}",
+    note = "Software release. Located at \url{http://cristal.inria.fr/~simonet/soft/flowcaml}",
     month = jul,
     year = 2003
 }
@@ -2125,9 +2097,9 @@ pages = "623-656"
 
 @inproceedings{Ferrari:SSP97,
     author = "E. Ferrari and P. Samarati and E. Bertino and
-    	      S. Jajodia",
+              S. Jajodia",
     title = "Providing Flexibility in Information Flow Control for
-    	     Object-Oriented Systems",
+             Object-Oriented Systems",
     booktitle = SSP,
     month = may,
     year = 1997,
@@ -2548,7 +2520,7 @@ pages = "623-656"
   month = 	 oct,
   year = 	 2003,
   howpublished = "Presentation at the Dagstuhl Seminar on Language-Based Security",
-  note = 	 "{\small\texttt{www.dagstuhl.de/03411/Materials/}}"
+  note = 	 "{\small\texttt{www.dagstuhl.de/03411/}}"
 }
 
 @inproceedings{Focardi+:FOSSACS05,
@@ -2669,14 +2641,14 @@ pages = "623-656"
 @Misc{devsun-uilockup,
   author =	 "Q. H. Mahmoud",
   title =	 "Preventing Screen Lockups of Blocking Operations",
-  howpublished = "Sun Technical Articles and Tips \texttt{http://developers.sun.com/techtopics/ mobility/midp/ttips/screenlock/}",
+  howpublished = "Sun Technical Articles and Tips \url{http://developers.sun.com/techtopics/ mobility/midp/ttips/screenlock/}",
   year =	 2004
 }
 
 @Misc{devsun-mobility,
   author =	 "J. Knudsen",
   title =	 "Networking, User Experience, and Threads",
-  howpublished = "Sun Technical Articles and Tips \texttt{http://developers.sun.com/techtopics/ mobility/midp/articles/threading/}",
+  howpublished = "Sun Technical Articles and Tips \url{http://developers.sun.com/techtopics/ mobility/midp/articles/threading/}",
   year =	 2002
 }
 
@@ -2778,15 +2750,6 @@ pages = "623-656"
 }
 
 
-@techreport{Askarov:Hedin:Sabelfeld:CMF:TechReport2006,
-   Institution = "Chalmers University of Technology",
-   Author  = "A. Askarov and D. Hedin and A. Sabelfeld",
-   Title = "Cryptographically-Masked Flows",
-   month = Jun,
-   Year = 2006,
-   note = "Located at \texttt{http://www.cs.chalmers.se/$\sim$aaskarov/sas06full.pdf}"
-}
-
 @InProceedings{Askarov:Sabelfeld:SP07,
   author =     "A. Askarov and A. Sabelfeld",
   title =      "Gradual Release: Unifying Declassification, Encryption and Key Release Policies",
@@ -2832,7 +2795,8 @@ pages = "623-656"
   title  = "On the Computational Soundness of Cryptographically Masked Flows",
   booktitle = POPL,
   month  =  Jan,
-  year = 2008
+  year = 2008,
+  OPTnote = "To appear."
 }
 
 @InProceedings{Bellare:Rogaway:CCS93,
@@ -2852,15 +2816,6 @@ pages = "623-656"
   month =      aug,
   year =      2007,
   OPTannote =      {}
-}
-
-
-@InProceedings{Clark:Hunt:FAST08,
-  author = "D. Clark and S. Hunt", 
-  title  = "Noninterference for Deterministic Interactive Programs", 
-  booktitle = "Workshop on Formal Aspects in Security and Trust (FAST'08)", 
-  month = oct,
-  year  = 2008
 }
 
 @Misc{nist:blockciphers,
@@ -2920,7 +2875,7 @@ Cipher Modes of Operation",
   author = "A. Banerjee and D. Naumann and S. Rosenberg",
   title = 	 "Expressive declassification policies and modular static enforcement",
   year = 	 2008,
-  pages = 	 "339--353",
+  OPTkey = 	 "",
   booktitle = SSP,
   OPTeditor = 	 "",
   OPTvolume = 	 "",
@@ -2930,6 +2885,7 @@ Cipher Modes of Operation",
   month = 	 may,
   OPTorganization = "",
   OPTpublisher = "",
+  OPTnote = 	 "To appear.",
   OPTannote = 	 ""
 }
 
@@ -2945,6 +2901,7 @@ Cipher Modes of Operation",
   pages     = "141--156",
   volume    = 4421,
 }
+
 
 @article{Sabelfeld:Sands:JCS,
   author = "A. Sabelfeld and D. Sands",
@@ -3008,13 +2965,8 @@ Cipher Modes of Operation",
 }
 
 @Misc{AuctionSniper,
-  title = 	 "{Auction Sniper}",
-  howpublished = "http://www.auctionsniper.com"
-}
-
-@Misc{GoogleMapsAPI,
-  title = 	 "{Google Maps API}",
-  howpublished = "http://code.google.com/apis/maps"
+  title = 	 "Auction Sniper",
+  howpublished = "http://www.auctionsniper.com/"
 }
 
 @TechReport{Dima+:Deducible:2006,
@@ -3031,14 +2983,16 @@ Cipher Modes of Operation",
   OPTannote = 	 ""
 }
 
-@InProceedings{Askarov+:Termination,
+@InProceedings{Askarov+:ESORICS08,
   author = 	 "A. Askarov and S. Hunt and A. Sabelfeld and D. Sands",
   title = 	 "Termination-insensitive noninterference leaks more than just a bit",
   pages = 	 "333--348",
   booktitle  = ESORICS,
   month = 	 oct,
   year = 	 2008,
-  OPTannote = 	 ""
+  series =	 LNCS,
+  volume =	 5283,
+  publisher =	 SV
 }
 
 @InProceedings{Barthe+:CSF08,
@@ -3085,7 +3039,7 @@ Cipher Modes of Operation",
 
 @InProceedings{Vogt+:NDSS07,
   author = 	 "P. Vogt and F. Nentwich and N. Jovanovic and E. Kirda and C. Kruegel and G. Vigna",
-  title = 	 "Cross Site Scripting Prevention with Dynamic Data Tainting and Static Analysis",
+  title = 	 "Cross-Site Scripting Prevention with Dynamic Data Tainting and Static Analysis",
   OPTcrossref =  "",
   OPTkey = 	 "",
   booktitle = NDSS,
@@ -3126,7 +3080,7 @@ Cipher Modes of Operation",
 
 @inproceedings{Yu+:POPL07,
  author = {D. Yu and A. Chander and N. Islam and I. Serikov},
- title = {JavaScript instrumentation for browser security},
+ title = {{JavaScript} instrumentation for browser security},
  booktitle = POPL,
  year = {2007},
  isbn = {1-59593-575-4},
@@ -3156,25 +3110,27 @@ Cipher Modes of Operation",
  pages = "75--84"
  }
 
-@inproceedings{Russo+:ASIAN06,
-  author =	 "A. Russo and J. Hughes and D. Naumann and A. Sabelfeld",
-  booktitle = "Asian Computing Science Conference (ASIAN'06)",
-  title =	 "Closing Internal Timing Channels by Transformation",
-  year =	 2007,
-  OPTmonth =	 nov,
-  OPTvolume =	 3302,
-  series =	 LNCS,
-  OPTpages = "129--145",
-  publisher =	 SV
+@Misc{Christey07,
+  Author         = {S. Christey and R. Martin},
+  Title          = {Vulnerability {T}ype {D}istributions in {CVE}},
+  HowPublished   = {http://cwe.mitre.org/documents/vuln-trends/index.html},
+  month          = may,
+  year           = 2007
 }
 
-@InProceedings{ONeil+:CSFW06,
-title="Information-flow security for interactive programs",
-author="K. O'Neill and M. Clarkson and S. Chong",
-booktitle = CSFW,
-year=2006,
-month=jul,
-pages="190--201"
+@Misc{OWASP:Top10:2007,
+  Author         = "A. {van der Stock} and J. Williams and D. Wichers",
+  Title          = "{OWASP Top} 10 2007",
+  HowPublished   = {\url{http://www.owasp.org/index.php/Top\_10\_2007}},
+  year           = 2007
+}
+
+@Misc{Grossman:06,
+  Author         = "J. Grossman",
+  Title          = "JavaScript Malware, port scanning, and beyond",
+  HowPublished   = {http://www.webappsec.org/lists/websecurity/archive/2006-07/msg00097.html},
+  month = jul,
+  year           = 2006
 }
 
 @InProceedings{Venkatakrishnan+:ICICS06,
@@ -3197,16 +3153,32 @@ pages="190--201"
   OPTannote = 	 ""
 }
 
+@Article{Johns:JCV08,
+  author = 	 "M. Johns",
+  title = 	 "{On JavaScript malware and related threats}",
+  journal = 	 "Journal in Computer Virology",
+  year = 	 2008,
+  OPTkey = 	 "",
+  volume = 	 4,
+  number = 	 3,
+  pages = 	 "161--178",
+  month = 	 aug,
+  OPTnote = 	 "",
+  publisher = 	 SV
+}
 
-@InProceedings{Hicks+:PLAS06, 
-    author = {B. Hicks and D. King and P. McDaniel and M. Hicks},
- title = {Trusted declassification:: high-level policy for a security-typed language},
- booktitle = "Proc. ACM Workshop on Programming Languages and Analysis for Security (PLAS)",
- year = {2006},
- month=jun,
- isbn = {1-59593-374-3},
- pages = {65--74},
- doi = {http://doi.acm.org/10.1145/1134744.1134757},
+@Misc{GWT,
+  Author         = "Google",
+  Title          = "{Google Web Toolkit}",
+  HowPublished   = {\url{http://code.google.com/webtoolkit}},
+  year           = 2008
+}
+
+@Misc{Google:AdSense,
+  Author         = "Google",
+  Title          = "{Google AdSense}",
+  HowPublished   = {\url{https://www.google.com/adsense}},
+  year           = 2008
 }
 
 @inproceedings{Fable:SP08,
@@ -3223,115 +3195,326 @@ pages="190--201"
 @unpublished{Links,
     author = "E. Cooper and S. Lindley and P. Wadler and J. Yallop",
     title = "Links web-programming language",
-    note = "Software release. Located at \url{http://groups.inf.ed.ac.uk/links/}",
+    note = "Software release. Located at http://groups.inf.ed.ac.uk/links/",
     year = "2006--2008"
 }
 
-@misc{Russo+:DOMIF,
-  author =	 "A. Russo and A. Sabelfeld and A. Chudnov",
-  title =	 "Dynamic Protection Against DOM-based Attacks in Web Applications",
-  month = nov,
-  year =	 2008
+@Misc{Netscape:Tainted,
+  Author         = "Netscape",
+  Title          = "{Using data tainting for security}",
+  HowPublished   = {http://wp.netscape.com/eng/mozilla/3.0/handbook/ javascript/advtopic.htm},
+  year           = 2006
 }
 
-@Article{Johns:JCV08,
-  author = 	 "M. Johns",
-  title = 	 "{On JavaScript malware and related threats}",
-  journal = 	 "Journal in Computer Virology",
-  year = 	 2008,
-  OPTkey = 	 "",
-  volume = 	 4,
-  number = 	 3,
-  pages = 	 "161--178",
-  month = 	 aug,
-  OPTnote = 	 "",
-  publisher = 	 SV
+@Misc{XSSED,
+  Title          = "{XSS Attacks Information}",
+  HowPublished   = {http://www.xssed.com},
+  year           = 2008
 }
 
-@INPROCEEDINGS{Hedin:Sands:CSFW06,
-  title = {Noninterference in the presence of non-opaque pointers},
-  author = {D. Hedin and D. Sands},
-  booktitle = CSFW,
-  year = {2006},
-  pages = {255--269}
-}
 
-@inproceedings{Barthe:Rezk:TLDI05,
-author={G. Barthe and T. Rezk},
-title={Non-interference for a {JVM}-like language},
-year={2005},
-booktitle={Proc. {ACM TLDI}'05},
-publisher={ACM Press},
-pages={103--112}}
 
-@inproceedings{Barthe+:SP06,
- author = {G. Barthe and T. Rezk and D. Naumann},
- title = {Deriving an Information Flow Checker and Certifying Compiler for Java},
- booktitle = SSP,
- year = {2006},
- pages = {230--242}
+
+
+
+@inproceedings{Russo+:Haskell08,
+ author = {A. Russo and K. Claessen and J. Hughes},
+ title = {A library for light-weight information-flow security in {H}askell},
+ booktitle = {Haskell '08: Proceedings of the first ACM SIGPLAN symposium on Haskell},
+ year = {2008},
+ pages = {13--24},
+ publisher = {ACM},
  }
 
-@INPROCEEDINGS{Barthe+:ESOP07,
-  TITLE = {A Certified Lightweight Non-Interference Java Bytecode
-                 Verifier},
-  AUTHOR = {G. Barthe and D. Pichardie and T. Rezk},
-  BOOKTITLE = ESOP,
+
+@Book{JavaScript:Rhino,
+  author = 	 {D. Flanagan},
+  ALTeditor = 	 {},
+  title = 	 {JavaScript: The Definitive Guide, Fourth Edition},
+  publisher = 	 {O'Reilly},
+  year = 	 {2001},
+  OPTkey = 	 {},
+  OPTvolume = 	 {},
+  OPTnumber = 	 {},
+  OPTseries = 	 {},
+  OPTaddress = 	 {},
+  OPTedition = 	 {},
+  month = 	 nov,
+  OPTnote = 	 {},
+  OPTannote = 	 {}
+}
+
+@Misc{Shepherd:DOMF:Workers:irefox3.1,
+  author ="E. Shepherd",
+  Title          = "Using DOM workers",
+  HowPublished   = "{https://developer.mozilla.org/En/Using\_DOM\_workers}",
+  year           = 2009
+}
+
+@Misc{JavaScript:Generators,
+  Title          = "New in {JavaScript} 1.7: {I}terators",
+  HowPublished   = "{\url{https://developer.mozilla.org/en/New_in_JavaScript_1.7-#Generators}}",
+  year           = 2008
+}
+
+@Misc{JavaScript1.7:Threads,
+  Title          = "Threading in {J}ava{S}cript 1.7",
+  HowPublished   = "{\url{http://www.neilmix.com/2007/02/07/threading-in-javascript-17}}",
+  year           = 2007
+}
+
+@InProceedings{Bortz+:WWW07,
+  author = 	 "A. Bortz and D. Boneh and P. Nandy",
+  title = 	 "Exposing private information by timing web applications",
+  OPTcrossref =  "",
+  OPTkey = 	 "",
+  booktitle = WWW,
+  pages = 	 "621--628",
+  year = 	  2007,
+  OPTeditor = 	 "",
+  OPTvolume = 	 "",
+  OPTnumber = 	 "",
+  OPTseries = 	 "",
+  OPTaddress = 	 "",
+  OPTmonth = 	 "",
+  OPTorganization = "",
+  OPTpublisher = "",
+  OPTnote = 	 "",
+  OPTannote = 	 ""
+}
+
+@InProceedings{Jackson:WWW06,
+  author = 	 "C. Jackson and A. Bortz and D. Boneh and J. Mitchell",
+  title = 	 "Protecting browser state from web privacy attacks",
+  OPTcrossref =  "",
+  OPTkey = 	 "",
+  booktitle = WWW,
+  OPTpages = 	 "",
+  year = 	 2006,
+  OPTeditor = 	 "",
+  OPTvolume = 	 "",
+  OPTnumber = 	 "",
+  OPTseries = 	 "",
+  OPTaddress = 	 "",
+  OPTmonth = 	 "",
+  OPTorganization = "",
+  OPTpublisher = "",
+  OPTnote = 	 "",
+  OPTannote = 	 ""
+}
+
+
+@InProceedings{Barthe+:ESORICS07,
+  author = 	 "G. Barthe and T. Rezk and A. Russo and A. Sabelfeld",
+  booktitle = ESORICS,
+  title = 	 "Security of Multithreaded Programs by Compilation",
+  month = sep,
+  year = 	 2007,
+  volume = 4734,
+  series = LNCS,
+  pages = "2--18",
+  publisher =	 SV,
+  OPTkey = 	 "",
+  OPTtype = 	 "",
+  OPTnumber = 	 "",
+  OPTaddress = 	 "",
+  OPTmonth = 	 "",
+  OPTnote = 	 "",
+  OPTannote = 	 ""
+}
+
+
+@book{FPBird,
+ author = {Richard Bird},
+ title = {Introduction to Functional Programming},
+ year = {1998},
+ isbn = {0134843460},
+ publisher = {Pearson Education},
+ }
+
+@InProceedings{Terauchi:CSF08,
+  author = 	 "T. Terauchi",
+  title = 	 "A Type System for Observational Determinism",
+  OPTcrossref =  "",
+  OPTkey = 	 "",
+  booktitle = CSF,
+  OPTpages = 	 "",
+  year = 	 2008,
+  OPTeditor = 	 "",
+  OPTvolume = 	 "",
+  OPTnumber = 	 "",
+  OPTseries = 	 "",
+  OPTaddress = 	 "",
+  month = 	 jun,
+  OPTorganization = "",
+  OPTpublisher = "",
+  OPTnote = 	 "",
+  OPTannote = 	 ""
+}
+
+@InProceedings{vdMeyden:Zhang:CSF08,
+  author = 	 "R. {van der Meyden} and C. Zhang",
+  title = 	 "Information Flow in Systems with Schedulers",
+  OPTcrossref =  "",
+  OPTkey = 	 "",
+  booktitle = CSF,
+  OPTpages = 	 "",
+  year = 	 2008,
+  OPTeditor = 	 "",
+  OPTvolume = 	 "",
+  OPTnumber = 	 "",
+  OPTseries = 	 "",
+  OPTaddress = 	 "",
+  month = 	 jun,
+  OPTorganization = "",
+  OPTpublisher = "",
+  OPTnote = 	 "",
+  OPTannote = 	 ""
+}
+
+@inproceedings{Huisman:Worah:Sunesen:CSFW06,
+  author = "M. Huisman and P. Worah and K. Sunesen",
+  title = "A temporal logic characterisation of observational determinism",
+  booktitle = CSFW,
+  month = jul,
+  year = 2006
+}
+
+@inproceedings{Russo:Sabelfeld:CSFW06,
+  author = "A. Russo and A. Sabelfeld",
+  title = "Securing Interaction between Threads and the Scheduler",
+  booktitle = CSFW,
+  pages = "177--189",
+  month = jul,
+  year = 2006
+}
+
+@inproceedings{Russo:Sabelfeld:PSI06,
+  AUTHOR = "A. Russo and A. Sabelfeld",
+  TITLE = "Security for Multithreaded Programs under Cooperative Scheduling",
+  BOOKTITLE = "Proc. Andrei Ershov International Conference on
+						Perspectives of System Informatics",
+  OPTPAGES = {},
+  YEAR = 2006,
+  OPTVOLUME = 0,
   PUBLISHER = SV,
-  YEAR = {2007},
-  SERIES = LNCS
-}
-
-@inproceedings{Hicks+:PLAS07,
- author = "B. Hicks and D. King and P. McDaniel",
- title = "Jifclipse: Development Tools for Security-Typed Languages",
- booktitle = "Proc. ACM Workshop on Programming Languages and Analysis for Security (PLAS)",
- month = jun,
- year = 2007
-}
-
-@INPROCEEDINGS{Hicks+:ACSAC06,
-  ADDRESS = {Miami, Fl},
-  AUTHOR = {B. Hicks and K. Ahmadizadeh and P. McDaniel},
-  BOOKTITLE = {22st Annual Computer Security Applications Conference (ACSAC)},
-  MONTH = {December},
-  TITLE = {Understanding Practical Application Development in Security-typed Languages},
-  YEAR = {2006}
-}
-
-@inproceedings{Civitas, 
-title={Civitas: Toward a Secure Voting System},
-author={M. R. Clarkson and S. Chong and A. C. Myers},
-booktitle= {IEEE Symposium on Security and Privacy},
-month= {May},
-year = {2008}
-}
-@INPROCEEDINGS{King:ICISS08,
-  TITLE = {Implicit Flows: Can't live with 'em, can't live without 'em},
-  AUTHOR = {D. King and B. Hicks and M. Hicks and T. Jaeger},
-  BOOKTITLE = {Proc. International Conference on Information Systems Security (ICISS)},
-  MONTH = DEC,
-  YEAR = 2008,
   SERIES = LNCS,
-  VOLUME = 5352,
-  PUBLISHER = SV,
-  PAGES = {56--70}
+  MONTH = JUN,
+  OPTNOTE = {To appear.}
 }
-@unpublished{JLift,
-    author = "D. King",
-    title = "{JLift}",
-    note = "Software release. Located at \url{http://www.cse.psu.edu/~dhking/jlift}",
-    year = 2008
+
+@inproceedings{Kopf:Mantel:FAST05,
+  author	= "B. K{\"o}pf and H. Mantel",
+  title		= "Eliminating Implicit Information Leaks by Transformational Typing and Unification",
+  booktitle	= "Formal Aspects in Security and Trust, Third International Workshop (FAST'05)",
+  month		= jul,
+  pages		= "47--62",
+  publisher	= SV,
+  series	= LNCS,
+  volume        = 3866,
+  year		= 2006
+}
+@inproceedings{Tsai:Russo:Hughes:CSF07,
+  author = {Ta Chung Tsai and A. Russo and J. Hughes},
+  title = {A Library for Secure Multi-threaded Information Flow in {H}askell},
+  booktitle = {Proc. of the 20th IEEE Computer Security Foundations Symposium}, 
+  month = jul,
+  year = 2007,
+  note = {To appear.},
+}
+@phdthesis{Matos:phd,
+author={A. {Almeida Matos}},
+title={Typing secure information flow:  declassification and mobility},
+year={2006},
+school={Ecole Nationale Sup\'erieure des Mines de Paris}}
+
+@article{BC02:tcs,
+ author		= {G. Boudol and I. Castellani},
+ title		= {Noninterference for Concurrent Programs
+                   and Thread Systems},
+ journal        = tcs,
+ volume         = 281,
+ number         = {1},
+ year           = 2002,
+ pages          = {109-130}}
+
+@inproceedings{Russo+:ASIAN06,
+  author =	 "A. Russo and J. Hughes and D. Naumann and A. Sabelfeld",
+  booktitle = "Asian Computing Science Conference (ASIAN'06)",
+  title =	 "Closing Internal Timing Channels by Transformation",
+  year =	 2007,
+  OPTmonth =	 nov,
+  OPTvolume =	 3302,
+  series =	 LNCS,
+  OPTpages = "129--145",
+  publisher =	 SV,
+  OPTnote = "To appear."
 }
 
 
-@inproceedings{Polyglot,
- author = {N. Nystrom and M. R. Clarkson and A. C. Myers.} ,
-title = {Polyglot: An Extensible Compiler Framework for Java},
-booktitle = {Proc. 12th International Conference on Compiler Construction, Warsaw, Poland, LNCS 2622},
-month={apr},
-year={2003},
-pages={138–-152}
+
+
+@Misc{TIMEOUTATTACK,
+  Title          = "{Timeout Attacks}",
+  author =	 "A. Russo and A. Sabelfeld",
+  HowPublished   = {\url{http://www.cs.chalmers.se/~russo/websecurity/}},
+  year           = 2009
+}
+
+
+
+
+
+@Misc{Mozilla:setTimeout,
+  Author         = "Mozilla Developer Center",
+  Title          = "{window.setTimeout}",
+  HowPublished   = {\url{https://developer.mozilla.org/en/DOM/window.setTimeout}},
+  year           = 2008
+}
+
+
+@article{PengLi+:Arrows,
+author = {Peng Li and Steve Zdancewic},
+title = {Encoding Information Flow in Haskell},
+journal ={Computer Security Foundations Workshop, IEEE},
+volume = {0},
+year = {2006},
+issn = {1063-6900},
+pages = {16},
+doi = {http://doi.ieeecomputersociety.org/10.1109/CSFW.2006.13},
+publisher = {IEEE Computer Society},
+address = {Los Alamitos, CA, USA},
+}
+
+@article{Tsai+:Library,
+author = {Ta-chung Tsai and Alejandro Russo and John Hughes},
+title = {A Library for Secure Multi-threaded Information Flow in {H}askell},
+journal ={Computer Security Foundations Symposium, IEEE},
+volume = {0},
+year = {2007},
+isbn = {},
+pages = {187-202},
+doi = {http://doi.ieeecomputersociety.org/10.1109/CSF.2007.6},
+publisher = {IEEE Computer Society},
+address = {Los Alamitos, CA, USA},
+}
+
+
+@unpublished{sparkExaminer,
+    author = {Praxis High Integrity Systems},
+    title = {SPARKAda Examinar},
+    note = "Software release. http://www.praxis-his.com/sparkada/",
+}
+
+
+@phdthesis{norell:thesis,
+  author  = {Ulf Norell},
+  title	  = {Towards a practical programming language based on dependent type
+	     theory},
+  school  = {Department of Computer Science and Engineering, Chalmers University of Technology},
+  year	  = 2007,
+  month	  = {September},
+  address = {SE-412 96 G\"{o}teborg, Sweden}
 }
 @article{Chapman:Hilton:Enforcing,
   title={{Enforcing security and safety models with an information flow analysis tool}},
@@ -3350,78 +3533,589 @@ pages={138–-152}
   year={2003},
   publisher={Addison-Wesley Longman Publishing Co., Inc. Boston, MA, USA}
 }
+@InProceedings{Askarov:Sabelfeld:CSF09,
+  author =     "A. Askarov and A. Sabelfeld",
+  title =      "Tight Enforcement of Information-Release Policies for Dynamic Languages",
+  OPTpages = "",
+  booktitle =   CSF,
+  month =      jul,
+  year =       2009
+} 
 
-@unpublished{sparkExaminer,
-    author = {{Praxis High Integrity Systems}},
-    title = {SPARKAda Examiner},
-    note = "Software release. \url{http://www.praxis-his.com/sparkada/}",
+@InProceedings{Russo:Sabelfeld:CSF09,
+  author =     "A. Russo and A. Sabelfeld",
+  title =      "Securing Timeout Instructions in Web Applications",
+  booktitle =   CSF,
+  month =      jul,
+  year =       2009
+} 
+@InProceedings{Boudol:FAST08,
+  author = 	 "G. Boudol",
+  title = 	 "Secure information flow as a safety property",
+  OPTcrossref =  "",
+  OPTkey = 	 "",
+  booktitle	= "Formal Aspects in Security and Trust, Third International Workshop (FAST'08)",
+  pages = 	 "20--34",
+  year = 	 2009,
+  OPTeditor = 	 "",
+  OPTvolume = 	 "",
+  OPTnumber = 	 5491,
+  series = 	 LNCS,
+  OPTaddress = 	 "",
+  month = 	 mar,
+  OPTorganization = "",
+  publisher = SV,
+  OPTnote = 	 "",
+  OPTannote = 	 ""
 }
-
-
-@unpublished{Exceptions:TechReport,
-  title={Catch Me If You Can: Permissive Yet Secure Error Handling}, 
-  author={A. Askarov and A. Sabelfeld}, 
-  year=2009,
-  note={Technical Report. Available at \url{http://www.cs.cornell.edu/~aslan/exceptions-tr.pdf}}
+@InProceedings{Clark:Hunt:FAST08,
+  author = "D. Clark and S. Hunt", 
+  title  = "Noninterference for Deterministic Interactive Programs", 
+  booktitle = "Workshop on Formal Aspects in Security and Trust (FAST'08)", 
+  month = oct,
+  year  = 2008
 }
-
-@INPROCEEDINGS{Demange:Sands:ESOP09,
-  author = {D. Demange and D. Sands},
-  title = {{All Secrets Great and Small}},
-  booktitle = ESOP,
-  pages = {239--253},
-  year = {2009},
-  series = {LNCS},
-  publisher = SV
-}
-
-@inproceedings{Deng:Smith:CSFW04,
-  author = {Z. Deng and G. Smith},
-  booktitle = CSFW,
-  title = {Lenient Array Operations for Practical Secure Information Flow},
-  year = 2004,
-  month = Jun,
-  pages={115--124}
-}
-
-@inproceedings{CLU,
-  author= {B. Liskov et al.},
-  title={{CLU} reference manual},
-  booktitle={In Goos and Harmanis, editors},
-  series=LNCS,
-  volume=114,
-  publisher={Springer-Verlag, Berlin},
-  year=1981 
-}
-
-@inproceedings{Bank+:POPL97,
- author = {J. A. Bank and A. C. Myers and  B. Liskov},
- title = {Parameterized types for {J}ava},
+@inproceedings{Hunt:Sands:POPL06,
+ author = {S. Hunt and D. Sands},
+ title = {On flow-sensitive security types},
  booktitle = POPL,
- year = {1997},
- pages = {132--145},
- location = {Paris, France},
- publisher = {ACM}
+ year = {2006},
+ OPTisbn = {1-59593-027-2},
+ pages = {79--90},
+ location = {Charleston, South Carolina, USA},
+ OPTpublisher = {ACM},
+ OPTaddress = {New York, NY, USA},
+ }
+@InProceedings{Cavallaro+:DIMVA08,
+  author = 	 "L. Cavallaro and P. Saxena and R. Sekar",
+  title = 	 "On the Limits of Information Flow Techniques for Malware Analysis and Containment",
+  booktitle = "Proc. Detection of Intrusions and Malware \& Vulnerability Assessment (DIMVA)",
+  year = 	 2008,
+  month = jul,
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Python paper
+
+
+@article{StateWebSecurity,
+ author = {Andrews, Mike},
+ title = {Guest {E}ditor's {I}ntroduction: {T}he {S}tate of {W}eb {S}ecurity},
+ journal = {IEEE Security and Privacy},
+ volume = {4},
+ number = {4},
+ year = {2006},
+ issn = {1540-7993},
+ pages = {14--15},
+ doi = {http://dx.doi.org/10.1109/MSP.2006.88},
+ publisher = {IEEE Educational Activities Department},
+ address = {Piscataway, NJ, USA},
  }
 
-@InProceedings{Barth:USENIXSEC08,
-author = "A. Barth and C. Jackson and J. C. Mitchell", 
-title = "Securing Frame Communication in Browsers",
-booktitle = USENIXSEC,
-year = 2008
+
+@Misc{FFAWebSecurity,
+  Title          = "{Review of Web Applications Security and Intrusion Detection in Air Traffic Control Systems}",
+  author =	 {{Federal Aviation Administration (US)}},
+  HowPublished   =   {\url{http://www.oig.dot.gov/sites/dot/files/pdfdocs/ATC_Web_Report.pdf}},
+  year           = 2009,
+  month = Jun, 
+  note = {Note: thousands of vulnerabilities were discovered}
 }
-@Misc{Netscape:Tainted,
-  Author         = "Netscape",
-  Title          = "{Using data tainting for security}",
-  HowPublished   = {http://wp.netscape.com/eng/mozilla/3.0/handbook/
-                   javascript/advtopic.htm},
-  year           = 2006
+
+
+@Book{BekmanCholet2003,
+  author = 	 "S. Bekman and E. Cholet",
+  title = 	 "Practical mod\_perl",
+  publisher = 	 "{O'R}eilly and {A}ssociates",
+  year = 	 2003,
+}
+
+@inproceedings{Sabelfeld:Russo:PSI09,
+  AUTHOR = "A. Sabelfeld and A. Russo",
+  TITLE = "{From dynamic to static and back: Riding the roller coaster of information-flow control research}",
+  BOOKTITLE = "Proc. Andrei Ershov International Conference on Perspectives of System Informatics",
+  OPTPAGES = {},
+  YEAR = 2009,
+  OPTVOLUME = 0,
+  PUBLISHER = SV,
+  SERIES = LNCS,
+  MONTH = JUN
+}
+
+@inproceedings{KozlovPetukhov07,
+    author = {D. Kozlov and A. Petukhov },
+    title = {{Implementation of Tainted Mode approach to finding security vulnerabilities for Python technology}},
+    year = {2007}, 
+    booktitle = {Proc. of Young Researchers' Colloquium on Software Engineering ({SYRCoSE})}, 
+    month = JUN
+}
+
+@book{thomas2004prub,
+  author = {D. Thomas and C. Fowler and A. Hunt},
+  publisher = {{Pragmatic Programmers}},
+  title = {{Programming Ruby. The Pragmatic Programmer's Guide}},
+  year = {2004},
+  isbn = {0974514055}
+}
+
+@INPROCEEDINGS{Nguyen05,
+    author = {A. Nguyen-{T}uong and S. Guarnieri and D. Greene and J. Shirley and D. Evans},    
+    title = {{Automatically Hardening Web Applications Using Precise Tainting}},
+    booktitle = {In 20th {IFIP} {I}nternational {I}nformation {S}ecurity {C}onference},
+    year = {2005},
+    pages = {372--382}
+}
+
+@Book{Lutz:1999:LP,
+  author =       "Mark Lutz and David Ascher",
+  title =        "Learning {Python}",
+  year =         "1999",
+  ISBN =         "1-56592-464-9",
+  publisher = {O'Reilly \& Associates, Inc.}
+}
+
+
+@Misc{WikiPython,
+  Title          = {List of {P}ython Software},
+  HowPublished   = {\url{http://en.wikipedia.org/wiki/List_of_Python_software}},
+}
+
+
+@Misc{Perl,
+  Title          = {The {Perl} programming language},
+  HowPublished   = {\url{http://www.perl.org/}},
+}
+
+@Misc{Ruby,
+  Title          = {The {Ruby} programming language},
+  HowPublished   = {\url{http://www.ruby-lang.org/en/}},
+}
+
+
+@article{Russo:IOS,
+  author    = {A. Russo and
+               A. Sabelfeld and K. Li},
+  journal   = {2009 {M}arktoberdorf {S}ummer {S}chool ({IOS} {P}ress)},
+  title     = {Implicit flows in malicious and nonmalicious code},
+  year      = 2009,
+  publisher = {ISOC Press},
+}
+
+@inproceedings{SeoLam2010,
+  author    = {J. Seo and M. S. Lam},
+  title   = {{InvisiType: Object-Oriented Security Policies}}, 
+  booktitle = {{17th Annual Network and Distributed System Security Symposium}},
+  year    = 2010, 
+  month   = Feb,
+  publisher = {Internet Society (ISOC)}
+}
+
+
+@INPROCEEDINGS{Jovanovic06pixy:a,
+    author = {N. Jovanovic and C. Kruegel and E. Kirda},
+    title = {{Pixy: A Static Analysis Tool for Detecting Web Application Vulnerabilities (Short Paper)}},
+    booktitle = {{2006 IEEE Symposium on Security and Privacy}},
+    year = 2006,
+    pages = {258--263},
+    publisher = {{IEEE Computer Society}}
+}
+
+@inproceedings{Futo07, 
+ author    = { A. Futoransky and E. Gutesman and A. Waissbein}, 
+ title     = {{A dynamic technique for enhancing the security and privacy of web applications}}, 
+ booktitle = {{Black Hat USA Briefings}}, 
+ year = 2007,
+ month = aug
+}
+
+
+@INPROCEEDINGS{Haldar05dynamictaint,
+    author = {V. Haldar and D. Chandra and M. Franz},
+    title = {{Dynamic Taint Propagation for Java}},
+    booktitle = {{Proceedings of the 21st Annual Computer Security Applications Conference}},
+    year = {2005},
+    pages = {303--311}
+}
+
+
+@inproceedings{WebSSARI,
+ author = {Y. Huang and F. Yu and C. Hang and C. Tsai and D. Lee and S. Kuo},
+ title = {Securing web application code by static analysis and runtime protection},
+ booktitle = {{WWW '04: Proceedings of the 13th international conference on World Wide Web}},
+ year = {2004},
+ pages = {40--52},
+ location = {New York, NY, USA},
+ publisher = {ACM},
+}
+
+@inproceedings{SuWassermann06,
+ author = {Z. Su and G. Wassermann},
+ title = {The essence of command injection attacks in web applications},
+ booktitle = {POPL '06: Conference record of the 33rd ACM SIGPLAN-SIGACT symposium on Principles of programming languages},
+ year = {2006},
+ pages = {372--382},
+ publisher = {ACM},
+ }
+
+@book{IntroductionFunctional,
+ author = {R. Bird and P. Wadler},
+ title = {An introduction to functional programming},
+ year = {1988},
+ isbn = {0-13-484189-1},
+ publisher = {Prentice Hall International (UK) Ltd.},
+ }
+
+
+
+@Misc{Twisted,
+  Title          = {The {Twisted} programming framework},
+  HowPublished   = {\url{http://twistedmatrix.com/trac/}},
+}
+
+@unpublished{PythonLib,
+    author = "Anonymized",
+    title = "TaintLib",
+    note = "Software release. 
+            \url{http://taintmode.firebirds.com.ar/taintmode.txt}",
+    month = Feb,
+    year = 2010
+}
+
+
+@Misc{Guttman:Dagstuhl07,
+  author =	 "J. Guttman",
+  title = 	 "Invited Tutorial: Integrity",
+  month = 	 feb,
+  year = 	 2007,
+  howpublished = "Presentation at the Dagstuhl Seminar on Mobility, Ubiquity and Security",
+  note = 	 "\url{http://www.dagstuhl.de/07091/}"
+}
+
+@book{Pfleeger:Pfleeger:Security:06,
+ author = {Pfleeger, Charles P. and Pfleeger, Shari Lawrence},
+ title = {Security in Computing (4th Edition)},
+ year = {2006},
+ isbn = {0132390779},
+ publisher = {Prentice Hall},
+ OPTaddress = {Upper Saddle River, NJ, USA},
+ }
+
+@Book{Gollmann:Security:06,
+  author = 	 "D. Gollmann",
+  ALTeditor = 	 "",
+  title = 	 "Computer Security (2nd Edition)",
+  publisher = 	 "Wiley",
+  year = 	 "2006",
+  OPTkey = 	 "",
+  OPTvolume = 	 "",
+  OPTnumber = 	 "",
+  OPTseries = 	 "",
+  OPTaddress = 	 "",
+  OPTedition = 	 "",
+  OPTmonth = 	 "",
+  OPTnote = 	 "",
+  OPTannote = 	 ""
+}
+
+@inproceedings{Sandhu:DB94,
+ author = {Sandhu, Ravi S.},
+ title = {On Five Definitions of Data Integrity},
+ booktitle = {Proceedings of the IFIP WG11.3 Working Conference on Database Security VII},
+ year = {1994},
+ OPTisbn = {0-444-81833-2},
+ pages = {257--267},
+ OPTpublisher = {North-Holland Publishing Co.},
+ OPTaddress = {Amsterdam, The Netherlands, The Netherlands},
+ }
+
+@TechReport{Mayfield:Integrity:91,
+  author = 	 "T. Mayfield and J. E. Roskos and S. R. Welke and J. M. Boone and C. W. McDonald",
+  title = 	 "Integrity in Automated Information Systems",
+  institution =  "Institute for Defense Analyses",
+  year = 	 "1991",
+  OPTkey = 	 "",
+  OPTtype = 	 "",
+  number = 	 "P-2316",
+  OPTaddress = 	 "",
+  OPTmonth = 	 "",
+  OPTnote = 	 "",
+  OPTannote = 	 ""
+}
+
+@InProceedings{Clarkson:Schneider:CSF10,
+  author =     "M. Clarkson and F. B. Schneider",
+  title =      "Quantification of Integrity",
+  OPTpages = "",
+  booktitle =   CSF,
+  month =      jul,
+  year =       2010
+} 
+@InProceedings{Russo:Sabelfeld:CSF10,
+  author =     "A. Russo and A. Sabelfeld",
+  title =      "Dynamic vs. Static Flow-Sensitive Security Analysis",
+  pages = "186--199",
+  booktitle =   CSF,
+  month =      jul,
+  year =       2010
+} 
+@InProceedings{Askarov:Myers:ESOP10,
+  author =       "A. Askarov and A. C. Myers",
+  title = 	 "A Semantic Framework for Declassification and Endorsement",
+  year = 	 2010,
+  OPTkey = 	 "",
+  booktitle = ESOP,
+  OPTeditor = 	 "",
+  OPTvolume = 	 "",
+  OPTnumber = 	 "",
+  series = 	 LNCS,
+  OPTaddress = 	 "",
+  month = 	 mar,
+  OPTorganization = "",
+  OPTpublisher = "",
+  OPTnote = 	 "",
+  OPTannote = 	 ""
+}
+
+
+
+
+@misc{Diserholt:master,
+  author =	 "A. Diserholt",
+  title =	 "Providing Integrity Policies as a Library in {H}askell",
+  howpublished = "Master Thesis, Chalmers University of Technology,
+                  Gothenburg",
+  month =	 mar,
+  year =	 2010, 
+  note = {\url{http://www.cse.chalmers.se/~russo/integrity}}, 
+}
+@Article{Schneider:TISSEC:00,
+  author = 	 "F. B. Schneider",
+  title = 	 "Enforceable security policies",
+  journal = 	 TISSEC,
+  year = 	 2000,
+  OPTkey = 	 "",
+  volume = 	 3,
+  number = 	 1,
+  pages = 	 "30--50",
+  OPTmonth = 	 "",
+  OPTnote = 	 "",
+  OPTannote = 	 ""
+}
+
+
+@InProceedings{Clark:Wilson:SP87,
+  title = 	 "A Comparison of Commercial and Military Computer Security Policies",
+  year = 	 1987,
+  pages = 	 "184--193",
+  booktitle = SSP,
+  author = 	 "Clark, David D. and Wilson, David R.",
+  month = 	 may
+}
+@InProceedings{Haack+:WISSEC08,
+  author = "C. Haack and E. Poll and A. Schubert",
+  title = 	 "Explicit information flow properties in {JML}",
+  year = 	 2008,
+  OPTkey = 	 "",
+  booktitle = "Proc. WISSEC",
+  OPTeditor = 	 "",
+  OPTvolume = 	 "",
+  OPTnumber = 	 "",
+  OPTseries = 	 "",
+  OPTaddress = 	 "",
+  OPTmonth = 	 "",
+  OPTorganization = "",
+  OPTpublisher = "",
+  OPTnote = 	 "",
+  OPTannote = 	 ""
+}
+@inproceedings{Bohannon+:CCS09,
+author = "Bohannon, A. and Pierce, B. and Sj{\"o}berg, V. and Weirich, S. and Zdancewic, S.",
+title ="Reactive noninterference",
+booktitle = CCS,
+year = 2009,
+month = nov,
+pages = "79--90",
+}
+@Misc{Caja,
+  Author         = {M. Miller and M. Samuel and B. Laurie and I. Awad and
+                   M. Stay},
+  Title          = {Caja: Safe active content in sanitized JavaScript},
+  year           = 2008
 }
 @Misc{ADsafe,
   Author         = {D. Crockford},
   Title          = {Making JavaScript Safe for Advertising},
   HowPublished   = {adsafe.org},
   year           = 2009
+}
+@Misc{FBJS,
+  Author         = {Facebook},
+  Title          = {{FBJS}},
+  HowPublished   = {\url{http://wiki.developers.facebook.com/index.php/FBJS}},
+  year           = 2009
+}
+@Article{Leroy:JAR03,
+  author = 	 "X. Leroy",
+  title = 	 "Java bytecode verification: algorithms and formalizations",
+  journal = 	 "J. Automated Reasoning",
+  year = 	 2003,
+  OPTkey = 	 "",
+  volume = 	 30,
+  number = 	 "3--4",
+  pages = 	 "235--269",
+  OPTmonth = 	 "",
+  OPTnote = 	 "",
+  OPTannote = 	 ""
+}
+@Misc{Eich:FlowSafe,
+  Author         = "B. Eich",
+  Title          = "FlowSafe: Information Flow Security for the Browser",
+  HowPublished   = "\url{https://wiki.mozilla.org/FlowSafe}",
+  month          = oct,
+  year           = 2009
+}
+@TechReport{Austin:Flanagan:Tech:Report:09,
+  author = 	 "T. H. Austin and C. Flanagan",
+  title = 	 "Permissive Dynamic Information Flow Analysis",
+  institution =  "University of California, Santa Cruz",
+  year = 	 "2009",
+  OPTkey = 	 "",
+  OPTtype = 	 "",
+  number = 	 "UCSC-SOE-09-34",
+  OPTaddress = 	 "",
+  OPTmonth = 	 "",
+  OPTnote = 	 "",
+  OPTannote = 	 ""
+}
+@phdthesis{Erlingsson:PhD04,
+ author = "U. Erlingsson",
+ title = "The inlined reference monitor approach to security policy enforcement",
+ year = 2004,
+ school = {Cornell University},
+ address = {Ithaca, NY, USA}
+ }
+
+@InProceedings{Magazinius+:ASIACCS10,
+  author = 	 "J. Magazinius and A. Askarov and A. Sabelfeld",
+  title = 	 "A Lattice-based Approach to Mashup Security",
+  OPTcrossref =  "",
+  OPTkey = 	 "",
+  booktitle = "Proc.\@ ACM Symposium on Information, Computer and Communications Security (ASIACCS)",
+  OPTpages = 	 "",
+  year = 	 2010,
+  OPTeditor = 	 "",
+  OPTvolume = 	 "",
+  OPTnumber = 	 "",
+  OPTseries = 	 "",
+  OPTaddress = 	 "",
+  month = 	 apr,
+  OPTorganization = "",
+  OPTpublisher = "",
+  OPTnote = 	 "",
+  OPTannote = 	 ""
+}
+
+@ARTICLE{Ligatti05editautomata:,
+    author = {Jay Ligatti and Lujo Bauer and David Walker},
+    title = {Edit automata: Enforcement mechanisms for run-time security policies},
+    journal = {International Journal of Information Security},
+    year = {2005},
+    volume = {4},
+    pages = {2--16}
+}
+
+@article{Reis+:TWeb07,
+ author = {Reis, Charles and Dunagan, John and Wang, Helen J. and Dubrovsky, Opher and Esmeir, Saher},
+ title = {BrowserShield: Vulnerability-driven filtering of dynamic HTML},
+ journal = {ACM Trans. Web},
+ volume = {1},
+ number = {3},
+ year = {2007},
+ issn = {1559-1131},
+ pages = {11},
+ doi = {http://doi.acm.org/10.1145/1281480.1281481},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+ }
+
+@InProceedings{Maffeis+:APLAS08,
+  author       = "S. Maffeis and J. C. Mitchell and A. Taly",
+  title        = "An Operational Semantics for {JavaScript}",
+  booktitle    = "Proc. of {APLAS}'08",
+  series       = "LNCS",
+  volume       = "5356",
+  pages        = "307--325",
+  year         = "2008",
+  OPTnote        = "{S}ee also: Dep. of Computing, Imperial College London, Technical Report DTR08-13, 2008.",
+}
+
+@inproceedings{Maffeis+Mitchell+Taly:ESORICS09,
+    author= {S. Maffeis and J.C. Mitchell and A. Taly},
+    title = {Isolating JavaScript with Filters, Rewriting, and Wrappers},
+    booktitle = "Proc. of {ESORICS}'09",
+    publisher = "LNCS",
+    year = "2009"
+}
+
+@InProceedings{Maffeis+Taly:CSF09,
+  author       = "S. Maffeis and A. Taly",
+  title        = "Language-based Isolation of Untrusted {J}avascript",
+  booktitle    = "Proc. of {CSF}'09",
+  series       = "IEEE",
+  year         = "2009",
+  note        = "{S}ee also: Dep. of Computing, Imperial College London, Technical Report DTR09-3, 2009.",
+}
+@InProceedings{ONeil+:CSFW06,
+title="Information-flow security for interactive programs",
+author="K. O'Neill and M. Clarkson and S. Chong",
+booktitle = CSFW,
+year=2006,
+month=jul,
+pages="190--201"
+}
+@Article{Askarov+:TCS08,
+  author =       "A. Askarov and D. Hedin and A. Sabelfeld",
+  title =        "Cryptographically-Masked Flows",
+  journal =      TCS,
+  year =         2008,
+  month =        aug,
+  OPTnote =         {Special issue for TGC~2006},
+  volume =       402,
+  issue =        "2--3",
+  pages =        "82--101",
+  OPTpdf =          {http://www.cs.chalmers.se/~andrei/cryptoflows-tcs.pdf}
+}
+@InProceedings{Devriese:Piessens:SP10,
+  author = 	 "D. Devriese and F. Piessens",
+  title = 	 "Non-Interference Through Secure Multi-Execution",
+  OPTcrossref =  "",
+  OPTkey = 	 "",
+  booktitle = SSP,
+  OPTpages = 	 "",
+  year = 	 2010,
+  OPTeditor = 	 "",
+  OPTvolume = 	 "",
+  OPTnumber = 	 "",
+  OPTseries = 	 "",
+  OPTaddress = 	 "",
+  month = 	 may,
+  OPTorganization = "",
+  OPTpublisher = "",
+  OPTnote = 	 "",
+  OPTannote = 	 ""
+}
+
+@Article{AlmeidaMatos+:JLAP07,
+  author = 	 "A. Almeida Matos and G. Boudol and I. Castellani",
+  title = 	 "Typing non-interference for reactive programs",
+  journal = 	 "Journal of Logic and Algebraic Programming",
+  year = 	 2007,
+  OPTkey = 	 "",
+  volume = 	 72,
+  OPTnumber = 	 "",
+  pages = 	 "124--156",
+  OPTmonth = 	 "",
+  OPTnote = 	 "",
+  OPTannote = 	 ""
 }
 
 @InProceedings{Austin:Flanagan:PLAS09,
@@ -3444,141 +4138,6 @@ year = 2008
   OPTnote = 	 "",
   OPTannote = 	 ""
 }
-@TechReport{Austin:Flanagan:Tech:Report:09,
-  author = 	 "T. H. Austin and C. Flanagan",
-  title = 	 "Permissive Dynamic Information Flow Analysis",
-  institution =  "University of California, Santa Cruz",
-  year = 	 "2009",
-  OPTkey = 	 "",
-  OPTtype = 	 "",
-  number = 	 "UCSC-SOE-09-34",
-  OPTaddress = 	 "",
-  OPTmonth = 	 "",
-  OPTnote = 	 "",
-  OPTannote = 	 ""
-}
-@Misc{Eich:FlowSafe,
-  Author         = "B. Eich",
-  Title          = "FlowSafe: Information Flow Security for the Browser",
-  HowPublished   = "https://wiki.mozilla.org/FlowSafe",
-  month          = oct,
-  year           = 2009
-}
-@InProceedings{Askarov:Sabelfeld:CSF09,
-  author =     "A. Askarov and A. Sabelfeld",
-  title =      "Tight Enforcement of Information-Release Policies for Dynamic Languages",
-  OPTpages = "",
-  booktitle =   CSF,
-  month =      jul,
-  year =       2009
-} 
-
-@inproceedings{Jim:Swamy:Hicks:WWW07,
-  author = {Jim, Trevor and Swamy, Nikhil and Hicks, Michael},
-  title = {Defeating script injection attacks with browser-enforced embedded policies},
-  booktitle = {WWW '07: Proceedings of the 16th international conference on World Wide Web},
-  year = {2007},
-  isbn = {978-1-59593-654-7},
-  pages = {601--610},
-  location = {Banff, Alberta, Canada},
-  doi = {http://doi.acm.org/10.1145/1242572.1242654},
-  publisher = {ACM},
-  address = {New York, NY, USA},
-}
-
-@inproceedings{Yip:Narula:Krohn:Morris:EUROSYS09,
-  author = {A. Yip and N. Narula and M. Krohn and R. Morris},
-  title = {Privacy-preserving browser-side scripting with BFlow},
-  booktitle = {EuroSys '09: Proceedings of the 4th ACM European conference on Computer systems},
-  year = {2009},
-  isbn = {978-1-60558-482-9},
-  pages = {233--246},
-  location = {Nuremberg, Germany},
-  doi = {http://doi.acm.org/10.1145/1519065.1519091},
-  publisher = {ACM},
-  address = {New York, NY, USA},
-}
-
-@inproceedings{Crites:Hsu:Chen:CCS08,
- author = {Crites, Steven and Hsu, Francis and Chen, Hao},
- title = {OMash: enabling secure web mashups via object abstractions},
- booktitle = {CCS '08: Proceedings of the 15th ACM conference on Computer and communications security},
- year = {2008},
- isbn = {978-1-59593-810-7},
- pages = {99--108},
- location = {Alexandria, Virginia, USA},
- doi = {http://doi.acm.org/10.1145/1455770.1455784},
- publisher = {ACM},
- address = {New York, NY, USA},
- }
-
-@article{Wang:Fan:Howell:Jackson:SIGOPS,
- author = {Wang, Helen J. and Fan, Xiaofeng and Howell, Jon and Jackson, Collin},
- title = {Protection and communication abstractions for web browsers in MashupOS},
- journal = {SIGOPS Oper. Syst. Rev.},
- volume = {41},
- number = {6},
- year = {2007},
- issn = {0163-5980},
- pages = {1--16},
- doi = {http://doi.acm.org/10.1145/1323293.1294263},
- publisher = {ACM},
- address = {New York, NY, USA},
-}
-
-@inproceedings{Barth:Jackson:Li:W2SP09,
- author = {Barth, Adam and Jackson, Collin and Li, William},
- title = {Attacks on JavaScript Mashup Communication},
- booktitle = {Proc. of Web 2.0 Security and Privacy 2009 (W2SP 2009)},
- year = {2009},
- month = may,
-}
-
-@inproceedings{SMash:WWW08,
- author = {De Keukelaere, Frederik and Bhola, Sumeer and Steiner, Michael and Chari, Suresh and Yoshihama, Sachiko},
- title = {SMash: secure component model for cross-domain mashups on unmodified browsers},
- booktitle = {WWW '08: Proceeding of the 17th international conference on World Wide Web},
- year = {2008},
- isbn = {978-1-60558-085-2},
- pages = {535--544},
- location = {Beijing, China},
- doi = {http://doi.acm.org/10.1145/1367497.1367570},
- publisher = {ACM},
- address = {New York, NY, USA},
-}
-
-@inproceedings{Jackson:Wang:WWW07,
- author = {Jackson, Collin and Wang, Helen J.},
- title = {Subspace: secure cross-domain communication for web mashups},
- booktitle = {WWW '07: Proceedings of the 16th international conference on World Wide Web},
- year = {2007},
- isbn = {978-1-59593-654-7},
- pages = {611--620},
- location = {Banff, Alberta, Canada},
- doi = {http://doi.acm.org/10.1145/1242572.1242655},
- publisher = {ACM},
- address = {New York, NY, USA},
-}
-
-@Misc{Burke:FragmentComm,
-  Author         = "J. Burke",
-  Title          = "Cross domain frame communication with fragment identifiers",
-  HowPublished   = "http://tagneto.blogspot.com/2006/06/
-cross-domain-frame-communication-with.html",
-  month          = jun,
-  year           = 2006
-}
-@inproceedings{Sabelfeld:Russo:PSI09,
-  AUTHOR = "A. Sabelfeld and A. Russo",
-  TITLE = "From dynamic to static and back: Riding the roller coaster of information-flow control research",
-  BOOKTITLE = "Proc. Andrei Ershov International Conference on Perspectives of System Informatics",
-  OPTPAGES = {},
-  YEAR = 2009,
-  OPTVOLUME = 0,
-  PUBLISHER = SV,
-  SERIES = LNCS,
-  MONTH = JUN
-}
 @InProceedings{Russo+:ESORICS09,
   author =	 "A. Russo and A. Sabelfeld and A. Chudnov",
   title =	 "Tracking Information Flow in Dynamic Tree Structures",
@@ -3588,49 +4147,27 @@ cross-domain-frame-communication-with.html",
   publisher = SV,
   series = LNCS
 }
-@InProceedings{Russo:Sabelfeld:CSF09,
-  author =     "A. Russo and A. Sabelfeld",
-  title =      "Securing Timeout Instructions in Web Applications",
-  booktitle =   CSF,
-  month =      jul,
-  year =       2009
-} 
-@InProceedings{Lux:Mantel:FAST08,
-  author	= "A. Lux and H. Mantel",
-  booktitle = "Workshop on Formal Aspects in Security and Trust (FAST'08)", 
-  pages		= "35--49",
-  publisher	= SV,
-  series	= LNCS,
-  title		= "Who Can Declassify?",
-  volume	= 5491,
-  year		= 2009
+@techreport{DOM,
+  author =	 "Arnaud Le Hors and Philippe Le Hegaret",
+  title =	 {{Document Object Model Level 3 Core Specification}},
+  institution =	 "The World Wide Web Consortium",
+  year =	 2004
 }
-@Misc{iGoogle,
-  title = 	 "{iGoogle}",
-  howpublished = "http://www.google.com/ig"
+@book{Agha,
+ author = {Agha, Gul},
+ title = {Actors: a model of concurrent computation in distributed systems},
+ year = {1986},
+ isbn = {0-262-01092-5},
+ publisher = {MIT Press},
+ address = {Cambridge, MA, USA},
 }
-@Misc{Facebook,
-  title = 	 "{Facebook}",
-  howpublished = "http://www.facebook.com"
-}
-
-
-@InProceedings{Askarov:Myers:ESOP10, 
-author = "A. Askarov and A. Myers",
-title = "A Semantic Framework for Declassification and Endorsement", 
-booktitle = ESOP,
-year = {2010},
-series = LNCS,
-publisher = SV,
-OPTnote = "To appear"
-}
-
-@InProceedings{Magazinius+:ASIACCS10,
-  author = 	 "J. Magazinius and A. Askarov and A. Sabelfeld",
-  title = 	 "A Lattice-based Approach to Mashup Security",
+@InProceedings{Austin:Flanagan:PLAS10,
+  author = 	 "T. H. Austin and C. Flanagan",
+  title = 	 "Permissive Dynamic Information Flow Analysis",
+  BookTitle      = "Proc. ACM Workshop on Programming Languages and Analysis for Security (PLAS)",
   OPTcrossref =  "",
   OPTkey = 	 "",
-  booktitle = "Proc.\@ ACM Symposium on Information, Computer and Communications Security (ASIACCS)",
+  OPTbooktitle = "",
   OPTpages = 	 "",
   year = 	 2010,
   OPTeditor = 	 "",
@@ -3638,18 +4175,38 @@ OPTnote = "To appear"
   OPTnumber = 	 "",
   OPTseries = 	 "",
   OPTaddress = 	 "",
-  month = 	 apr,
+  month = 	 jun,
   OPTorganization = "",
   OPTpublisher = "",
   OPTnote = 	 "",
   OPTannote = 	 ""
 }
-@InProceedings{Decat+:AppSec10,
-  author = 	 "M. Decat and P. {De Ryck} and L. Desmet and F. Piessens and W. Joosen",
-  title = 	 " Towards Building Secure Web Mashups ",
+@InProceedings{Smith:FOSSACS09,
+  author = 	 "G. Smith",
+  title = 	 "On the Foundations of Quantitative Information Flow",
   OPTcrossref =  "",
   OPTkey = 	 "",
-  booktitle = "Proc.\@ AppSec Research",
+  booktitle = FOSSACS,
+  pages = 	 "288--302",
+  year = 	 2009,
+  OPTeditor = 	 "",
+  volume = 	 5504,
+  OPTnumber = 	 "",
+  series = 	 LNCS,
+  OPTaddress = 	 "",
+  month = 	 mar,
+  OPTorganization = "",
+  OPTpublisher = "",
+  OPTnote = 	 "",
+  OPTannote = 	 ""
+}
+
+@InProceedings{Guha+:ECOOP10,
+  author = 	 "A. Guha, C. Saftoiu, S. Krishnamurthi",
+  title = 	 "The Essence of {JavaScript}",
+  OPTcrossref =  "",
+  OPTkey = 	 "",
+  booktitle = ECOOP,
   OPTpages = 	 "",
   year = 	 2010,
   OPTeditor = 	 "",
@@ -3664,105 +4221,18 @@ OPTnote = "To appear"
   OPTannote = 	 ""
 }
 
-@InProceedings{Chong:CSF10,
-  author = 	 "S. Chong",
-  title = 	 "Required Information Release",
-  OPTcrossref =  "",
-  OPTkey = 	 "",
-  booktitle = CSF,
-  OPTpages = 	 "",
-  year = 	 2010,
-  OPTeditor = 	 "",
-  OPTvolume = 	 "",
-  OPTnumber = 	 "",
-  OPTseries = 	 "",
-  OPTaddress = 	 "",
-  month = 	 jul,
-  OPTorganization = "",
-  OPTpublisher = "",
-  OPTnote = 	 "",
-  OPTannote = 	 ""
-}
-
-@inproceedings{Chen:Chong:CSFW04,
-  author =	 "H. Chen and S. Chong",
-  title =	 "Owned Policies for Information Security",
-  booktitle =	 CSFW,
-  year =	 2004,
-  month =	 jun,
-  OPTpages =	 ""
-}
-@inproceedings{Broberg:Sands:POPL10,
- author = {N. Broberg  and D. Sands},
- title = {Paralocks: role-based information flow control and beyond},
- booktitle =	 POPL,
- year = 2010,
- month = jan
- }
-
-@InProceedings{cm06:csfw06,
-  author =       {S. Chong and A. C. Myers},
-  title =        {Decentralized Robustness},
-  booktitle =    CSFW,
-  city =         {Venice, Italy},
-  year =         2006,
-  month =        jul,
-  pages =        {242--253}
-}
-
-@inproceedings{labw91,
-        author = "B. Lampson and M. Abadi and M. Burrows and
-                E. Wobber",
-        title = "Authentication in Distributed Systems: Theory and Practice",
-        booktitle = SOSP,
-        year = 1991,
-        month = {October},
-        pages = "165--182",
-        note = "{\em Operating System Review}, 253(5)"}
-@InProceedings{Russo:Sabelfeld:CSF10,
-  author =     "A. Russo and A. Sabelfeld",
-  title =      "Dynamic vs. Static Flow-Sensitive Security Analysis",
-  OPTpages = "",
-  booktitle =   CSF,
-  month =      jul,
-  year =       2010
-} 
-
-
-@inproceedings{histar,
- author = {N. Zeldovich and S. Boyd-Wickizer and E. Kohler and D. Mazi\`{e}res},
- title = {Making information flow explicit in {HiStar}},
- booktitle = OSDI06,
- year = {2006},
- pages = {263--278}
-}
-@InProceedings{asbestos,
-  author = 	 {P. Efstathopoulos and M. Krohn and
-                  S. VanDeBogart and  C. Frey and D.  Ziegler and
-                  E. Kohler and D. Mazi\`eres and
-                  F. Kaashoek and R. Morris},
-  title = 	 {Labels and Event Processes in the {A}sbestos Operating System},
-  booktitle = 	 SOSP20,
-  year =	 2005,
-  month =	 oct,
-  city = {Brighton, UK}
-}
-
-@inproceedings{flume,
-    title = "Information Flow Control for Standard {OS} Abstractions",
-    author = "M. Krohn and A. Yip and M. Brodsky and N. Cliffer
-    and M. F. Kaashoek and E. Kohler and R. Morris",
-    year = 2007,
-    booktitle = SOSP21
-}
-
-
-@PhdThesis{Cheng:Aeolus,
-  author =       "W. Cheng",
-  title =        "Information Flow for Secure Distributed Applications",
-  school =       "Massachusetts Institute of Technology",
-  month =  Sep,
-  year =         2009
+@inproceedings{Jang+:CCS10,
+ author = {Jang, D. and Jhala, R. and Lerner, S. and Shacham, H.},
+ title = {An empirical study of privacy-violating information flows in {JavaScript} web applications},
+ booktitle = CCS,
+ year = {2010},
+ month = oct,
+ isbn = {978-1-4503-0245-6},
+ location = {Chicago, Illinois, USA},
+ pages = {270--283},
+ url = {http://doi.acm.org/10.1145/1866307.1866339},
+ doi = {http://doi.acm.org/10.1145/1866307.1866339},
+ acmid = {1866339},
 }
 @InProceedings{Magazinius+:SEC10,
   author = "J. Magazinius and A. Russo and A. Sabelfeld",
@@ -3771,244 +4241,450 @@ OPTnote = "To appear"
   month = sep,
   booktitle = "Proceedings of the IFIP International Information Security Conference (SEC)"
 }
-@InProceedings{Chudnov:Naumann:CSF10,
-  author = 	 "A. Chudnov and D. A. Naumann",
-  title = 	 "Information Flow Monitor Inlining",
+@InProceedings{Taly+:SP11,
+  author = 	 "A. Taly and U. Erlingsson and M. Miller and J. Mitchell and J. Nagra",
+  title = 	 {{Automated analysis of security-critical JavaScript APIs}},
   OPTcrossref =  "",
   OPTkey = 	 "",
-  booktitle = CSF,
+  booktitle = SSP,
   OPTpages = 	 "",
-  year = 	 2010,
+  year = 	 2011,
   OPTeditor = 	 "",
   OPTvolume = 	 "",
   OPTnumber = 	 "",
   OPTseries = 	 "",
   OPTaddress = 	 "",
-  month = 	 jul,
+  month = 	 may,
   OPTorganization = "",
   OPTpublisher = "",
   OPTnote = 	 "",
   OPTannote = 	 ""
 }
 
-@Misc{ANTLR,
-  key = "antlr",
-  title = 	 "{ANTLR Parser Generator}",
-  howpublished = "http://www.antlr.org/"
+
+@misc{ecma:262:3,
+  author = {{ECMA International}},
+  title = {{ECMAScript Language Specification}},
+  year = 1999,
+  institution={ECMA International},
+  keywords = {javascript},
+  note={Version 3}
 }
 
-@Misc{OPERA:UserJavaScript,
-  key = "opera",
-  title = 	 "{Opera, User JavaScript}",
-  howpublished = "http://www.opera.com/docs/userjs/"
+@misc{ecma:262:5,
+  author = {{ECMA International}},
+  title = {{ECMAScript Language Specification}},
+  institution={ECMA International},
+  year = 2009,
+  note={Version 5}
 }
 
-@Misc{Heyes:CSP,
- author = "G. Heyes",
- key = "csp",
- title = {{CSP - Mozilla content security policy}},
- howpublished = "\url{http://www.thespanner.co.uk/2009/06/23/csp-mozilla-content-security-policy/}"
+
+@misc{DOM2,
+author = {J. Kesselman},
+title = {{Document Object Model (DOM) Level 2 Core Specification}},
+institution={W3C},
+year = {2000},
+masid = {13141842}
 }
 
-@Misc{Google:ContentHosting,
- author = "M. Zalewski",
- title = "Content hosting for the modern web",
- howpublished = "\url{http://googleonlinesecurity.blogspot.se/2012/08/content-hosting-for-modern-web.html}"
+@misc{TECH,
+author = {},
+title = {Information-Flow Security for a Core of {JavaScript}},
+OPTinstitution = {CSE Chalmers},
+note = {Full version, \url{http://dl.dropbox.com/u/49753386/full.pdf}}
 }
 
-@phdthesis{myers-phd-tr,
-        author="A. C. Myers",
-        title="Mostly-Static Decentralized Information Flow Control",
-        school="Massachuetts Institute of Techonolgy",
-        OPTtype="Technical Report",
-        OPTnumber="MIT/LCS/TR-783",
-        OPTaddress=cambridge,
-        month=jan,
-        year=1999,
-        OPTnote="Ph.D. thesis"
+@misc{IMPL,
+author = {},
+title = {Implementation of Information-Flow Security for a Core of {JavaScript}},
+OPTinstitution = {CSE Chalmers},
+note = {Full version, \url{http://dl.dropbox.com/u/49753386/implementation.tgz}}
 }
 
-@TechReport{Magazinius+:DDR:TR,
-  author = 	 "J. Magazinius and A. Askarov and A. Sabelfeld",
-  title = 	 "Decentralized Delimited Release",
-  instituition = "Chalmers University of Technology",
-  note = "Available at \url{http://www.cse.chalmers.se/~d02pulse/ddr-tr.pdf}",
-  year = 	 "2011",
+
+
+@misc{COQ,
+title="Coq",
+note="http://coq.inria.fr",
+key="Coq"
+}
+@InProceedings{Ryck+:NORDSEC10,
+  author = 	 "P. De Ryck and M. Decat and L. Desmet and F. Piessens and W. Joose",
+  title = 	 "Security of Web Mashups: a Survey",
+  OPTcrossref =  "",
   OPTkey = 	 "",
-  OPTtype = 	 "",
+  booktitle = "Nordic Conference in Secure IT Systems",
+  OPTpages = 	 "",
+  year = 	 "2010",
+  OPTeditor = 	 "",
+  OPTvolume = 	 "",
+  OPTnumber = 	 "",
+  series = 	 LNCS,
   OPTaddress = 	 "",
   OPTmonth = 	 "",
+  OPTorganization = "",
+  OPTpublisher = "",
   OPTnote = 	 "",
   OPTannote = 	 ""
 }
-@inproceedings{Barth+:SP09,
- author = {Barth, A. and Caballero, J. and Song, D.},
- title = {Secure Content Sniffing for Web Browsers, or How to Stop Papers from Reviewing Themselves},
- booktitle = SSP,
- year = 2009,
- month=may,
- OPTisbn = {978-0-7695-3633-0},
- pages = {360--371},
+
+
+@unpublished{Zaphod,
+    author = {{Mozilla Labs}},
+    title = {{Zaphod add-on for the Firefox browser}},
+    note = "\url{http://mozillalabs.com/zaphod}",
+    year = 2011
+}
+
+@unpublished{Narcissus,
+    author = "B.Eich",
+    title = {{Narcissus---JS implemented in JS}},
+    note = "\url{http://mxr.mozilla.org/mozilla/source/js/narcissus/}",
+    year = 2011
+}
+
+@unpublished{Testsuite,
+    author = {{Mozilla Developer Network}},
+    title = {{SpiderMonkey -- Running Automated JavaScript Tests}},
+    note = "\url{https://developer.mozilla.org/en-US/docs/SpiderMonkey/Running_Automated_JavaScript_Tests}",
+    year = 2011
+}
+
+@InProceedings{Austin:Flanagan:POPL12,
+  author = 	 "T. H. Austin and C. Flanagan",
+  title = 	 "Multiple Facets for Dynamic Information Flow",
+  BookTitle      = POPL,
+  OPTcrossref =  "",
+  OPTkey = 	 "",
+  OPTbooktitle = "",
+  OPTpages = 	 "",
+  year = 	 2012,
+  OPTeditor = 	 "",
+  OPTvolume = 	 "",
+  OPTnumber = 	 "",
+  OPTseries = 	 "",
+  OPTaddress = 	 "",
+  month = 	 jan,
+  OPTorganization = "",
+  OPTpublisher = "",
+  OPTnote = 	 "",
+  OPTannote = 	 ""
+}
+@inproceedings{Bielova+:NSS11,
+	author = "Bielova, N. and Devriese, D. and Massacci, F. and Piessens, F.",
+	title = "Reactive non-interference for a browser model",
+	booktitle = "Proc. International Conference on Network and System Security (NSS)",
+	year = 2011,
+	month = sep,
+	pages = "97--104",
+	OPTurl = {https://lirias.kuleuven.be/handle/123456789/312957}
+}
+@INPROCEEDINGS{Bohannon:Pierce:USENIXSEC10,
+  author = {A. Bohannon and B. C. Pierce},
+  title = {Featherweight {F}irefox: {F}ormalizing the Core of a Web Browser},
+  booktitle = USENIXSEC,
+  year = 2010,
+  month = JUN
+}
+@InProceedings{Zhou:Evans:ESORICS11,
+  author = 	 "Y. Zhou and D. Evans",
+  title = 	 "Protecting Private Web Content from Embedded Scripts",
+  OPTcrossref =  "",
+  OPTkey = 	 "",
+  booktitle = ESORICS,
+  OPTpages = 	 "",
+  year = 	 2011,
+  OPTeditor = 	 "",
+  OPTvolume = 	 "",
+  OPTnumber = 	 "",
+  OPTseries = 	 "",
+  OPTaddress = 	 "",
+  month = 	 sep,
+  OPTorganization = "",
+  OPTpublisher = "",
+  OPTnote = 	 "",
+  OPTannote = 	 ""
+}
+
+@inproceedings{GL:gatekeeper,
+ author = {Guarnieri, Salvatore and Livshits, Benjamin},
+ title = {GATEKEEPER: mostly static enforcement of security and reliability policies for javascript code},
+ booktitle = {Proceedings of the 18th conference on USENIX security symposium},
+ series = {SSYM'09},
+ year = {2009},
+ location = {Montreal, Canada},
+ publisher = {USENIX Association},
+ address = {Berkeley, CA, USA},
+} 
+
+@inproceedings{pldi09-sif,
+ author    = {R. Chugh and J. A. Meister and R. Jhala and S. Lerner},
+ title     = {Staged information flow for {JavaScript}},
+ booktitle = PLDI,
+ year      = {2009}
+} 
+
+@inproceedings{Guha:verified,
+ author = {Guha, Arjun and Fredrikson, Matthew and Livshits, Benjamin and Swamy, Nikhil},
+ title = {Verified Security for Browser Extensions},
+ booktitle = {Proceedings of the 2011 IEEE Symposium on Security and Privacy},
+ series = {SP '11},
+ year = {2011},
+ publisher = {IEEE Computer Society},
+ address = {Washington, DC, USA},
+} 
+
+BibTeX | EndNote | ACM Ref
+
+@inproceedings{Masri+:ISSRE04,
+ author = {Masri, Wes and Podgurski, Andy and Leon, David},
+ title = {Detecting and Debugging Insecure Information Flows},
+ booktitle = {Proc. of the 15th International Symposium on Software Reliability Engineering (ISSRE)},
+ year = {2004},
+ OPTisbn = {0-7695-2215-7},
+ pages = {198--209},
  OPTnumpages = {12},
- OPTurl = {http://dx.doi.org/10.1109/SP.2009.3},
- OPTdoi = {10.1109/SP.2009.3},
- OPTacmid = {1608144},
+ OPTurl = {http://dx.doi.org/10.1109/ISSRE.2004.17},
+ OPTdoi = {10.1109/ISSRE.2004.17},
+ OPTacmid = {1033829},
  OPTpublisher = {IEEE Computer Society},
  OPTaddress = {Washington, DC, USA},
- OPTkeywords = {Web, Security, Cross-Site Scripting, Content-Sniffing, MIME},
 } 
-@inproceedings{Backes+:SP07,
- author = {Backes, M. and Durmuth, M. and Unruh, D.},
- title = {Information Flow in the Peer-Reviewing Process},
- booktitle = SSP,
- year = 2007,
- month = may,
- pages = {187--191},
- OPTaddress = {Washington, DC, USA},
-} 
-@misc{Nagra:09,
-  author =	 "J. Nagra",
-  title =	 {{GIF/Javascript Polyglots}},
-  month =	 feb,
-  year =	 2009,
-  howpublished = "\url{http://www.thinkfu.com/blog/gifjavascript-polyglots}"
+@phdthesis{LeGuernic:PhD,
+  author = {Le Guernic, Gurvan},
+  title = {{C}onfidentiality {E}nforcement {U}sing {D}ynamic
+                  {I}nformation {F}low {A}nalyses},
+  school = {Kansas State University},
+  year = 2007,
+  OPTurl = {http://tel.archives-ouvertes.fr/tel-00198621/fr/},
+  OPTpdf = {http://tel.archives-ouvertes.fr/docs/00/19/86/21/PDF/thesis_report.pdf},
 }
-@inproceedings{Sundareswaran:Squicciarini:CEAS10,
-  author=        "S. Sundareswaran and A. Squicciarini",
-  title = 	 "Image Repurposing for Gifar-Based Attacks",
-  year = 	 2010,
+@inproceedings{Claessen:Hughes:ICFP00,
+  author    = {K. Claessen and
+               J. Hughes},
+  title     = {QuickCheck: a lightweight tool for random testing of Haskell
+               programs},
+  booktitle = ICFP,
+  year      = 2000,
+  pages     = {268--279}
+}
+@InProceedings{Hedin:Sabelfeld:CSF12,
+ author =     "D. Hedin and A. Sabelfeld",
+ title =      "Information-Flow Security for a Core of {JavaScript}",
+ pages     = "3--18",
+ booktitle =   CSF,
+ month =      jun,
+ year =       2012,
+ OPTnote = {Full version: \url{http://dl.dropbox.com/u/49753386/full.pdf}}
+}
+@unpublished{Birgisson:Hedin:Sabelfeld:TestingFull,
+ author =     "Arnar Birgisson and Daniel Hedin and Andrei Sabelfeld",
+ title =      "Boosting the Permissiveness of Dynamic Information-Flow Tracking by Testing (full version)",
+ month =      jun,
+ year =       2012,
+ note =       "\url{http://www.hvergi.net/arnar/publications/pdf/testing-full.pdf}"
+}
+
+
+
+@inproceedings{zeldovich2006making,
+  title={Making information flow explicit in HiStar},
+  author={Zeldovich, N. and Boyd-Wickizer, S. and Kohler, E. and Mazi{\`e}res, D.},
+  booktitle={Proceedings of the 7th USENIX Symposium on Operating Systems Design and Implementation},
+  pages={19--19},
+  year={2006}
+}
+
+@misc{chengabstractions,
+  title={Abstractions for usable information flow control in Aeolus},
+  author={Cheng, W. and Ports, D.R.K. and Schultz, D. and Popic, V. and Blankstein, A. and Cowling, J. and Curtis, D. and Shrira, L. and Liskov, B.},
+  booktitle={Proceedings of the 2012 USENIX Annual Technical Conference},
+  year={1012}
+}
+
+@inproceedings{stefan2011flexible,
+  title={Flexible dynamic information flow control in Haskell},
+  author={Stefan, D. and Russo, A. and Mitchell, J.C. and Mazi{\`e}res, D.},
+  booktitle={Proceedings of the 4th ACM symposium on Haskell},
+  pages={95--106},
+  year={2011},
+  organization={ACM}
+}
+ 
+@Inproceedings{Kang+:NDSS11,
+  author = {M. G. Kang and S. McCamant and P. Poosankam and D. Song},
+  title = {{DTA}++: Dynamic Taint Analysis with Targeted Control-Flow Propagation},
+  booktitle = NDSS,
+  year = 2011,
+  month = feb
+}
+
+@inproceedings{DBLP:conf/sp/MayerM12,
+  author    = {Jonathan R. Mayer and
+               John C. Mitchell},
+  title     = {Third-Party Web Tracking: Policy and Technology},
+  booktitle = {IEEE Symposium on Security and Privacy},
+  year      = {2012},
+  pages     = {413-427},
+  ee        = {http://doi.ieeecomputersociety.org/10.1109/SP.2012.47},
+  crossref  = {DBLP:conf/sp/2012},
+  bibsource = {DBLP, http://dblp.uni-trier.de}
+}
+@proceedings{DBLP:conf/sp/2012,
+  title     = {IEEE Symposium on Security and Privacy, SP 2012, 21-23 May
+               2012, San Francisco, California, USA},
+  booktitle = {IEEE Symposium on Security and Privacy},
+  publisher = {IEEE Computer Society},
+  year      = {2012},
+  isbn      = {978-0-7695-4681-0},
+  ee        = {http://ieeexplore.ieee.org/xpl/mostRecentIssue.jsp?punumber=6233637},
+  bibsource = {DBLP, http://dblp.uni-trier.de}
+}
+
+
+@inproceedings{Yip:Narula:Krohn:Morris:EUROSYS09,
+  author = {Yip, Alexander and Narula, Neha and Krohn, Maxwell and Morris, Robert},
+  title = {Privacy-preserving browser-side scripting with BFlow},
+  booktitle = {EuroSys '09: Proceedings of the 4th ACM European conference on Computer systems},
+  year = {2009},
+  isbn = {978-1-60558-482-9},
+  pages = {233--246},
+  location = {Nuremberg, Germany},
+  doi = {http://doi.acm.org/10.1145/1519065.1519091},
+  publisher = {ACM},
+  address = {New York, NY, USA},
+}
+
+@article{DBLP:journals/cacm/BandhakaviTPKMW11,
+  author    = {Sruthi Bandhakavi and
+               Nandit Tiku and
+               Wyatt Pittman and
+               Samuel T. King and
+               P. Madhusudan and
+               Marianne Winslett},
+  title     = {Vetting browser extensions for security vulnerabilities
+               with VEX},
+  journal   = {Commun. ACM},
+  volume    = {54},
+  number    = {9},
+  year      = {2011},
+  pages     = {91-99},
+  ee        = {http://doi.acm.org/10.1145/1995376.1995398},
+  bibsource = {DBLP, http://dblp.uni-trier.de}
+}
+
+@inproceedings{DBLP:conf/acsac/DhawanG09,
+  author    = {Mohan Dhawan and
+               Vinod Ganapathy},
+  title     = {Analyzing Information Flow in JavaScript-Based Browser Extensions},
+  booktitle = {ACSAC},
+  year      = {2009},
+  pages     = {382-391},
+  ee        = {http://doi.ieeecomputersociety.org/10.1109/ACSAC.2009.43},
+  crossref  = {DBLP:conf/acsac/2009},
+  bibsource = {DBLP, http://dblp.uni-trier.de}
+}
+@proceedings{DBLP:conf/acsac/2009,
+  title     = {Twenty-Fifth Annual Computer Security Applications Conference,
+               ACSAC 2009, Honolulu, Hawaii, 7-11 December 2009},
+  booktitle = {ACSAC},
+  publisher = {IEEE Computer Society},
+  year      = {2009},
+  isbn      = {978-0-7695-3919-5},
+  bibsource = {DBLP, http://dblp.uni-trier.de}
+}
+@InProceedings{DeGroef+:CCS12,
+  author = 	 "W. De Groef and D. Devriese and N. Nikiforakis and F. Piessens",
+  title = 	 "FlowFox: a web browser with flexible and precise information flow control",
+  OPTcrossref =  "",
   OPTkey = 	 "",
-  booktitle = "Collaboration, Electronic messaging, Anti-Abuse and Spam Conference",
+  booktitle = CCS,
+  OPTpages = 	 "",
+  year = 	 2012,
   OPTeditor = 	 "",
   OPTvolume = 	 "",
   OPTnumber = 	 "",
   OPTseries = 	 "",
   OPTaddress = 	 "",
-  month = 	 jul,
+  month = 	 oct,
   OPTorganization = "",
   OPTpublisher = "",
   OPTnote = 	 "",
   OPTannote = 	 ""
 }
-@Misc{OWASP:Top10:2010,
-  author         = "J. Williams and D. Wichers",
-  Title          = "{OWASP Top} 10 2010",
-  HowPublished   = {\url{http://www.owasp.org/index.php/Top\_10\_2010}},
-  year           = 2010
+@inproceedings{DBLP:conf/issta/GuarnieriPTDTB11,
+  author    = {Salvatore Guarnieri and
+               Marco Pistoia and
+               Omer Tripp and
+               Julian Dolby and
+               Stephen Teilhet and
+               Ryan Berg},
+  title     = {Saving the world wide web from vulnerable {JavaScript}},
+  booktitle = {ISSTA},
+  year      = {2011},
+  pages     = {177-187},
+  ee        = {http://doi.acm.org/10.1145/2001420.2001442},
+  crossref  = {DBLP:conf/issta/2011},
+  bibsource = {DBLP, http://dblp.uni-trier.de}
 }
-@Misc{XSSED,
-  author = "{XSSed Team}",
-  Title          = "{XSS Attacks Information}",
-  HowPublished   = {\url{http://www.xssed.com}},
-  year           = 2012
+@proceedings{DBLP:conf/issta/2011,
+  editor    = {Matthew B. Dwyer and
+               Frank Tip},
+  title     = {Proceedings of the 20th International Symposium on Software
+               Testing and Analysis, ISSTA 2011, Toronto, ON, Canada, July
+               17-21, 2011},
+  booktitle = {ISSTA},
+  publisher = {ACM},
+  year      = {2011},
+  isbn      = {978-1-4503-0562-4},
+  bibsource = {DBLP, http://dblp.uni-trier.de}
 }
-@misc{w3-cors,
-	author="{World Wide Web Consortium}",
-	title="{Cross-Origin Resource Sharing}",
-	organization="World Wide Web Consortium",
-	year=2012,
-	month=apr,
-	howpublished={\url{http://www.w3.org/TR/2012/WD-cors-20120403/}}
+
+@inproceedings{DBLP:conf/pldi/ChughMJL09,
+  author    = {Ravi Chugh and
+               Jeffrey A. Meister and
+               Ranjit Jhala and
+               Sorin Lerner},
+  title     = {Staged information flow for {JavasCript}},
+  booktitle = {PLDI},
+  year      = {2009},
+  pages     = {50-62},
+  ee        = {http://doi.acm.org/10.1145/1542476.1542483},
+  crossref  = {DBLP:conf/pldi/2009},
+  bibsource = {DBLP, http://dblp.uni-trier.de}
 }
-@Misc{SANS09,
-  Author         = "{SANS (SysAdmin, Audit, Network, Security) Institute}",
-  Title          = "The Top Cyber Security Risks",
-  HowPublished   = "\url{http://www.sans.org}",
-  month           = sep,
-  year           = 2009
+@proceedings{DBLP:conf/pldi/2009,
+  editor    = {Michael Hind and
+               Amer Diwan},
+  title     = {Proceedings of the 2009 ACM SIGPLAN Conference on Programming
+               Language Design and Implementation, PLDI 2009, Dublin, Ireland,
+               June 15-21, 2009},
+  booktitle = {PLDI},
+  publisher = {ACM},
+  year      = {2009},
+  isbn      = {978-1-60558-392-1},
+  bibsource = {DBLP, http://dblp.uni-trier.de}
 }
-@Misc{CSP1.0,
-  Author         = "B. Sterne and A. Barth",
-  Title          = "{Content Security Policy 1.0 (W3C Candidate Recommendation)}",
-  HowPublished   = "\url{http://www.w3.org/TR/CSP}",
-  month           = nov,
-  year           = 2012
-}
-@Misc{Test:Page:12,
-  OPTauthor = "",
-  key = "a",
-  Title          = "Test page for crossing origins by crossing formats",
-  HowPublished   = {\url{http://internot.noads.biz}},
-  month           = dec,
-  year           = 2012
-}
-@inproceedings{Sundareswaran:Squicciarini:SecureComm10,
- title     = {{DeCore: Detecting Content Repurposing Attacks on Clients' Systems}},
-  author = {Sundareswaran, S. and Squicciarini, A.},
-  booktitle = {Proc. SecureComm},
-  pages = {199--216},
-  publisher = SV,
-  OPTvolume = 50,
-  month = sep,
-  year = 2010
-}
-@inproceedings{Huang+:CCS10,
- author = {Huang, L.-S. and Weinberg, Z. and Evans, C. and Jackson, C.},
- title = {Protecting browsers from cross-origin CSS attacks},
+@inproceedings{Nikiforakis+:CCS12,
+ author = {Nikiforakis, Nick and Invernizzi, Luca and Kapravelos, Alexandros and Van Acker, Steven and Joosen, Wouter and Kruegel, Christopher and Piessens, Frank and Vigna, Giovanni},
+ title = {You are what you include: large-scale evaluation of remote javascript inclusions},
  booktitle = CCS,
- year = {2010},
- month= oct,
- OPTisbn = {978-1-4503-0245-6},
- OPTlocation = {Chicago, Illinois, USA},
- pages = {619--629},
- OPTnumpages = {11},
- OPTurl = {http://doi.acm.org/10.1145/1866307.1866376},
- OPTdoi = {10.1145/1866307.1866376},
- OPTacmid = {1866376},
+ year = {2012},
+ month = oct,
+ pages = {736--747},
+ OPTurl = {http://doi.acm.org/10.1145/2382196.2382274},
+ OPTdoi = {10.1145/2382196.2382274},
+ OPTacmid = {2382274},
  OPTpublisher = {ACM},
  OPTaddress = {New York, NY, USA},
- OPTkeywords = {CSS, content type, same-origin policy},
-} 
-@Misc{Wolf:CCC10,
-  OPTkey = 	 "",
-  author = "J. Wolf",
-  title = 	  	 {{OMG WTF PDF}},
-  howpublished = {{Presentation at the Chaos Computer Congress}},
-  month = 	 dec,
-  year = 	 2010,
-  OPTnote = 	 "",
-  OPTannote = 	 ""
-}
-@Misc{Brandis:GIFAR,
-  OPTkey = 	 "",
-  author = "R. Brandis",
-  title = 	  	 {{Exploring Below the Surface of the GIFAR Iceberg}},
-  howpublished = {{An EWA Australia Information Security Whitepaper}},
-  month = 	 feb,
-  year = 	 2009,
-  OPTnote = 	 "",
-  OPTannote = 	 ""
-}
-
-@Book{PDFAR:09,
-  author = 	 "N. Dhanjani and B. Hardin and B. Rios",
-  title = 	 {{Hacking: The Next Generation}},
-  publisher = 	 "O'Reilly Media",
-  year = 	 2009,
-  month = aug,
-  OPTkey = 	 "",
-  OPTvolume = 	 "",
-  OPTnumber = 	 "",
-  OPTseries = 	 "",
-  OPTaddress = 	 "",
-  OPTedition = 	 "",
-  OPTmonth = 	 "",
-  OPTnote = 	 "",
-  OPTannote = 	 ""
-}
-
-@inproceedings{Heiderich+:CCS11,
- author = {Heiderich, M. and Frosch, T. and Jensen, M. and Holz, T.},
- title = {Crouching tiger - hidden payload: security risks of scalable vectors graphics},
- booktitle = CCS,
- year = {2011},
- month = oct,
- pages = {239--250},
- OPTkeywords = {active image injections, browser security, cross site scripting, scalable vector graphics, web security},
 } 
 
-@Book{PDF:ISO08,
- title = {ISO 32000-1:2008 Document management - Portable document format},
- author = {Adobe Systems Incorporated},
- year = 2008
+@unpublished{JSFlow,
+ author =     "D. Hedin and A. Birgisson and L. Bello and A. Sabelfeld",
+ title =      {{JSFlow: a Security-enhanced JavaScript Interpreter in JavaScript}},
+ month =      feb,
+ year =       2013,
+ note =       "\url{http://www.hvergi.net/arnar/publications/pdf/jsflow.pdf}"
 }
+

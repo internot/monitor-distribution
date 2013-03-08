@@ -16,6 +16,8 @@
 
 \title{Architectures for Inlining Information-Flow Monitors in Web Applications}
 
+\author{Jonas Magazinius \and Daniel Hedin \and Andrei Sabelfeld}
+\institute{Chalmers University of Technology, Gothenburg, Sweden}
 %%%%%%%%%%%%%%%% Schedule %%%%%%%%%%%%%%%%%%%%%%%%
 \if 0
 March 28 - paper shipped
@@ -34,7 +36,26 @@ March 6 - most implementation done
 
 
 \begin{abstract}
-Various implementations of ways to distribute a monitor to the clients.
+Securing JavaScript in the browser is an open and challenging
+problem. Code from pervasive third-party JavaScript libraries exacerbates the
+problem because it is executed with the same privileges as the code
+that uses the libraries.
+%
+This paper focuses on securing JavaScript code by \emph{inlining}
+security checks in the code before it is executed. We present
+architectures for inlining security monitors for JavaScript: in
+the browser, as an HTTP proxy, and as a web proxy (service). 
+%
+These architectures offer great flexibility: they are parametric in the monitor itself,
+and they provide freedom in the choice of where the monitor
+injected, allowing to serve the interests of users, code developers, code
+integrators, and network administrators.
+%
+A key ingredient to open up for such flexibility is security monitoring in the form of a
+security monitor for JavaScript, written itself in JavaScript.
+%
+Our case studies demonstrate successful deployment of an JavaScript
+information-flow monitor with all three architectures.
 \end{abstract}
 
 
@@ -183,7 +204,7 @@ Describe features and drawbacks with each implementation.
 \subsection{Browser extension}
 %
 \todo{Daniel: Some reiteration here, but I don't see a way around it} The
-monitor we make use of in this work is JSFlow~\cite{}. JSFlow is bundled
+monitor we make use of in this work is JSFlow~\cite{JSFLow}. JSFlow is bundled
 together with a Firefox extension based on Zaphod~\cite{Zaphod}. The extension
 works by turning off the standard execution engine for JavaScript, and hooking
 itself to the appropriate page events. There are a number of challenges

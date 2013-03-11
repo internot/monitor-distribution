@@ -278,14 +278,6 @@ For each deployment option, we first describe how it is implemented,
 discuss the relative pros and cons, and show how the integrity of the monitor
 and complete mediation are achieved.
 
-% Implementation details
-
-
-On the positive side it should be mentioned that otherwise challenging features
-like \emph{innerHTML} are essentially for free for extension based deployment.
-
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Browser extension}
@@ -358,6 +350,10 @@ page.
 \todo{Jonas: Might not need to say anything. It is in relation to the other approaches 
 which has to identify and rewrite all the contexts that can execute JS, since the 
 extension replaces the JS engine for all contexts, you can't sneak code passed the monitor. Also relates to what you wrote about innerHTML.}
+
+\paragraph{Integrity}
+
+\paragraph{Complete mediation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

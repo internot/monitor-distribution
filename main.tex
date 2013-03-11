@@ -82,7 +82,7 @@ information-flow monitor with all three architectures.
 When introducing reference monitoring, Anderson~\cite{Anderson:72}
 identifies the following requirements:
 \begin{itemize}
-\item \emph{monitor integrity}: the monitor must be \emph{tamper-proof},
+\item \emph{monitor integrity}: the monitor must be tamperproof,
 \item \emph{complete mediation}: the monitor must be always invoked, and
 \item \emph{soundness}: the monitor must enforce the desired
   security policy.
@@ -436,7 +436,45 @@ The features of wildcard certificates is that the user can browse HTTPS pages. T
 \section{Related work}
 \label{sec:related}
 
-Inlining Erlingsson-Schneider 1990.
+Anderson~\cite{Anderson:72}
+
+Erlingsson and Schneider~\cite{DBLP:conf/nspw/ErlingssonS99}
+
+Language-based information-flow security encompasses a large body of
+work, see an overview~\cite{Sabelfeld:Myers:JSAC}. We briefly
+discuss inlining, followed by a consideration of most related work: on
+formalizations of purely dynamic and hybrid monitors for information flow.
+
+Inlined reference monitoring~\cite{Erlingsson:PhD04} is a mainstream
+technique for enforcing safety properties. 
+A prominent example in the context of the web is
+BrowserShield~\cite{Reis+:TWeb07} that instruments scripts with
+checks for known vulnerabilities.
+The focus of this paper is on inlining for information-flow security. Information flow is not
+a safety property~\cite{McLean:SSP94}, but can be approximated by
+safety properties
+(e.g.,~\cite{Boudol:FAST08,Sabelfeld:Russo:PSI09,Austin:Flanagan:PLAS09}),
+just like it is approximated in this paper (see the remark at the end of Section~\ref{sec:intro}).
+
+Chudnov and
+Naumann~\cite{Chudnov:Naumann:CSF10} have investigated an inlining
+approach to monitoring information flow. They inline a flow-sensitive
+hybrid monitor by Russo and
+Sabelfeld~\cite{Russo:Sabelfeld:CSF10}. The soundness of the inlined
+monitor is ensured by bisimulation of the inlined monitor and the
+original monitor.
+
+Ligatti et al. \cite{Ligatti05editautomata:} present a 
+general framework for security policies that can
+be enforced by monitoring and modifying programs at runtime. 
+They introduce \emph{edit automata} that enable
+monitors to stop, suppress, and modify the behavior of programs. 
+
+Magazinius et al.~\cite{DBLP:conf/nordsec/MagaziniusPS10}
+
+Magazinius et al.~\cite{DBLP:journals/compsec/MagaziniusRS12}
+
+Dam et al.~\cite{DBLP:conf/ecoop/DamJLP09,DBLP:journals/jcs/DamJLP10,DBLP:conf/ccs/DamGL12}
 
 %1 page 
 \section{Conclusions}

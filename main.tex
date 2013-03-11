@@ -109,14 +109,6 @@ This section presents the different architectures for inlining
 security monitors. We motivate each architecture by scenarios of
 intended usage and describe the details of the architectures.
 
-\todo{Jonas: Nowhere do we actually discuss the monitor or its implementation}
-\subsection{Monitor}
-\label{sec:monitor}
-The fact that the monitor is written in JavaScript unlocks a number of
-different deployment options. In particular it allows the monitor to be run as
-a browser extension, or as a part of the web page itself.  In this section we
-give an overview of the different available approaches, and discuss their
-relative strengths.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -130,41 +122,39 @@ coercion in expressions.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\todo{Andrei: Motivating scenarios first}
-\todo{Daniel: changed the name - plugins are things like Flash etc}
 \subsection{Browser extension}
-%
-Modern browsers allow the functionality of the browser to be enriched via
-\emph{extensions} typically written in JavaScript. This allows for the monitor
-to be executed as part of an extension, which in turn allows for the use of the
-monitor as the execution engine of web pages. The idea was pioneered by the
-Zaphod \cite{Zaphod} extension for Firefox. Zaphod turns off the
-standard JavaScript interpreter by disallowing JavaScript in the preferences
-and listening to the appropriate page load event. Once the event is received the
-page is traversed and all scripts are executed using the replacement engine,
-e.g., the monitor. 
 
-The main benefit of extensions is that once installed the engine is changed for
-all pages without further interaction needed from the user. 
-This deployment method gives the user direct control over what security
-policies to enforce on the browsed pages.
+A growing number of web pages provide not only content, but services to their
+users. In order to provide the service the provider requires the user to
+provide potentially sensitive information such as user credentials, and payment
+information. For such pages it is in the interest of the user that the
+sensitive information is only disclosed to the intended recipient.  Today, no
+browsers offer such guarantees. However, modern browsers allow the
+functionality of the browser to be enriched via \emph{extensions}. 
+
+By embedding the security monitor in an extension the browser can be modified
+to provide such guarantees. The main benefit of this approach is that the
+monitor provides guarantees for all pages. Further, this deployment method
+gives the user direct control over what security policies to enforce on the
+browsed pages.
 
 \todo{Andrei: the following paragraph has two problems. First, it
   talks about information-flow control - but we want to stay general
   and only use information-flow control in examples. Second, of course
 the monitor is a part of the TCB, which is true for all deployment
 options. Why bring it up here?}
-However, the
-installation requirement is also the method's main disadvantage. Not only is
-the extension browser specific and require the user to download, install and
-setup the extension, it also requires the user to trust the monitor beyond
-providing information flow control. In order to be able to enrich the
+\todo{Daniel: Rewrote - why? There is a difference due to the elevated privilege; in the
+  other cases a faulty monitor might leak inforamtion - in this case a faulty
+  monitor might joepardize the computer}
+
+However, the installation requirement is also the method's main disadvantage.
+Not only is the extension browser specific and require the user to download,
+install and setup the extension, it also requires that we trust the monitor to
+run with elevated privileges --- in order to be able to enrich the
 functionality of the browser the extensions run with the same privileges as the
-browser. By allowing the monitor to run as part of an extension we allow it to
-run with elevated privileges. Thus, we must trust the monitor not only to
-provide information flow control, but not allow for the interpreted code to
-exploit the privileges of the monitor. In the extension scenario, a breach of
-the monitor puts more than the information-flow control at stake.
+browser. Compared to the other methods of deployment this means that a faulty
+monitor not only jeopardizes the property enforced by the monitor, but might
+jeopardize the integrity of the entire browser.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -289,22 +279,31 @@ discuss the relative pros and cons, and show how the integrity of the monitor
 and complete mediation are achieved.
 
 % Implementation details
-\subsection{Monitor}
-\todo{Jonas: I think we should have a separate subsection here, describing the monitor and why/how it can be reused in all of the implementations}
+
+
+On the positive side it should be mentioned that otherwise challenging features
+like \emph{innerHTML} are essentially for free for extension based deployment.
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Browser extension}
-\todo{Do we need to mention JSFlow here? The idea is to focus on how
-  the monitor is injected in this deployment, and not to describe the
-  monitor itself.}
-%
-\todo{Daniel: Some reiteration here, but I don't see a way around it} The
-monitor we make use of in this work is JSFlow~\cite{JSFLow}. JSFlow is bundled
-together with a Firefox extension based on Zaphod~\cite{Zaphod}. The extension
-works by turning off the standard execution engine for JavaScript, and hooking
-itself to the appropriate page events. We have resolved a number of challenges
-pertaining to the implementation of the extension.
+
+Modern browsers allow the functionality of the browser to be enriched via
+\emph{extensions}. The extensions are typically written in JavaScript.  
+Monitors written in JavaScript can easily be embedded in extensions
+
+\todo{Daniel: the rest of this section talks about monitors that are actually interpreters}
+
+The method works by turning off the standard execution engine for JavaScripta
+by disallowing JavaScript in the preferences and listening to the appropriate
+page load event. Once the event is received the page is traversed and all
+scripts are executed using the replacement engine, i.e., the monitor. This
+method was pioneered by the Zaphod \cite{Zaphod} extension for Firefox.
+
+We have resolved a number of challenges pertaining to the implementation of the
+extension.
 
 \paragraph{Execution time}
 
@@ -340,24 +339,6 @@ it is mostly used to inject scripts into the page while the page is loading. It
 is fairly easy to identify such use of \emph{document.write} and provide
 support for this use.
 
-
-\paragraph{Browser specifics}
-
-\todo{Daniel: this is actually true regardless of deployment method - should we be more open with that?}
-
-\todo{Jonas: Yes, I think so. This is a challenge of the monitor itself and it would make sense to move it to a general section about the monitor we use.}
-
-Browser extensions are inherently browser specific. In addition, while the
-execution environment provided by different browsers are mostly standard
-compliant there are small deviations. Such deviations must be reflected in 
-the monitor, which, to a certain extend, makes the monitor browser specific.
-One solution in to have the monitor detect its execution environment
-and adapt accordingly. While possible, it is a big undertaking to support
-a wide selection of (versions of) browsers.
-
-
-On the positive side it should be mentioned that otherwise challenging features
-like \emph{innerHTML} are essentially for free for extension based deployment.
 
 \todo{Daniel: crosslink with other deployment methods?} \paragraph{innerHTML}
 %
@@ -425,6 +406,17 @@ The features of wildcard certificates is that the user can browse HTTPS pages. T
 % 2-3 pages 
 \section{Case study}
 \label{sec:case}
+
+\todo{Daniel: moved here - it's only here we talk about specifics}
+\todo{Jonas: I think we should have a separate subsection here, describing the monitor and why/how it can be reused in all of the implementations}
+
+In addition, while the
+execution environment provided by different browsers are mostly standard
+compliant there are small deviations. Such deviations must be reflected in 
+the monitor, which, to a certain extend, makes the monitor browser specific.
+One solution in to have the monitor detect its execution environment
+and adapt accordingly. While possible, it is a big undertaking to support
+a wide selection of (versions of) browsers.
 
 \begin{itemize}
 \item- mlcalc.com

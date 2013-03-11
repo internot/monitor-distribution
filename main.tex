@@ -24,7 +24,8 @@ March 28 - paper shipped
 March 27 - final polish
 March 20 - mashup and case studies + intro and conclusions
 March 13 - architecture and implementation done + related work
-March 6 - most implementation done
+March 12 - implementation half-way
+March 11 - architecture
 \fi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -78,8 +79,24 @@ information-flow monitor with all three architectures.
 
 \todo{Daniel: I assume that we give a description on IF and monitors for IF in general in this section}
 
+When introducing reference monitoring, Anderson~\cite{Anderson:72}
+identifies the following requirements:
+\begin{itemize}
+\item \emph{monitor integrity}: the monitor must be \emph{tamper-proof},
+\item \emph{complete mediation}: the monitor must be always invoked, and
+\item \emph{soundness}: the monitor must enforce the desired
+  security policy.
+\end{itemize}
+In addition, requirements of \emph{conservativeness} and
+\emph{transparency} are often in place for reference monitors to
+ensure that no new behaviors are added or removed by monitors when the
+original program is secure in the first place.
+
+This paper proceeds as follows. Section~
+
+
 % 1 pages
-\section{Mashups}
+\section{Third-party code integration}
 \label{sec:mash}
 
 Describe mashups, difficulties in mashup security and information flows in mashups.
@@ -87,6 +104,10 @@ Describe mashups, difficulties in mashup security and information flows in mashu
 % 2-3 pages 
 \section{Architecture}
 \label{sec:arch}
+
+This section presents the different architectures for inlining
+security monitors. We motivate each architecture by scenarios of
+intended usage and describe the details of the architectures.
 
 \todo{Jonas: Nowhere do we actually discuss the monitor or its implementation}
 \subsection{Monitor}
@@ -99,6 +120,7 @@ relative strengths.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\todo{Andrei: move to case studies}
 \subsection{Shadowing}
 \todo{Daniel: me must make sure to differentiate between the inlining ala older papers and the inlining we do here.}
 
@@ -108,6 +130,7 @@ coercion in expressions.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\todo{Andrei: Motivating scenarios first}
 \todo{Daniel: changed the name - plugins are things like Flash etc}
 \subsection{Browser extension}
 %
@@ -115,14 +138,23 @@ Modern browsers allow the functionality of the browser to be enriched via
 \emph{extensions} typically written in JavaScript. This allows for the monitor
 to be executed as part of an extension, which in turn allows for the use of the
 monitor as the execution engine of web pages. The idea was pioneered by the
-Zaphod\cite{Zaphod} extension for Firefox.  The basic idea is to turn of the
+Zaphod \cite{Zaphod} extension for Firefox. Zaphod turns off the
 standard JavaScript interpreter by disallowing JavaScript in the preferences
-and listen to the appropriate page load event. Once the event is received the
+and listening to the appropriate page load event. Once the event is received the
 page is traversed and all scripts are executed using the replacement engine,
 e.g., the monitor. 
 
 The main benefit of extensions is that once installed the engine is changed for
-all pages without further interaction needed from the user. However, the
+all pages without further interaction needed from the user. 
+This deployment method gives the user direct control over what security
+policies to enforce on the browsed pages.
+
+\todo{Andrei: the following paragraph has two problems. First, it
+  talks about information-flow control - but we want to stay general
+  and only use information-flow control in examples. Second, of course
+the monitor is a part of the TCB, which is true for all deployment
+options. Why bring it up here?}
+However, the
 installation requirement is also the method's main disadvantage. Not only is
 the extension browser specific and require the user to download, install and
 setup the extension, it also requires the user to trust the monitor beyond
@@ -251,7 +283,10 @@ run within the monitor. (Don't mention sandbox.) You're done.
 \section{Implementation}
 \label{sec:impl}
 
-Describe features and drawbacks with each implementation.
+%Describe features and drawbacks with each implementation.
+For each deployment option, we first describe how it is implemented,
+discuss the relative pros and cons, and show how the integrity of the monitor
+and complete mediation are achieved.
 
 % Implementation details
 \subsection{Monitor}
@@ -260,12 +295,15 @@ Describe features and drawbacks with each implementation.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Browser extension}
+\todo{Do we need to mention JSFlow here? The idea is to focus on how
+  the monitor is injected in this deployment, and not to describe the
+  monitor itself.}
 %
 \todo{Daniel: Some reiteration here, but I don't see a way around it} The
 monitor we make use of in this work is JSFlow~\cite{JSFLow}. JSFlow is bundled
 together with a Firefox extension based on Zaphod~\cite{Zaphod}. The extension
 works by turning off the standard execution engine for JavaScript, and hooking
-itself to the appropriate page events. There are a number of challenges
+itself to the appropriate page events. We have resolved a number of challenges
 pertaining to the implementation of the extension.
 
 \paragraph{Execution time}

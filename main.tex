@@ -105,6 +105,7 @@ Describe mashups, difficulties in mashup security and information flows in mashu
 \section{Architecture}
 \label{sec:arch}
 
+\todo{Daniel: may I suggest we add pros and cons}
 This section presents the different architectures for inlining
 security monitors. We motivate each architecture by scenarios of
 intended usage and describe the details of the architectures.
@@ -273,6 +274,7 @@ run within the monitor. (Don't mention sandbox.) You're done.
 \section{Implementation}
 \label{sec:impl}
 
+\todo{Daniel: may I suggest we replace the pros and cons with implementation challenges}
 %Describe features and drawbacks with each implementation.
 For each deployment option, we first describe how it is implemented,
 discuss the relative pros and cons, and show how the integrity of the monitor
@@ -288,7 +290,7 @@ Monitors written in JavaScript can easily be embedded in extensions
 
 \todo{Daniel: the rest of this section talks about monitors that are actually interpreters}
 
-The method works by turning off the standard execution engine for JavaScripta
+The method works by turning off the standard execution engine for JavaScript
 by disallowing JavaScript in the preferences and listening to the appropriate
 page load event. Once the event is received the page is traversed and all
 scripts are executed using the replacement engine, i.e., the monitor. This
@@ -351,9 +353,17 @@ page.
 which has to identify and rewrite all the contexts that can execute JS, since the 
 extension replaces the JS engine for all contexts, you can't sneak code passed the monitor. Also relates to what you wrote about innerHTML.}
 
-\paragraph{Integrity}
+\paragraph{Integrity} The integrity of the method is guaranteed by virtue of
+the fact that the JavaScript engine is turned off and all scripts are
+interpreted by the monitor. Hence, the scripts are not active; rather, they are
+passed as data to the monitor, and are only able to influence the execution
+environment implemented by the monitor, and not the general execution
+environment of the monitor itself.
 
 \paragraph{Complete mediation}
+
+Since all scripts are executed by the monitor complete mediation is inherited 
+from the monitor.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

@@ -46,15 +46,17 @@ security checks in the code before it is executed. We present
 architectures for inlining security monitors for JavaScript: in
 the browser, as an HTTP proxy, and as a web proxy (service). 
 %
+\todo{Jonas: The use of HTTP proxy/web proxy/suffix proxy is still under consideration (by me), and we'll need to discuss and update this to reflect that.}
+%
 These architectures offer great flexibility: they are parametric in the monitor itself,
-and they provide freedom in the choice of where the monitor
+and they provide freedom in the choice of where the monitor is
 injected, allowing to serve the interests of users, code developers, code
 integrators, and network administrators.
 %
 A key ingredient to open up for such flexibility is security monitoring in the form of a
 security monitor for JavaScript, written itself in JavaScript.
 %
-Our case studies demonstrate successful deployment of an JavaScript
+Our case studies demonstrate successful deployment of a JavaScript
 information-flow monitor with all three architectures.
 \end{abstract}
 
@@ -87,7 +89,8 @@ Describe mashups, difficulties in mashup security and information flows in mashu
 \label{sec:arch}
 
 \todo{Jonas: Nowhere do we actually discuss the monitor or its implementation}
-
+\subsection{Monitor}
+\label{sec:monitor}
 The fact that the monitor is written in JavaScript unlocks a number of
 different deployment options. In particular it allows the monitor to be run as
 a browser extension, or as a part of the web page itself.  In this section we
@@ -129,51 +132,106 @@ browser. By allowing the monitor to run as part of an extension we allow it to
 run with elevated privileges. Thus, we must trust the monitor not only to
 provide information flow control, but not allow for the interpreted code to
 exploit the privileges of the monitor. In the extension scenario, a breach of
-the monitor puts more than the information flow control at stake.
+the monitor puts more than the information-flow control at stake.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{HTTP proxy}
-
-Proxy injects monitor into every page and wraps all JavaScript. Setup the proxy 
-and you're done.
-\begin{itemize}
-\item- Practically the same monitor as the plugin
-\item- Browser independent
-\item- Less intrusive to the browser, simple proxy setup
-\item- Less cumbersome to setup
-\item- Server-side configuration
-\item- General, every browsed page
-\end{itemize}
-
 \subsection{Web proxy}
 
-Service injects browsed pages with the monitor and references to itself, and 
-wraps all JavaScript. Browse through service and you're done.
 \begin{itemize}
-\item- More intrusive in HTML content, rewrite links and external references 
-\item- Browser independent
-\item- Not intrusive to the browser
-\item- Even less cumbersome to setup, browse to server URL
-\item- Server-side and client-side configuration possible
-\item- Less general, only browsed pages
+%\item- Practically the same monitor as the plugin
+%\item- Browser independent
+%\item- Less intrusive to the browser, simple proxy setup
+%\item- Less cumbersome to setup
+\item Server-side configuration? So far we have not discussed configuration.
+%\item- General, every browsed page
+\end{itemize}
+
+A proxy specific to relaying HTTP requests is often referred to as a web proxy.
+A web proxy is a convenient way to include the monitor in browsed pages without 
+modifying the browser. The client configures the browser to relay 
+all requests through the proxy, and the proxy rewrites the responses to include 
+the monitor. The main benefits of a web proxy compared to a browser 
+extension are that it requires 
+minimal configuration to set up and does not intrude in the browser. However, there 
+are certain drawbacks as well. 
+%
+As an example, any JavaScript code executed outside of the monitor can affect 
+the monitor state. Therefore, in order to protect the integrity of the monitor, all 
+script code in a page must be executed within the monitor. Whereas a 
+browser extension captures execution of all scripts by replacing the JavaScript 
+engine of the browser, a web proxy must identify all contexts in which JavaScript 
+can be executed and rewrite them to direct execution to the monitor.
+
+The design of the monitor allows us to reuse the monitor code used in the 
+browser extension, with barely any modifications. The modifications required 
+are again related to execution contexts. Various browser features, such as 
+\emph{document.write} and \emph{innerHTML}, allow an arbitrary string to be 
+interpreted and rendered as HTML. Any scripts present in the string will be 
+executed upon interpretation. The monitor must account for this and rewrite 
+the string to direct execution to the monitor.
+
+A web proxy in itself is browser independent, but as it relies on the monitor, 
+this is difficult to achieve in practice, as discussed in Section~\ref{sec:monitor}.
+\todo{Jonas: Need to actually discuss why it is difficult to make the monitor browser independent in the new section about the monitor}
+
+
+\paragraph{Suffix proxy}
+\todo{Jonas: Just found out that the "service" we developed is actually a suffix proxy, which actually could have been implemented in a simpler way using .htaccess request rewriting. Also found a way to redirect all ports to a single port using iptables. Perfect solution.}
+\begin{itemize}
+%\item What is a web proxy
+%\item How can a web proxy help in distributing the monitor
+%\item 
+%\item Delivering the associated cookies?
+%\item Same-origin policy in respect to different design choices
+%\item More intrusive in HTML content, rewrite links and external references 
+%\item Browser independent? Depends on the monitor
+%\item Not intrusive to the browser
+%\item Even less cumbersome to setup, browse to server URL
+\item Server-side and client-side configuration possible?
+%\item Less general, only browsed pages
 \end{itemize}
 
 
-A \emph{web proxy} is essentially a web application that allow a user to relay requests, 
-through the web application, to other web pages. The difference compared to an 
-HTTP proxy is that it does not require the user to configure the browser to use a 
-proxy. Typically, the user navigates to the web application and enters the URL in 
+A \emph{suffix proxy} is special kind of web proxy that makes use of DNS wildcards to 
+relay requests, instead of the usual practice of configuring the browser.
+To direct the request to the proxy, the user appends the domain name of the 
+proxy to the target domain. The suffix proxy is set up such
+that all requests to any sub-domain of the proxy domain is directed to the proxy domain, 
+e.g. in DNS terms \emph{*.proxy.domain}. 
+
+There are several differences between a suffix proxy compared to a traditional 
+web proxy. A suffix proxy lets the user decide which pages to proxy on a 
+per-domain basis, making it less general than a traditional proxy that covers 
+all requests. To accomplish this the domain of the original URL is modified.
+The consequence is twofold; the original URL and the modified URL are no longer 
+considered the same origin, and the domain of the proxy needs to 
+be inlined in all external requests. The first implies that all origin specific 
+information associated with the original domain, e.g. cookies and local storage, 
+are no longer associated with the modified domain, and vice versa. 
+
+
+\todo{same origin policy between pages from different original domains loaded through the monitor can be relaxed to the origin of the proxy and share information freely}
+
+
+
+
+
+The latter implies that apart from rewriting scripts within a page, all URLs to external resources, i.e., to origins outside the scope of the original origin, must be rewritten to include the domain of the proxy. This ensures that all resources associated with the page are loaded through the proxy.
+
+Also, it does not require any configuration and leaves the browser 
+completely unchanged.
+
+\todo{Jonas: The following could be part of a scenario but does not fit well here \\
+Typically, the user navigates to the web application and enters the URL in 
 an input field. The URL is then sent to the server which in turn makes the request to the 
 target URL. To simplify further 
 browsing, the response is rewritten to inline the URL of the web proxy 
 into all outgoing references on the retrieved page; this way, when the user 
 follows a link on the page, the request will again be relayed the web proxy. 
-The modified response is returned to the user. 
-There are multiple ways a web proxy can be designed, and each design choice 
-has its benefits and drawbacks, especially with respect to the same origin policy.
-
-\paragraph{Target URL}
+The modified response is returned to the user. Rewriting makes the method more 
+intrusive to the HTML content, but less intrusive to the users browser.
+}
 
 \subsection{Integrator}
 
@@ -249,6 +307,8 @@ support for this use.
 
 \todo{Daniel: this is actually true regardless of deployment method - should we be more open with that?}
 
+\todo{Jonas: Yes, I think so. This is a challenge of the monitor itself and it would make sense to move it to a general section about the monitor we use.}
+
 Browser extensions are inherently browser specific. In addition, while the
 execution environment provided by different browsers are mostly standard
 compliant there are small deviations. Such deviations must be reflected in 
@@ -276,7 +336,9 @@ scripts can be dealt with in a manner analogous to the scripts on a loading
 page.
 
 \todo{Daniel: Don't really know what to say w.r.t. : execution contexts no problem (SVG and CSS uses native JavaScript)}
-\todo{Jonas: Might not need to say anything. It is in relation to the other approaches which has to identify and rewrite all the contexts that can execute JS, so that you can't sneak code passed the monitor.}
+\todo{Jonas: Might not need to say anything. It is in relation to the other approaches 
+which has to identify and rewrite all the contexts that can execute JS, since the 
+extension replaces the JS engine for all contexts, you can't sneak code passed the monitor. Also relates to what you wrote about innerHTML.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -294,13 +356,9 @@ page.
 \subsection{Web proxy (Service)}
 
 \begin{itemize}
-\item What is a web proxy
-\item How can a web proxy help in distributing the monitor
-\item 
-\item Delivering the associated cookies
-\item Same-origin policy in respect to different design choices
 \item rewrite all or some, can pass configuration through cookie
 \item piggybacking, wildcard DNS compared to URL parameter
+\item SSL? wildcard certificates? features and drawbacks 
 \item disable SOP, domain relaxing
 \item DOM parsing to find scripts, compared to regular expressions
 \item difficult to identify all contexts (SVG, CSS and PDF can be rewritten, not flash)
@@ -311,6 +369,8 @@ The web proxy was implemented in Node.js.
 
 There are different technical approaches to communicate the target URL to the web 
 proxy. The URL can either be sent as a parameter of the request, 
+
+The features of wildcard certificates is that the user can browse HTTPS pages. The drawback is that the user must fully trust that the monitor correctly verifies the signature of the page.
 
 \subsection{Integrator}
 

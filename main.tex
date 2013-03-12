@@ -152,14 +152,14 @@ jeopardize the integrity of the entire browser.
 
 \subsection{Web proxy}
 
-\begin{itemize}
+%\begin{itemize}
 %\item- Practically the same monitor as the plugin
 %\item- Browser independent
 %\item- Less intrusive to the browser, simple proxy setup
 %\item- Less cumbersome to setup
-\item Server-side configuration? So far we have not discussed configuration.
+%\item Server-side configuration? So far we have not discussed configuration.
 %\item- General, every browsed page
-\end{itemize}
+%\end{itemize}
 
 A proxy specific to relaying HTTP requests is often referred to as a web proxy.
 A web proxy is a convenient way to include the monitor in browsed pages without 
@@ -192,8 +192,8 @@ the string to direct execution to the monitor.
 
 
 \subsection{Suffix proxy}
-\todo{Jonas: Just found out that the "service" we developed is actually a suffix proxy, which actually could have been implemented in a simpler way using .htaccess request rewriting. Also found a way to redirect all ports to a single port using iptables. Perfect solution.}
-\begin{itemize}
+%\todo{Jonas: Just found out that the "service" we developed is actually a suffix proxy, which actually could have been implemented in a simpler way using .htaccess request rewriting. Also found a way to redirect all ports to a single port using iptables. Perfect solution.}
+%\begin{itemize}
 %\item What is a web proxy
 %\item How can a web proxy help in distributing the monitor
 %\item 
@@ -203,9 +203,9 @@ the string to direct execution to the monitor.
 %\item Browser independent? Depends on the monitor
 %\item Not intrusive to the browser
 %\item Even less cumbersome to setup, browse to server URL
-\item Server-side and client-side configuration possible?
+%\item Server-side and client-side configuration possible?
 %\item Less general, only browsed pages
-\end{itemize}
+%\end{itemize}
 
 
 A \emph{suffix proxy} is special kind of web proxy that makes use of DNS wildcards to 
@@ -221,7 +221,8 @@ relays the request to the target URL and the response is rewritten to include
 the monitor.
 
 There are several differences between a suffix proxy compared to a traditional 
-web proxy. A suffix proxy lets the user decide which pages to proxy on a 
+web proxy. One beneficial difference is that it does not require any configuration and leaves the browser 
+completely unchanged. Another difference is that the suffix proxy lets the user decide which pages to proxy on a 
 per-domain basis, making it more general than a traditional proxy that covers 
 all requests. To accomplish this the domain of the original URL is modified.
 The consequence is twofold; the original URL and the modified URL are no longer 
@@ -234,24 +235,39 @@ external resources, i.e., to origins outside the scope of the original origin,
 must be rewritten to include the domain of the proxy. This ensures that all 
 resources associated with the page are loaded through the proxy.
 
-\todo{deal with this sentence}
-Another benefit is that it does not require any configuration and leaves the browser 
-completely unchanged.
-
 
 
 \subsection{Integrator}
 
-The mashup integrator includes the monitor and decides which JavaScript should 
-run within the monitor. (Don't mention sandbox.) You're done.
-\begin{itemize}
-\item- No setup
-\item- Not intrusive to the browser
-\item- Not general
-\item- Deliberately intrusive to HTML
-\item- Integrator configuration, no user control
-\item- Run independent part of the code outside the monitor, possible performance gains
-\end{itemize}
+%The mashup integrator includes the monitor and decides which JavaScript should 
+%run within the monitor. (Don't mention sandbox.) You're done.
+%\begin{itemize}
+%\item- No setup
+%\item- Not intrusive to the browser
+%\item- Not general
+%\item- Deliberately intrusive to HTML
+%\item- Integrator configuration, no user control
+%\item- Run independent part of the code outside the monitor, possible performance gains
+%\end{itemize}
+
+Today web pages make extensive use of libraries to extend the functionality of 
+the web page. As the code is executed in the context of the web page, it can 
+access the content of the page. This requires that thecode integrator must 
+trust the library not to abuse this privilege. To a developer, an appealing alternative 
+is to run untrusted code monitored, while running trusted code outside of the 
+monitor. This can be achieved including the monitor in the page and loading the 
+third-party code through the suffix proxy. The suffix proxy will rewrite the 
+response to direct execution of the library to the monitor. This can also result in performance 
+gains compared to running all code monitored, since a monitor typically introduces 
+a runtime overhead. Compared to the suffix proxy, integrator driven monitor 
+inclusion is deliberately intrusive to the HTML code. Such specialized use of the suffix 
+proxy allows a developer to specify precisely which code will be subject to 
+monitoring, making the approach even more general. 
+
+This developer centric approach gives the developer full control over the 
+configuration of the monitor and the policies to enforce. To a user this 
+approach is not intrusive to the browser, requires no setup or configuration, 
+but also limits the users control. 
 
 
 % 4 pages 

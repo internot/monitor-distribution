@@ -149,10 +149,17 @@ always deployment method.
 A browser extension is a program that is installed into the browser in order to
 change or enrich the functionality of the browser.  The basic idea behind
 deploying via an extension is to replace the JavaScript engine with the monitor
---- recall that we consider only monitors that function as interpreters. The
-can be achieved by turning off the standard JavaScript engine, and have the
-extension traverse the page when loaded and execute the JavaScript scripts
-using the monitor.  This method was pioneered by Zaphod~\cite{Zaphod}, a
+--- recall that we consider only monitors that function as interpreters.
+%
+This can be achieved by turning off the standard JavaScript engine, and have
+the extension traverse the page when loaded and execute the JavaScript scripts
+using the monitor. 
+%
+Given that the monitor is written in the language used to implement the extensions
+embedding the monitor in an extension is a simple matter; for most browser
+the implementation language of extensions is JavaScript.
+
+This method was pioneered by Zaphod~\cite{Zaphod}, a
 FireFox extension, that replaces the standard JavaScript engine with the
 experimental Narcissus engine.
 
@@ -384,7 +391,8 @@ from the previous section.
 \subsection{Browser extension}
 
 Modern browsers allow the functionality of the browser to be enriched via
-\emph{extensions}. The extensions are typically written in JavaScript.  
+\emph{extensions}.Given that
+the security monitor is wrttien
 Monitors written in JavaScript can easily be embedded in extensions
 
 \todo{Daniel: the rest of this section talks about monitors that are actually interpreters}

@@ -191,7 +191,7 @@ the string to direct execution to the monitor.
 
 
 
-\subsection{Suffix proxy}
+\subsection{Suffix proxy (service)}
 %\todo{Jonas: Just found out that the "service" we developed is actually a suffix proxy, which actually could have been implemented in a simpler way using .htaccess request rewriting. Also found a way to redirect all ports to a single port using iptables. Perfect solution.}
 %\begin{itemize}
 %\item What is a web proxy
@@ -367,28 +367,68 @@ from the monitor.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{HTTP Proxy}
+\subsection{Web proxy}
 
 \begin{itemize}
-\item- Proxy implemented in NodeJS
-\item- rewrite all or nothing, problem with passing configuration to proxy
-\item- DOM parsing to find scripts, compared to regular expressions
-\item- difficult to identify all contexts (SVG, CSS and PDF can be rewritten, not flash)
-\end{itemize}
-
-
-
-\subsection{Web proxy (Service)}
-
-\begin{itemize}
-\item rewrite all or some, can pass configuration through cookie
-\item piggybacking, wildcard DNS compared to URL parameter
-\item SSL? wildcard certificates? features and drawbacks 
-\item disable SOP, domain relaxing
+\item Proxy implemented in NodeJS
+%\item- rewrite all or nothing, problem with passing configuration to proxy
 \item DOM parsing to find scripts, compared to regular expressions
 \item difficult to identify all contexts (SVG, CSS and PDF can be rewritten, not flash)
+\item rewriting of JavaScript
 \end{itemize}
 
+All modern browsers support the use of web proxies to relay requests.
+The use of a web proxy allow all outgoing HTTP requests to be 
+relayed through the proxy server. The web proxy will act as a middle-man and make 
+the request on behalf of the client. In the process it can modify both the 
+request and the response. 
+
+As a monitor deployment method the opportunity to rewrite the response is 
+of interest. \todo{Jonas: bla bla, extend}
+
+As opposed to a browser extension, which replaces the JavaScript engine, the 
+monitor is executed in the context of the page it is included in. Naturally 
+this is the same execution context in which all scripts that bundled with the 
+page are executed. To protect the integrity of the monitor, all inline and 
+external scripts must be rewritten to ensure that it is instead executed within the 
+monitored execution context.
+
+In the web proxy different rewriting rules apply depending on whether the 
+requested content is HTML or JavaScript. 
+
+\paragraph{Rewriting HTML}
+For HTML the web proxy has to  identify all occurences of inline JavaScript, 
+both script-tags and inline event handlers.
+Due to browsers error tolerant parsing of HTML-code, meaning that the browser will make a best-effort attempt to make sense of malformed fragments of HTML,
+simple search and replace is not satisfactory. It would require the search algorithm to account for 
+As an example it is not regular expressions 
+Instead, a DOM-parser is utilized 
+to parse the page to a DOM-tree. This implies that the web proxy will consume more resources, but allows for simple location of inline script code.
+Because all instances of script code will reference the monitor, the monitor must be added as the first script to be executed.
+
+
+\paragraph{Rewriting JavaScript}
+
+\subsection{Suffix proxy (service)}
+
+\begin{itemize}
+%\item rewrite all or some, can pass configuration through cookie
+\item piggybacking, wildcard DNS
+\item SSL? wildcard certificates? features and drawbacks 
+\item disable SOP, domain relaxing?
+\item DOM parsing to find scripts, compared to regular expressions
+\item difficult to identify all contexts (SVG, CSS and PDF can be rewritten, not flash)
+\item non-standard ports by forwarding all ports to one
+\end{itemize}
+
+
+\paragraph{Additional rewriting of HTML}
+Since the suffix proxy is referenced by a different domain name than the target 
+domain, additional rewriting is required. Apart from the rewriting of inline 
+scripts and event handlers done in the web proxy, the suffix proxy must 
+identify and rewrite the domain of all references to external HTML and 
+JavaScript resources. Failing to do so, will load script code outside the 
+context of the monitor, which would compromise the integrity of the monitor.
 
 The web proxy was implemented in Node.js. 
 

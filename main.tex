@@ -161,6 +161,9 @@ jeopardize the integrity of the entire browser.
 %\item- General, every browsed page
 %\end{itemize}
 
+\todo{users or in a corporate environment}
+
+\paragraph{Description}
 A proxy specific to relaying HTTP requests is often referred to as a web proxy.
 A web proxy is a convenient way to include the monitor in browsed pages without 
 modifying the browser. The browser is configured to relay 
@@ -173,7 +176,7 @@ a web proxy compared to a browser extension are that it is browser independent, 
 minimal configuration to set up and does not intrude in the browser. However, there 
 are certain drawbacks as well. 
 %
-As an example, any JavaScript code executed outside of the monitor can affect 
+\paragraph{Security considerations}As an example, any JavaScript code executed outside of the monitor can affect 
 the monitor state. Therefore, in order to protect the integrity of the monitor, all 
 script code in a page must be executed within the monitor. Whereas a 
 browser extension captures execution of all scripts by replacing the JavaScript 
@@ -189,7 +192,7 @@ interpreted and rendered as HTML. Any scripts present in the string will be
 executed upon interpretation. The monitor must account for this and again rewrite 
 the string to direct execution to the monitor.
 
-
+\paragraph
 
 \subsection{Suffix proxy (service)}
 %\todo{Jonas: Just found out that the "service" we developed is actually a suffix proxy, which actually could have been implemented in a simpler way using .htaccess request rewriting. Also found a way to redirect all ports to a single port using iptables. Perfect solution.}
@@ -207,6 +210,7 @@ the string to direct execution to the monitor.
 %\item Less general, only browsed pages
 %\end{itemize}
 
+\todo{user who want security}
 
 A \emph{suffix proxy} is special kind of web proxy that makes use of DNS wildcards to 
 relay requests, instead of the usual practice of configuring the browser.
@@ -252,7 +256,7 @@ resources associated with the page are loaded through the proxy.
 
 Today web pages make extensive use of libraries to extend the functionality of 
 the web page. As the code is executed in the context of the web page, it can 
-access the content of the page. This requires that thecode integrator must 
+access the content of the page. This requires that the code integrator must 
 trust the library not to abuse this privilege. To a developer, an appealing alternative 
 is to run untrusted code monitored, while running trusted code outside of the 
 monitor. This can be achieved including the monitor in the page and loading the 

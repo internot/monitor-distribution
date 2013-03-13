@@ -22,8 +22,9 @@
 \if 0
 March 28 - paper shipped
 March 27 - final polish
-March 20 - mashup and case studies + intro and conclusions
-March 13 - architecture and implementation done + related work
+MArch 22 - intro and conclusions
+March 20 - case studies + related work
+March 17 - architecture and implementation done 
 March 12 - implementation half-way
 March 11 - architecture
 \fi
@@ -95,26 +96,52 @@ original program is secure in the first place.
 This paper proceeds as follows. Section~
 
 
-% 1 pages
-\section{Third-party code integration}
-\label{sec:mash}
+
+\paragraph{Shadowing}
+\todo{Daniel: me must make sure to differentiate between the inlining ala older papers and the inlining we do here.}
+
+Inline the monitor into the JavaScript code. Appealing idea, previous work for 
+toy languages, but difficult in practice. Abandoned due to complexity with 
+coercion in expressions.
+
+
+A growing number of web pages provide not only content, but services to their
+users. In order to provide the service the provider requires the user to
+provide potentially sensitive information such as user credentials, and payment
+information. For such pages it is in the interest of the user that the
+sensitive information is only disclosed to the intended recipient.  Today, no
+browsers offer such guarantees. However, modern browsers allow the
+functionality of the browser to be enriched via \emph{extensions}. 
+
+
+\paragraph{Third-party code integration}
+%\label{sec:mash}
 
 Describe mashups, difficulties in mashup security and information flows in mashups.
 
-% 2-3 pages 
+%4 pages 
 \section{Architecture}
 \label{sec:arch}
 
 \todo{Daniel: may I suggest we add pros and cons}
 This section presents the different architectures for inlining
 security monitors. We motivate each architecture by scenarios of
-intended usage and describe the details of the architectures.
+intended usage, describe the details of the architectures, report on
+security considerations as well as the pros and cons for each choice.
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Browser extension}
+
+\paragraph{Description}
+
+\paragraph{Security considerations}
+
+\paragraph{Pros and cons}
+
+\todo{Discuss HTTPS}
 
 A growing number of web pages provide not only content, but services to their
 users. In order to provide the service the provider requires the user to
@@ -130,14 +157,14 @@ monitor provides guarantees for all pages. Further, this deployment method
 gives the user direct control over what security policies to enforce on the
 browsed pages.
 
-\todo{Andrei: the following paragraph has two problems. First, it
-  talks about information-flow control - but we want to stay general
-  and only use information-flow control in examples. Second, of course
-the monitor is a part of the TCB, which is true for all deployment
-options. Why bring it up here?}
-\todo{Daniel: Rewrote - why? There is a difference due to the elevated privilege; in the
-  other cases a faulty monitor might leak inforamtion - in this case a faulty
-  monitor might joepardize the computer}
+% \todo{Andrei: the following paragraph has two problems. First, it
+%   talks about information-flow control - but we want to stay general
+%   and only use information-flow control in examples. Second, of course
+% the monitor is a part of the TCB, which is true for all deployment
+% options. Why bring it up here?}
+% \todo{Daniel: Rewrote - why? There is a difference due to the elevated privilege; in the
+%   other cases a faulty monitor might leak inforamtion - in this case a faulty
+%   monitor might joepardize the computer}
 
 However, the installation requirement is also the method's main disadvantage.
 Not only is the extension browser specific and require the user to download,
@@ -152,6 +179,15 @@ jeopardize the integrity of the entire browser.
 
 \subsection{Web proxy}
 
+\paragraph{Description}
+
+\paragraph{Security considerations}
+
+\paragraph{Pros and cons}
+
+\todo{Discuss HTTPS}
+
+
 %\begin{itemize}
 %\item- Practically the same monitor as the plugin
 %\item- Browser independent
@@ -160,6 +196,8 @@ jeopardize the integrity of the entire browser.
 %\item Server-side configuration? So far we have not discussed configuration.
 %\item- General, every browsed page
 %\end{itemize}
+
+\todo{Need to add to corporate scenario}
 
 A proxy specific to relaying HTTP requests is often referred to as a web proxy.
 A web proxy is a convenient way to include the monitor in browsed pages without 
@@ -206,6 +244,15 @@ the string to direct execution to the monitor.
 %\item Server-side and client-side configuration possible?
 %\item Less general, only browsed pages
 %\end{itemize}
+
+\paragraph{Description}
+
+\paragraph{Security considerations}
+
+\paragraph{Pros and cons}
+
+\todo{Discuss HTTPS}
+
 
 
 A \emph{suffix proxy} is special kind of web proxy that makes use of DNS wildcards to 
@@ -270,15 +317,16 @@ approach is not intrusive to the browser, requires no setup or configuration,
 but also limits the users control. 
 
 
-% 4 pages 
+% 2-3 pages 
 \section{Implementation}
 \label{sec:impl}
 
-\todo{Daniel: may I suggest we replace the pros and cons with implementation challenges}
+%\todo{Daniel: may I suggest we replace the pros and cons with implementation challenges}
 %Describe features and drawbacks with each implementation.
-For each deployment option, we first describe how it is implemented,
-discuss the relative pros and cons, and show how the integrity of the monitor
-and complete mediation are achieved.
+%For each deployment option, we describe how it is implemented and show how the integrity of the monitor
+%and complete mediation are achieved.
+This section details our implementations of the three architectures
+from the previous section. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -452,10 +500,14 @@ The features of wildcard certificates is that the user can browse HTTPS pages. T
 \item- future reflection of monitored code?
 \end{itemize}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % 2-3 pages 
-\section{Case study}
+\section{Instantiation}
 \label{sec:case}
+
+\subsection{Monitor}
+%Daniel
 
 \todo{Daniel: moved here - it's only here we talk about specifics}
 \todo{Jonas: I think we should have a separate subsection here, describing the monitor and why/how it can be reused in all of the implementations}
@@ -468,22 +520,18 @@ One solution in to have the monitor detect its execution environment
 and adapt accordingly. While possible, it is a big undertaking to support
 a wide selection of (versions of) browsers.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\todo{Andrei: move to case studies}
-\subsection{Shadowing}
-\todo{Daniel: me must make sure to differentiate between the inlining ala older papers and the inlining we do here.}
-
-Inline the monitor into the JavaScript code. Appealing idea, previous work for 
-toy languages, but difficult in practice. Abandoned due to complexity with 
-coercion in expressions.
-
+\subsection{Security experiments}
+%Jonas+Daniel
 
 \begin{itemize}
 \item- mlcalc.com
 \item- newyorker.com
 \item- mockup vs. real deal
 \end{itemize}
+
+\subsection{Performance experiments}
+%Jonas
 
 %1 page 
 \section{Related work}

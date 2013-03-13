@@ -390,12 +390,15 @@ from the previous section.
 
 \subsection{Browser extension}
 
-Modern browsers allow the functionality of the browser to be enriched via
-\emph{extensions}.Given that
+Firefox extensions are written in JavaScript. S
+DOMContentLoaded 
+traversing the DOM tree 
+
+
+Given that
 the security monitor is wrttien
 Monitors written in JavaScript can easily be embedded in extensions
 
-\todo{Daniel: the rest of this section talks about monitors that are actually interpreters}
 
 The method works by turning off the standard execution engine for JavaScript
 by disallowing JavaScript in the preferences and listening to the appropriate
@@ -497,29 +500,79 @@ The features of wildcard certificates is that the user can browse HTTPS pages. T
 \section{Instantiation}
 \label{sec:case}
 
+This section presents practical experiments made by instantiating the deployment
+methods with the JSFlow~\cite{} information flow monitor. 
+
 \subsection{Monitor}
-%Daniel
 
-\todo{Daniel: moved here - it's only here we talk about specifics}
-\todo{Jonas: I think we should have a separate subsection here, describing the monitor and why/how it can be reused in all of the implementations}
+JSFlow is a dynamic information flow monitor by tagging values with runtime
+security labels used for security decisions. Whenever a potential security
+violation has been encountered the monitor stops the execution with a security
+error. 
 
-In addition, while the
-execution environment provided by different browsers are mostly standard
-compliant there are small deviations. Such deviations must be reflected in 
-the monitor, which, to a certain extend, makes the monitor browser specific.
-One solution in to have the monitor detect its execution environment
-and adapt accordingly. While possible, it is a big undertaking to support
-a wide selection of (versions of) browsers.
+JSFlow is implemented in JavaScript and supports full non-strict Ecma-262 (v5)
+including the standard API and large parts of the browser specific execution
+environment including the DOM.
 
+The standard security policy of JSFlow tracks user information.  Any
+information originating from the user is tagged and prevented from leaving the
+browser. Other policies can be provided, e.g., by placing policy labels in the
+HTML elements of the page. 
+
+
+\subsection{Experiment scenarios}
+
+Consider the scenario of a loan calculator service. To use the service the
+user is required to input potentially sensitive information about income, 
+loan amount, and loan term. The service then computes and displays, e.g., 
+rate and monthly payment. Unless the calculation makes use of any trade secrets
+it can be performed in its entirety on the client side; otherwise, the
+user inputs must be sent back to the service provider that performs the
+calculations and replies with the results. Even though it might be acceptable to 
+the user to disclose the sensitive information the service provider,
+doing so places a trust in the provider not to further disclose the information.
+
+Below we investigate the different deployment methods on a calculator service
+that sends information back to the service provider. In particular, we
+investigate the loan and mortgage calculator \emph{mlcalc}. The user
+information that is sent back to the server is, in turn, embedded in the return
+page. There, the information is used to perform the loan calculation in
+addition to being passed on to Google analytics, presumably for statistics. Now
+assume that the user wants to prevent the information to be sent to Google.
+Without server support there is no way for the JSFlow monitor to link the
+values on the returned page to the values input by the user, regardless of
+deployment method. On the other hand, if the server was information flow aware
+it could tag the information originating from the user input on the returned
+page. If this is done, the monitor can easily prevent the information from
+being sent to Google analytics. Without server support, however, in order to
+protect the user input we must prevent it from being sent back to mlcalc. 
 
 \subsection{Security experiments}
 %Jonas+Daniel
 
-\begin{itemize}
-\item- mlcalc.com
-\item- newyorker.com
-\item- mockup vs. real deal
-\end{itemize}
+\todo{Daniel: what about the caches ets - where do we speak about those}
+\paragraph{Browser extension}
+%:
+When the user loads mlcalc.com the extension traverses the page looking for
+scripts to execute. After the scripts have executed the user of the page
+enters the needed information and presses the calculate button. The extension
+traps the button press event and uses the monitor to run the script associated
+with the button. This script gathers the user information and tries to send
+it back to mlcalc, which casues the montior to stop execution with a security 
+error. At this point the user is presented with a security error message. 
+Additionally, one could envision that the user is given the choice to
+override the security error and allow the information to be sent.
+
+
+\paragraph{Web proxy}
+
+Jonas, fill in the web proxy results on mlcalc
+
+
+\paragraph{Service}
+
+Jonas, fill in the service results on mlcalc
+
 
 \subsection{Performance experiments}
 %Jonas

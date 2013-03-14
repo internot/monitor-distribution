@@ -22,8 +22,9 @@
 \if 0
 March 28 - paper shipped
 March 27 - final polish
-March 20 - mashup and case studies + intro and conclusions
-March 13 - architecture and implementation done + related work
+MArch 22 - intro and conclusions
+March 20 - case studies + related work
+March 17 - architecture and implementation done 
 March 12 - implementation half-way
 March 11 - architecture
 \fi
@@ -95,26 +96,14 @@ original program is secure in the first place.
 This paper proceeds as follows. Section~
 
 
-% 1 pages
-\section{Third-party code integration}
-\label{sec:mash}
 
-Describe mashups, difficulties in mashup security and information flows in mashups.
+\paragraph{Shadowing}
+\todo{Daniel: me must make sure to differentiate between the inlining ala older papers and the inlining we do here.}
 
-% 2-3 pages 
-\section{Architecture}
-\label{sec:arch}
+Inline the monitor into the JavaScript code. Appealing idea, previous work for 
+toy languages, but difficult in practice. Abandoned due to complexity with 
+coercion in expressions.
 
-\todo{Daniel: may I suggest we add pros and cons}
-This section presents the different architectures for inlining
-security monitors. We motivate each architecture by scenarios of
-intended usage and describe the details of the architectures.
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Browser extension}
 
 A growing number of web pages provide not only content, but services to their
 users. In order to provide the service the provider requires the user to
@@ -124,33 +113,138 @@ sensitive information is only disclosed to the intended recipient.  Today, no
 browsers offer such guarantees. However, modern browsers allow the
 functionality of the browser to be enriched via \emph{extensions}. 
 
-By embedding the security monitor in an extension the browser can be modified
-to provide such guarantees. The main benefit of this approach is that the
-monitor provides guarantees for all pages. Further, this deployment method
-gives the user direct control over what security policies to enforce on the
-browsed pages.
 
-\todo{Andrei: the following paragraph has two problems. First, it
-  talks about information-flow control - but we want to stay general
-  and only use information-flow control in examples. Second, of course
-the monitor is a part of the TCB, which is true for all deployment
-options. Why bring it up here?}
-\todo{Daniel: Rewrote - why? There is a difference due to the elevated privilege; in the
-  other cases a faulty monitor might leak inforamtion - in this case a faulty
-  monitor might joepardize the computer}
+\paragraph{Third-party code integration}
+%\label{sec:mash}
 
-However, the installation requirement is also the method's main disadvantage.
-Not only is the extension browser specific and require the user to download,
-install and setup the extension, it also requires that we trust the monitor to
-run with elevated privileges --- in order to be able to enrich the
-functionality of the browser the extensions run with the same privileges as the
-browser. Compared to the other methods of deployment this means that a faulty
-monitor not only jeopardizes the property enforced by the monitor, but might
-jeopardize the integrity of the entire browser.
+Describe mashups, difficulties in mashup security and information flows in mashups.
+
+%4 pages 
+\section{Architecture}
+\label{sec:arch}
+
+This section presents the different architectures for inlining
+security monitors. We motivate each architecture by scenarios of
+intended usage, describe the details of the architectures, report on
+security considerations as well as the pros and cons for each choice.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Browser extension}
+
+Many websites require the user to provide sensitive information, e.g., user
+credentials, or payment information. It lies in the interest of the user to
+ensure the security of the sensitive information.  Modern browsers allow for
+the functionality of the browser to be enriched via \emph{extensions}. By
+deploying the security monitor via a browser extension it is possible to enforce
+properties not normally offered by browser.  Regardless of whether the user is
+private or corporate browser extensions provides a simple installs once protect
+always deployment method.
+
+
+\paragraph{Description}
+
+A browser extension is a program that is installed into the browser in order to
+change or enrich the functionality of the browser.  The basic idea behind
+deploying via an extension is to replace the JavaScript engine with the monitor
+--- recall that we consider only monitors that function as interpreters.
+%
+This can be achieved by turning off the standard JavaScript engine, and have
+the extension traverse the page when loaded and execute the JavaScript scripts
+using the monitor. 
+%
+Given that the monitor is written in the language used to implement the extensions
+embedding the monitor in an extension is a simple matter; for most browser
+the implementation language of extensions is JavaScript.
+
+This method was pioneered by Zaphod~\cite{Zaphod}, a
+FireFox extension, that replaces the standard JavaScript engine with the
+experimental Narcissus engine.
+
+\paragraph{Security considerations}
+
+The integrity of the method is guaranteed by virtue of the fact that the
+JavaScript engine is turned off and all scripts are interpreted by the monitor.
+Hence, the scripts are not active; rather, they are passed as data to the
+monitor, and are only able to influence the execution environment implemented
+by the monitor and not the general execution environment of the monitor itself.
+
+Further, complete mediation and soundness are inherited from the monitor, since
+all executed scripts are executed by the monitor.
+
+
+As described above browser extension are installed into the browser. In order
+to be able to enrich the functionality of the browser the extensions run with
+the same privileges as the browser. This entails that the monitor will be
+running with elevated privileges.  Compared to the other methods of deployment
+this means that a faulty monitor not only jeopardizes the property enforced by
+the monitor, but might jeopardize the integrity of the entire browser.
+
+\paragraph{Pros and cons}
+
+The main benefit of the approach is that the extension gives the user direct
+control over what security policies to enforce on the browsed pages. For
+instance, it is possible to have any security violations reported to the user,
+who can easily decide to allow or decline the violation. 
+
+Whether the requirements of conservativeness, and transparency can be met
+depends on when the scripts are executed and that all functionality provided by
+the browser can be implemented by the monitor.
+
+Consider first the execution time of scripts. When web pages are loaded, the
+scripts of the pages are executed as they are encountered while parsing the web
+page. This means that the DOM tree of the page might not have been fully
+constructed when the scripts execute.  For scripts that interact with the DOM
+tree this is important, in particular if the script injects nodes into the
+tree. From a conservativeness and transparency perspective it is not entirely
+satisfactory to traverse the DOM tree of the page after it has been
+constructed.  Rather, scripts need to be executes as soon as they are added to
+the tree, which can be achieved using DOM mutation events.
+
+Another obstacle for transparency is that for different reasons not all
+functionality provided by the browser can be reproduced by the monitor. One
+example of this is \emph{document.write}. The semantics of
+\emph{document.write} is loosely specified saying that \emph{document.write}
+writes into a string into the current position of the document.  Intuitively,
+\emph{document.write} writes into the character stream that is fed to the HTML
+parser, which, for obvious reason can have drastic effects on the parsing of
+the page. For security reasons extensions are prohibited from calling
+\emph{document.write}. Hence, when run via an extension the monitor cannot
+easily provide the full functionality of \emph{document.write}. 
+
+On the positive side features like \emph{innerHTML} can be handled with
+relative ease. \emph{innerHTML} is a property on all DOM nodes which allows the
+text representation of the node to be changed. Any change of the
+\emph{innerHTML} property causes the content of the node to be changed by
+parsing the changed property. For other deployment methods this means that the
+value written to \emph{innerHTML} must be validated, and possibly changed
+before the write is allowed to occur.  For the extension based deployment this
+is not the case.  Since the standard JavaScript execution engine is turned off
+it is safe to write to the \emph{innerHTML} property. The write will trigger
+the parser to rebuild the content of the node, but no scripts will be executed.
+Any occuring scripts can be dealt with in a manner analogous to the scripts on
+a loading page.
+
+Finally, since the extension is provided with the content of the page it is
+entirely independent of the method of transport. Thus, unlike other methods of
+deployment it is unimportant whether the page or any of its resources are
+fetched using HTTP or HTTPS.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Web proxy}
+
+\paragraph{Description}
+
+\paragraph{Security considerations}
+
+\paragraph{Pros and cons}
+
+\todo{Discuss HTTPS}
+
 
 %\begin{itemize}
 %\item- Practically the same monitor as the plugin
@@ -211,6 +305,15 @@ the string to direct execution to the monitor.
 %\end{itemize}
 
 \todo{user who want security}
+
+\paragraph{Description}
+
+\paragraph{Security considerations}
+
+\paragraph{Pros and cons}
+
+\todo{Discuss HTTPS}
+
 
 A \emph{suffix proxy} is special kind of web proxy that makes use of DNS wildcards to 
 relay requests, instead of the usual practice of configuring the browser.
@@ -274,22 +377,24 @@ approach is not intrusive to the browser, requires no setup or configuration,
 but also limits the users control. 
 
 
-% 4 pages 
+% 2-3 pages 
 \section{Implementation}
 \label{sec:impl}
 
-\todo{Daniel: may I suggest we replace the pros and cons with implementation challenges}
+%\todo{Daniel: may I suggest we replace the pros and cons with implementation challenges}
 %Describe features and drawbacks with each implementation.
-For each deployment option, we first describe how it is implemented,
-discuss the relative pros and cons, and show how the integrity of the monitor
-and complete mediation are achieved.
+%For each deployment option, we describe how it is implemented and show how the integrity of the monitor
+%and complete mediation are achieved.
+This section details our implementations of the three architectures
+from the previous section. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Browser extension}
 
 Modern browsers allow the functionality of the browser to be enriched via
-\emph{extensions}. The extensions are typically written in JavaScript.  
+\emph{extensions}.Given that
+the security monitor is wrttien
 Monitors written in JavaScript can easily be embedded in extensions
 
 \todo{Daniel: the rest of this section talks about monitors that are actually interpreters}
@@ -300,74 +405,6 @@ page load event. Once the event is received the page is traversed and all
 scripts are executed using the replacement engine, i.e., the monitor. This
 method was pioneered by the Zaphod \cite{Zaphod} extension for Firefox.
 
-We have resolved a number of challenges pertaining to the implementation of the
-extension.
-
-\paragraph{Execution time}
-
-When web pages are loaded, the scripts of the pages are executed as they are
-encountered while parsing the web page. This means that the DOM tree of the
-page might not have been fully constructed when the scripts execute.  For
-scripts that interact with the DOM tree this is important, in particular if the
-script injects nodes into the tree. The consequence of this is that it is not
-entirely satisfactory to listen to the \emph{DOMContentLoaded} event and
-thereafter traverse the fully parsed DOM tree looking for scripts to execute.
-Rather, we need to receive events precisely when the scripts are added to the
-DOM tree during the parsing process. This can be be achieved with DOM
-MutationEvents. However, the DOM MutationEvents are deprecated due to
-efficiency issues and are going to be replaced with a notion of
-MutationObserver.  If the replacement notion can be used to execute scripts at
-the time of addition to the DOM tree remains an open question due to event
-grouping, i.e., when the mutation observer receives a collection of events
-bundled together for performance reasons. 
-
-
-\paragraph{document.write} The problem of execution time is particularly
-prominent for scripts using \emph{document.write}. The semantics of
-\emph{document.write} is loosely specified saying that \emph{document.write}
-writes into a string into the current position of the document.  Intuitively,
-\emph{document.write} writes into the character stream that is fed to the HTML
-parser, which, for obvious reason can have drastic effects on the parsing of
-the page.  However, in Firefox there is a bigger obstacle for
-\emph{document.write}. For security reasons \emph{document.write} is not
-allowed to be executed from the extension context.  Hence, an extension cannot
-easily provide the full functionality of \emph{document.write}.  Thankfully,
-few web pages make use of the full functionality of \emph{document.write} ---
-it is mostly used to inject scripts into the page while the page is loading. It
-is fairly easy to identify such use of \emph{document.write} and provide
-support for this use.
-
-
-\todo{Daniel: crosslink with other deployment methods?} \paragraph{innerHTML}
-%
-\emph{innerHTML} is a property on all DOM nodes which allows the text
-representation of the node to be changed. Any change of the \emph{innerHTML}
-property causes the content of the node to be changed by parsing the changed
-property. For other deployment methods this means that the value written to
-\emph{innerHTML} must be validated, and possibly changed before the write is
-allowed to occur.  For the extension based deployment this is not the case.
-Since the standard JavaScript execution engine is turned off it is safe to
-write to the \emph{innerHTML} property. The write will trigger the parser to
-rebuild the content of the node, but no scripts will be executed.  Any occuring
-scripts can be dealt with in a manner analogous to the scripts on a loading
-page.
-
-\todo{Daniel: Don't really know what to say w.r.t. : execution contexts no problem (SVG and CSS uses native JavaScript)}
-\todo{Jonas: Might not need to say anything. It is in relation to the other approaches 
-which has to identify and rewrite all the contexts that can execute JS, since the 
-extension replaces the JS engine for all contexts, you can't sneak code passed the monitor. Also relates to what you wrote about innerHTML.}
-
-\paragraph{Integrity} The integrity of the method is guaranteed by virtue of
-the fact that the JavaScript engine is turned off and all scripts are
-interpreted by the monitor. Hence, the scripts are not active; rather, they are
-passed as data to the monitor, and are only able to influence the execution
-environment implemented by the monitor, and not the general execution
-environment of the monitor itself.
-
-\paragraph{Complete mediation}
-
-Since all scripts are executed by the monitor complete mediation is inherited 
-from the monitor.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -456,10 +493,14 @@ The features of wildcard certificates is that the user can browse HTTPS pages. T
 \item- future reflection of monitored code?
 \end{itemize}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % 2-3 pages 
-\section{Case study}
+\section{Instantiation}
 \label{sec:case}
+
+\subsection{Monitor}
+%Daniel
 
 \todo{Daniel: moved here - it's only here we talk about specifics}
 \todo{Jonas: I think we should have a separate subsection here, describing the monitor and why/how it can be reused in all of the implementations}
@@ -472,22 +513,18 @@ One solution in to have the monitor detect its execution environment
 and adapt accordingly. While possible, it is a big undertaking to support
 a wide selection of (versions of) browsers.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\todo{Andrei: move to case studies}
-\subsection{Shadowing}
-\todo{Daniel: me must make sure to differentiate between the inlining ala older papers and the inlining we do here.}
-
-Inline the monitor into the JavaScript code. Appealing idea, previous work for 
-toy languages, but difficult in practice. Abandoned due to complexity with 
-coercion in expressions.
-
+\subsection{Security experiments}
+%Jonas+Daniel
 
 \begin{itemize}
 \item- mlcalc.com
 \item- newyorker.com
 \item- mockup vs. real deal
 \end{itemize}
+
+\subsection{Performance experiments}
+%Jonas
 
 %1 page 
 \section{Related work}

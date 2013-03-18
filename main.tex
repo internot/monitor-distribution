@@ -43,22 +43,28 @@ problem. Code from pervasive third-party JavaScript libraries exacerbates the
 problem because it is executed with the same privileges as the code
 that uses the libraries.
 %
-This paper focuses on securing JavaScript code by \emph{inlining}
-security checks in the code before it is executed. We present
-architectures for inlining security monitors for JavaScript: in
-the browser, as an HTTP proxy, and as a web proxy (service). 
+An additional complication is that the different stakeholders have
+different interests in the security policies to be enforced
+in web applications.
 %
-\todo{Jonas: The use of HTTP proxy/web proxy/suffix proxy is still under consideration (by me), and we'll need to discuss and update this to reflect that.}
+This paper focuses on securing JavaScript code by \emph{inlining}
+security checks in the code before it is executed.
+%
+We achieve great flexibility in the deployment options by considering
+security monitors implemented as security-enhanced JavaScript interpreters.
+%
+%A key ingredient to open up for such flexibility is security monitoring in the form of a
+%security monitor for JavaScript, written itself in JavaScript.
+We propose three architectures for inlining security monitors for JavaScript: in
+the browser, as a web, and as a suffix proxy (web service). 
 %
 These architectures offer great flexibility: they are parametric in the monitor itself,
 and they provide freedom in the choice of where the monitor is
-injected, allowing to serve the interests of users, code developers, code
-integrators, and network administrators.
+injected, allowing to serve the interests of the different stake
+holders: the users, code developers, code
+integrators, as well as the system and network administrators.
 %
-A key ingredient to open up for such flexibility is security monitoring in the form of a
-security monitor for JavaScript, written itself in JavaScript.
-%
-Our case studies demonstrate successful deployment of a JavaScript
+We report on experiments that demonstrate successful deployment of a JavaScript
 information-flow monitor with all three architectures.
 \end{abstract}
 
@@ -725,13 +731,6 @@ be enforced by monitoring and modifying programs at runtime.
 They introduce \emph{edit automata} that enable
 monitors to stop, suppress, and modify the behavior of programs. 
 
-\paragraph{Inlining for secure JavaScript}
-
-A prominent example in the context of the web is
-BrowserShield~\cite{Reis+:TWeb07} that instruments scripts with
-checks for known vulnerabilities.
-
-Magazinius et al.~\cite{DBLP:conf/nordsec/MagaziniusPS10}
 
 
 \paragraph{Inlining for secure information flow}
@@ -763,17 +762,71 @@ See the discussion on the scalability of the shadow variable approach
 in Section~\ref{sec:intro}.
 
 
+\paragraph{Inlining for secure JavaScript}
+Inlining has been explored JavaScript, although often focusing on
+simple properties or preventing against fixed classes of vulnerabilities.
+A prominent example in the context of the web is
+BrowserShield~\cite{Reis+:TWeb07} by Reis et al. to instrument scripts with
+checks for known vulnerabilities.
+
+Yu et al.~\cite{Yu+:POPL07} and Kikuchi et
+al.~\cite{DBLP:conf/aplas/2008} present an instrumentation approach
+for JavaScript in the browser. Their framework allows instrumented
+code to encode edit automata-based policies.
+
+Phung et al.~\cite{DBLP:conf/ccs/PhungSC09} and 
+Magazinius et al.~\cite{DBLP:conf/nordsec/MagaziniusPS10} develop
+secure wrapping for self-protecting JavaScript. This approach is based
+on wrapping built-in JavaScript methods with secure wrappers that
+keep track of the security state and regulate access to the original built-ins.  
+
+
+
+Agten et al.~\cite{DBLP:conf/acsac/AgtenABPDP12} present JSand, a
+server-driven client-side sandboxing framework. The framework mediates
+attempts of untrusted code to access to resources in the browser.  
+In contrast to its predecessors such as
+ConScript~\cite{DBLP:conf/sp/MeyerovichL10}, WebJail~\cite{DBLP:conf/acsac/AckerRDPJ11}, and Contego~\cite{DBLP:conf/trust/LuoD11},
+the sandboxing is done purely at JavaScript level, requiring no
+browser modification.
+
+Despite the above progress on inlining security checks in JavaScript, achieving
+Information-flow security for client-side JavaScript by inlining has been out of
+reach for the current methods~\cite{Vogt+:NDSS07,DBLP:conf/pldi/ChughMJL09,Yip:Narula:Krohn:Morris:EUROSYS09,Jang+:CCS10,DeGroef+:CCS12}  that either
+modify the browser or perform the analysis out-of-the-browser.
+
 %1 page 
 \section{Conclusions}
 \label{sec:conc}
 Different stakeholders have different interests in the security of web
 applications. We have presented architectures for inlining security
-monitors, to enable enforcement on behalf of the users, system and
+monitors, to take into account the security goals of the users, system and
 network administrators, and service providers and integrators.
 %
-We have presented the security considerations as well as the pros and
-cons for each architecture. 
+We achieve great flexibility in the deployment options by considering
+security monitors implemented as security-enhanced JavaScript interpreters.
+%
+The architectures allow deploying such a monitor in a browser
+extension, web proxy, or web service.
+%
+We have reported on the security considerations and on the relative pros and
+cons for each architecture.
+%
+We have applied the architectures to inline an information-flow
+security monitor for JavaScript.
+%
+The security experiments show the
+flexibility in supporting the different policies on the sensitive
+information from the user. 
+%
+The performance experiments show reasonable overhead imposed by the
+architectures and point out to the relative pros and cons from the
+performance point of view. \todo{Make a bit more concrete when we have
+the experimental results.}
 
+Future work \todo{Daniel, Jonas: what's worth brining up here? Some
+tracks that give us the credibility - pointing out a rich research agenda, rather
+than pointing out the weaknesses of the current paper. :) }
 
 % Less than 4 pages 
 \bibliographystyle{plain}

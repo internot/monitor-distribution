@@ -22,7 +22,7 @@
 \if 0
 March 28 - paper shipped
 March 27 - final polish
-MArch 22 - intro and conclusions
+March 22 - intro and conclusions
 March 20 - case studies + related work
 March 17 - architecture and implementation done 
 March 12 - implementation half-way
@@ -140,16 +140,16 @@ ensure the security of the sensitive information.  Modern browsers allow for
 the functionality of the browser to be enriched via \emph{extensions}. By
 deploying the security monitor via a browser extension it is possible to enforce
 properties not normally offered by browsers.  Regardless of whether the user is
-private or corporate, browser extensions provides a simple installs once protect
-always deployment method.
+private or corporate, browser extensions provide a simple 
+install-once-protect-always deployment method.
 
 
 \paragraph{Description}
 
 A browser extension is a program that is installed into the browser in order to
 change or enrich the functionality of the browser.  The basic idea behind
-deploying via an extension is to replace the JavaScript engine with the monitor
---- recall that we consider only monitors that function as interpreters.
+deploying via an extension is to replace the JavaScript engine with the monitor.
+(Recall that we consider only monitors that function as interpreters.)
 %
 This can be achieved by turning off the standard JavaScript engine, and have
 the extension traverse the page when loaded and execute the JavaScript scripts
@@ -181,18 +181,25 @@ this means that a faulty monitor not only jeopardizes the property enforced by
 the monitor, but might jeopardize the integrity of the entire browser.
 
 \paragraph{Pros and cons}
-
+\todo{Andrei: suggestion for uniform structure across the different
+  sections - start by the pros and
+  then present the cons ensuring that there is no less text for the
+  pros than for the cons :)}
 \todo{discuss}
 The main benefit of the approach is that the extension gives the user direct
 control over what security policies to enforce on the browsed pages. For
 instance, it is possible to have any security violations reported to the user,
-who can easily decide to allow or decline the violation. 
+who can decide to allow or decline the violation. 
 
-Whether the requirements of conservativeness, and transparency can be met
+Whether the requirements of conservativeness and transparency can be met
 depends on when the scripts are executed and that all functionality provided by
 the browser can be implemented by the monitor.
 
-Consider first the execution time of scripts. When web pages are loaded, the
+Consider first the 
+order in which scripts are executed.
+%Andrei: this might be misinterpreted as the time it takes for scripts to execute 
+% execution time of scripts
+When web pages are loaded, the
 scripts of the pages are executed as they are encountered while parsing the web
 page. This means that the DOM tree of the page might not have been fully
 constructed when the scripts execute.  For scripts that interact with the DOM
@@ -202,16 +209,18 @@ satisfactory to traverse the DOM tree of the page after it has been
 constructed.  Rather, scripts need to be executed as soon as they are added to
 the tree, which can be achieved using DOM mutation events.
 
-Another obstacle for transparency is that not all
+Another obstacle for \todo{conservativeness and?} transparency is that not all
 functionality provided by the browser can be reproduced by the monitor. One
 example of this is \emph{document.write}. The semantics of
-\emph{document.write} is loosely specified saying that \emph{document.write}
+\emph{document.write} is loosely specified~\todo{reference} saying that \emph{document.write}
 writes a string into the current position of the document.  Intuitively,
 \emph{document.write} writes into the character stream that is fed to the HTML
 parser, which, for obvious reason can have drastic effects on the parsing of
 the page. For security reasons extensions are prohibited from calling
 \emph{document.write}. Hence, when run via an extension the monitor cannot
 easily provide the full functionality of \emph{document.write}.
+\todo{explain what can be provided easily and what is the difficult
+  way to provide full functionality if any}
 \todo{example, ala div}
 
 On the positive side features like \emph{innerHTML} can be handled with
@@ -549,7 +558,8 @@ are being replaced with DOM Mutation Observers. It is unclear whether the DOM
 Mutation Observers can be used to provide transparency, since events are
 grouped together, i.e., the mutation observer will not necessarily get an event
 each time a script is added, but one event covering all script additions.
-
+\todo{Andrei: Inconclusive ending - please finish on a punchy and positive
+  note! :)}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -610,7 +620,7 @@ The features of wildcard certificates is that the user can browse HTTPS pages. T
 \label{sec:case}
 
 This section presents practical experiments made by instantiating the deployment
-methods with the JSFlow~\cite{} information flow monitor. 
+methods with the JSFlow~\cite{JSFlow} information flow monitor. 
 
 \subsection{Monitor}
 

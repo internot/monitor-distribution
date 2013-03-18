@@ -139,8 +139,8 @@ credentials, or payment information. It lies in the interest of the user to
 ensure the security of the sensitive information.  Modern browsers allow for
 the functionality of the browser to be enriched via \emph{extensions}. By
 deploying the security monitor via a browser extension it is possible to enforce
-properties not normally offered by browser.  Regardless of whether the user is
-private or corporate browser extensions provides a simple installs once protect
+properties not normally offered by browsers.  Regardless of whether the user is
+private or corporate, browser extensions provides a simple installs once protect
 always deployment method.
 
 
@@ -158,8 +158,6 @@ using the monitor.
 The most common extension implementation language is JavaScript. Given that
 the monitor is written in JavaScript it is a simple matter to embed the 
 monitor in an extension.
-%\todo{Daniel: rewrote. Jonas: the above sentence is unnecessarily complicated}
-
 This method was pioneered by Zaphod~\cite{Zaphod}, a
 FireFox extension, that replaces the standard JavaScript engine with the
 experimental Narcissus engine.
@@ -175,9 +173,6 @@ Since all scripts are executed using the monitor complete mediation is implied.
 In addition, this also implies that the deployment method is sound given that
 the monitor is sound. 
 
-%\todo{Daniel: rewrote}
-%\todo{Jonas: I think it might help to add just one sentence clarifying that if the monitor is sound and it executes all scripts then the technique is also sound. I realize that this is what the sentence say, but it is not immediately clear}
-
 As described above browser extension are installed into the browser. In order
 to be able to enrich the functionality of the browser the extensions run with
 the same privileges as the browser. This entails that the monitor will be
@@ -187,12 +182,11 @@ the monitor, but might jeopardize the integrity of the entire browser.
 
 \paragraph{Pros and cons}
 
+\todo{discuss}
 The main benefit of the approach is that the extension gives the user direct
 control over what security policies to enforce on the browsed pages. For
 instance, it is possible to have any security violations reported to the user,
 who can easily decide to allow or decline the violation. 
-\todo{Daniel: unsure - discuss on monday?}
-\todo{Jonas: reporting to the user and letting the user decide is equally possible for the other approaches as well. Perhaps it is less likely in the integrator, which is more likely to make the decision for the user, or the proxy in a corporate setting, which is likely to report back to a central unit. The main benefit is user control, but perhaps more focus on the policies. What do you think?}
 
 Whether the requirements of conservativeness, and transparency can be met
 depends on when the scripts are executed and that all functionality provided by
@@ -208,7 +202,7 @@ satisfactory to traverse the DOM tree of the page after it has been
 constructed.  Rather, scripts need to be executed as soon as they are added to
 the tree, which can be achieved using DOM mutation events.
 
-Another obstacle for transparency is that for different reasons not all
+Another obstacle for transparency is that not all
 functionality provided by the browser can be reproduced by the monitor. One
 example of this is \emph{document.write}. The semantics of
 \emph{document.write} is loosely specified saying that \emph{document.write}
@@ -218,8 +212,7 @@ parser, which, for obvious reason can have drastic effects on the parsing of
 the page. For security reasons extensions are prohibited from calling
 \emph{document.write}. Hence, when run via an extension the monitor cannot
 easily provide the full functionality of \emph{document.write}.
-%\todo{Daniel: the only way to handle write is to look at the string and try to interpret what the intention was, i.e., if we are writing a script into, the we add a script node. We can't run document.write, we cant access the parser, how are we supposed to be able to implement document.write?}
-%\todo{Jonas: can we construct a simple example which cannot be properly reproduced by the monitor? It might help to understand the problem.}
+\todo{example, ala div}
 
 On the positive side features like \emph{innerHTML} can be handled with
 relative ease. \emph{innerHTML} is a property on all DOM nodes which allows the
@@ -244,8 +237,6 @@ Finally, the extension is entirely independent of the method of transport,
 since the extension can tell the browser to download the resource using XHR.
 Thus, unlike other methods of deployment it is unimportant whether the scripts
 are fetched using HTTP or HTTPS.
-%\todo{Daniel: not really, but rephrased }
-%\todo{Jonas: missing a "not"? "the extension is not provided with the content"}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

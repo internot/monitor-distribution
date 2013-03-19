@@ -187,71 +187,79 @@ this means that a faulty monitor not only jeopardizes the property enforced by
 the monitor, but might jeopardize the integrity of the entire browser.
 
 \paragraph{Pros and cons}
-\todo{Andrei: suggestion for uniform structure across the different
-  sections - start by the pros and
-  then present the cons ensuring that there is no less text for the
-  pros than for the cons :)}
-\todo{discuss}
+
 The main benefit of the approach is that the extension gives the user direct
 control over what security policies to enforce on the browsed pages. For
 instance, it is possible to have any security violations reported to the user,
 who can decide to allow or decline the violation. 
 
+Further, features that are challenging for other deployment methods, like
+\emph{innerHTML}, can be handled with relative ease.  \emph{innerHTML} is a
+property on all DOM nodes which allows the text representation of the node to
+be changed. Any change of the \emph{innerHTML} property causes the content of
+the node to be changed by parsing the changed property. For other deployment
+methods this means that the value written to \emph{innerHTML} must be
+validated, and possibly changed before the write is allowed to occur --- even
+though script nodes added using \emph{innerHTML} are not executed, event
+handlers might still be run.
+%
+For the extension based deployment this is not a problem.  Since the standard
+JavaScript execution engine is turned off it is safe to write to the
+\emph{innerHTML} property. The write will trigger the parser to rebuild the
+content of the node, but no scripts will be executed, and the result can be
+handled in a manner analogous to the scripts on a loading page.
+
+Additionally, the extension is entirely independent of the method of transport,
+since the extension can tell the browser to download the resource using XHR.
+Thus, unlike other methods of deployment it is unimportant whether the scripts
+are fetched using HTTP or HTTPS.
+
 Whether the requirements of conservativeness and transparency can be met
 depends on when the scripts are executed and that all functionality provided by
 the browser can be implemented by the monitor.
 
-Consider first the 
-order in which scripts are executed.
-%Andrei: this might be misinterpreted as the time it takes for scripts to execute 
-% execution time of scripts
-When web pages are loaded, the
-scripts of the pages are executed as they are encountered while parsing the web
-page. This means that the DOM tree of the page might not have been fully
-constructed when the scripts execute.  For scripts that interact with the DOM
-tree this is important, in particular if the script injects nodes into the
-tree. From a conservativeness and transparency perspective it is not entirely
-satisfactory to traverse the DOM tree of the page after it has been
+Consider first the order in which scripts are executed.  When web pages are
+loaded, the scripts of the pages are executed as they are encountered while
+parsing the web page. This means that the DOM tree of the page might not have
+been fully constructed when the scripts execute.  For scripts that interact
+with the DOM tree this is important, in particular if the script injects nodes
+into the tree. From a conservativeness and transparency perspective it is not
+entirely satisfactory to traverse the DOM tree of the page after it has been
 constructed.  Rather, scripts need to be executed as soon as they are added to
 the tree, which can be achieved using DOM mutation events.
 
-Another obstacle for \todo{conservativeness and?} transparency is that not all
+\todo{This is not nec. a threat to conservativeness}
+Another obstacle for transparency is that not all
 functionality provided by the browser can be reproduced by the monitor. One
 example of this is \emph{document.write}. The semantics of
-\emph{document.write} is loosely specified~\todo{reference} saying that \emph{document.write}
+\emph{document.write} is loosely specified~\cite{DOM:LVL2} saying that \emph{document.write}
 writes a string into the current position of the document.  Intuitively,
 \emph{document.write} writes into the character stream that is fed to the HTML
 parser, which, for obvious reason can have drastic effects on the parsing of
 the page. For security reasons extensions are prohibited from calling
 \emph{document.write}. Hence, when run via an extension the monitor cannot
 easily provide the full functionality of \emph{document.write}.
-\todo{explain what can be provided easily and what is the difficult
-  way to provide full functionality if any}
-\todo{example, ala div}
+Consider the following example, where \emph{document.write} is used inside
+a div element.
 
-On the positive side features like \emph{innerHTML} can be handled with
-relative ease. \emph{innerHTML} is a property on all DOM nodes which allows the
-text representation of the node to be changed. Any change of the
-\emph{innerHTML} property causes the content of the node to be changed by
-parsing the changed property. For other deployment methods this means that the
-value written to \emph{innerHTML} must be validated, and possibly changed
-before the write is allowed to occur --- even though script nodes added
-using \emph{innerHTML} are not executed, event handlers might still be run.
-%
-For the extension based deployment this
-is not a problem.  Since the standard JavaScript execution engine is turned off
-it is safe to write to the \emph{innerHTML} property. The write will trigger
-the parser to rebuild the content of the node, but no scripts will be executed, 
-and the result can be handled in a manner analogous to the scripts on
-a loading page.
+\begin{verbatim}
+  <div><script>document.write('</div><div>');</script></div>
+\end{verbatim}
 
-
+The result is two div elements, rather than the original one. Since the write
+takes place during the parsing of the page, the end tag written by
+\emph{document.write} is matched with the initial div tag, and the written
+start tag is matched with the final end tag. In order to implement
+\emph{document.write} the monitor would have to take the interaction with the
+between the content written by \emph{document.write}, the already parsed parts
+of the page and the remaining page into account. In essence, the monitor would
+have to reimplement the parsing process.  However, the practical use of
+\emph{document.write} is limited; the typical use case is to inject scripts
+into the page while loading. Such cases can be relatively easily identified
+from the string passed as a parameter, and the intended behavior can be
+implemented by the monitor.
 
 
-Finally, the extension is entirely independent of the method of transport,
-since the extension can tell the browser to download the resource using XHR.
-Thus, unlike other methods of deployment it is unimportant whether the scripts
-are fetched using HTTP or HTTPS.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -555,18 +563,22 @@ to handle them. The second traversal looks for JavaScript script nodes.  For
 each found script node, the source is downloaded using XHR if needed, and the
 monitor is used to execute the script.
 
-As discussed above, the downside of this method is that it breaks transparency,
-since the scripts all execute after the DOM tree has been constructed. It is
-possible to regain transparency by using DOM Mutation events instead of the
-DOMContentLoaded event.  The idea is to listen to any addition of script nodes
-to the DOM tree under the construction, and execute the script on addition.
-However, due to performance reasons the DOM Mutation events are deprecated, and
-are being replaced with DOM Mutation Observers. It is unclear whether the DOM
-Mutation Observers can be used to provide transparency, since events are
-grouped together, i.e., the mutation observer will not necessarily get an event
-each time a script is added, but one event covering all script additions.
-\todo{Andrei: Inconclusive ending - please finish on a punchy and positive
-  note! :)}
+As discussed above, the downside of this method is that it breaks
+conservativeness and transparency, since the scripts all execute after the DOM
+tree has been constructed. It is possible to regain transparency by using DOM
+Mutation events instead of the DOMContentLoaded event.  The idea is to listen
+to any addition of script nodes to the DOM tree under the construction, and
+execute the script on addition.  However, due to performance reasons the DOM
+Mutation events are deprecated, and are being replaced with DOM Mutation
+Observers. It is unclear whether the DOM Mutation Observers can be used to
+provide transparency, since events are grouped together, i.e., the mutation
+observer will not necessarily get an event each time a script is added, but one
+event covering all script additions.
+
+However, the exact order of loading is not standardized and differs between
+browsers. This forces scripts to be independent of such differences. Thus,
+using the method of executing scripts on the DOMContentLoaded event is not
+necessarily a problem in practice. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -675,8 +687,13 @@ protect the user input we must prevent it from being sent back to mlcalc.
 
 \subsection{Security experiments}
 %Jonas+Daniel
+In the following experiments we have utilized a web cache. There are two
+reasons for this. First, it makes the experiments reproducible --- web pages 
+are moving targets, subject to constant change. Second, it has allowed us
+to focus on the parts of the page where interesting information flows occur,
+by suppressing uninteresting scripts.
+\todo{I didn't say anything on the upgrades, since we haven't talked about NSU}
 
-\todo{Daniel: what about the caches ets - where do we speak about those}
 \paragraph{Browser extension}
 %:
 When the user loads mlcalc.com the extension traverses the page looking for

@@ -43,22 +43,28 @@ problem. Code from pervasive third-party JavaScript libraries exacerbates the
 problem because it is executed with the same privileges as the code
 that uses the libraries.
 %
-This paper focuses on securing JavaScript code by \emph{inlining}
-security checks in the code before it is executed. We present
-architectures for inlining security monitors for JavaScript: in
-the browser, as an HTTP proxy, and as a web proxy (service). 
+An additional complication is that the different stakeholders have
+different interests in the security policies to be enforced
+in web applications.
 %
-\todo{Jonas: The use of HTTP proxy/web proxy/suffix proxy is still under consideration (by me), and we'll need to discuss and update this to reflect that.}
+This paper focuses on securing JavaScript code by \emph{inlining}
+security checks in the code before it is executed.
+%
+We achieve great flexibility in the deployment options by considering
+security monitors implemented as security-enhanced JavaScript interpreters.
+%
+%A key ingredient to open up for such flexibility is security monitoring in the form of a
+%security monitor for JavaScript, written itself in JavaScript.
+We propose three architectures for inlining security monitors for JavaScript: in
+the browser, as a web, and as a suffix proxy (web service). 
 %
 These architectures offer great flexibility: they are parametric in the monitor itself,
 and they provide freedom in the choice of where the monitor is
-injected, allowing to serve the interests of users, code developers, code
-integrators, and network administrators.
+injected, allowing to serve the interests of the different stake
+holders: the users, code developers, code
+integrators, as well as the system and network administrators.
 %
-A key ingredient to open up for such flexibility is security monitoring in the form of a
-security monitor for JavaScript, written itself in JavaScript.
-%
-Our case studies demonstrate successful deployment of a JavaScript
+We report on experiments that demonstrate successful deployment of a JavaScript
 information-flow monitor with all three architectures.
 \end{abstract}
 
@@ -181,71 +187,79 @@ this means that a faulty monitor not only jeopardizes the property enforced by
 the monitor, but might jeopardize the integrity of the entire browser.
 
 \paragraph{Pros and cons}
-\todo{Andrei: suggestion for uniform structure across the different
-  sections - start by the pros and
-  then present the cons ensuring that there is no less text for the
-  pros than for the cons :)}
-\todo{discuss}
+
 The main benefit of the approach is that the extension gives the user direct
 control over what security policies to enforce on the browsed pages. For
 instance, it is possible to have any security violations reported to the user,
 who can decide to allow or decline the violation. 
 
+Further, features that are challenging for other deployment methods, like
+\emph{innerHTML}, can be handled with relative ease.  \emph{innerHTML} is a
+property on all DOM nodes which allows the text representation of the node to
+be changed. Any change of the \emph{innerHTML} property causes the content of
+the node to be changed by parsing the changed property. For other deployment
+methods this means that the value written to \emph{innerHTML} must be
+validated, and possibly changed before the write is allowed to occur --- even
+though script nodes added using \emph{innerHTML} are not executed, event
+handlers might still be run.
+%
+For the extension based deployment this is not a problem.  Since the standard
+JavaScript execution engine is turned off it is safe to write to the
+\emph{innerHTML} property. The write will trigger the parser to rebuild the
+content of the node, but no scripts will be executed, and the result can be
+handled in a manner analogous to the scripts on a loading page.
+
+Additionally, the extension is entirely independent of the method of transport,
+since the extension can tell the browser to download the resource using XHR.
+Thus, unlike other methods of deployment it is unimportant whether the scripts
+are fetched using HTTP or HTTPS.
+
 Whether the requirements of conservativeness and transparency can be met
 depends on when the scripts are executed and that all functionality provided by
 the browser can be implemented by the monitor.
 
-Consider first the 
-order in which scripts are executed.
-%Andrei: this might be misinterpreted as the time it takes for scripts to execute 
-% execution time of scripts
-When web pages are loaded, the
-scripts of the pages are executed as they are encountered while parsing the web
-page. This means that the DOM tree of the page might not have been fully
-constructed when the scripts execute.  For scripts that interact with the DOM
-tree this is important, in particular if the script injects nodes into the
-tree. From a conservativeness and transparency perspective it is not entirely
-satisfactory to traverse the DOM tree of the page after it has been
+Consider first the order in which scripts are executed.  When web pages are
+loaded, the scripts of the pages are executed as they are encountered while
+parsing the web page. This means that the DOM tree of the page might not have
+been fully constructed when the scripts execute.  For scripts that interact
+with the DOM tree this is important, in particular if the script injects nodes
+into the tree. From a conservativeness and transparency perspective it is not
+entirely satisfactory to traverse the DOM tree of the page after it has been
 constructed.  Rather, scripts need to be executed as soon as they are added to
 the tree, which can be achieved using DOM mutation events.
 
-Another obstacle for \todo{conservativeness and?} transparency is that not all
+\todo{This is not nec. a threat to conservativeness}
+Another obstacle for transparency is that not all
 functionality provided by the browser can be reproduced by the monitor. One
 example of this is \emph{document.write}. The semantics of
-\emph{document.write} is loosely specified~\todo{reference} saying that \emph{document.write}
+\emph{document.write} is loosely specified~\cite{DOM:LVL2} saying that \emph{document.write}
 writes a string into the current position of the document.  Intuitively,
 \emph{document.write} writes into the character stream that is fed to the HTML
 parser, which, for obvious reason can have drastic effects on the parsing of
 the page. For security reasons extensions are prohibited from calling
 \emph{document.write}. Hence, when run via an extension the monitor cannot
 easily provide the full functionality of \emph{document.write}.
-\todo{explain what can be provided easily and what is the difficult
-  way to provide full functionality if any}
-\todo{example, ala div}
+Consider the following example, where \emph{document.write} is used inside
+a div element.
 
-On the positive side features like \emph{innerHTML} can be handled with
-relative ease. \emph{innerHTML} is a property on all DOM nodes which allows the
-text representation of the node to be changed. Any change of the
-\emph{innerHTML} property causes the content of the node to be changed by
-parsing the changed property. For other deployment methods this means that the
-value written to \emph{innerHTML} must be validated, and possibly changed
-before the write is allowed to occur --- even though script nodes added
-using \emph{innerHTML} are not executed, event handlers might still be run.
-%
-For the extension based deployment this
-is not a problem.  Since the standard JavaScript execution engine is turned off
-it is safe to write to the \emph{innerHTML} property. The write will trigger
-the parser to rebuild the content of the node, but no scripts will be executed, 
-and the result can be handled in a manner analogous to the scripts on
-a loading page.
+\begin{verbatim}
+  <div><script>document.write('</div><div>');</script></div>
+\end{verbatim}
 
-
+The result is two div elements, rather than the original one. Since the write
+takes place during the parsing of the page, the end tag written by
+\emph{document.write} is matched with the initial div tag, and the written
+start tag is matched with the final end tag. In order to implement
+\emph{document.write} the monitor would have to take the interaction with the
+between the content written by \emph{document.write}, the already parsed parts
+of the page and the remaining page into account. In essence, the monitor would
+have to reimplement the parsing process.  However, the practical use of
+\emph{document.write} is limited; the typical use case is to inject scripts
+into the page while loading. Such cases can be relatively easily identified
+from the string passed as a parameter, and the intended behavior can be
+implemented by the monitor.
 
 
-Finally, the extension is entirely independent of the method of transport,
-since the extension can tell the browser to download the resource using XHR.
-Thus, unlike other methods of deployment it is unimportant whether the scripts
-are fetched using HTTP or HTTPS.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -399,7 +413,8 @@ configure certain trusted web pages to run unmonitored for performance reasons.
 %\item Less general, only browsed pages
 %\end{itemize}
 
-
+\todo{Users is one perspective, but  service providers is another
+  important one}
 Certain users want to distinguish between trusted and untrusted web sites.
 A \emph{suffix proxy} particularly suits a user who wants to run certain untrusted 
 pages monitored to prevent leakage.
@@ -535,18 +550,22 @@ to handle them. The second traversal looks for JavaScript script nodes.  For
 each found script node, the source is downloaded using XHR if needed, and the
 monitor is used to execute the script.
 
-As discussed above, the downside of this method is that it breaks transparency,
-since the scripts all execute after the DOM tree has been constructed. It is
-possible to regain transparency by using DOM Mutation events instead of the
-DOMContentLoaded event.  The idea is to listen to any addition of script nodes
-to the DOM tree under the construction, and execute the script on addition.
-However, due to performance reasons the DOM Mutation events are deprecated, and
-are being replaced with DOM Mutation Observers. It is unclear whether the DOM
-Mutation Observers can be used to provide transparency, since events are
-grouped together, i.e., the mutation observer will not necessarily get an event
-each time a script is added, but one event covering all script additions.
-\todo{Andrei: Inconclusive ending - please finish on a punchy and positive
-  note! :)}
+As discussed above, the downside of this method is that it breaks
+conservativeness and transparency, since the scripts all execute after the DOM
+tree has been constructed. It is possible to regain transparency by using DOM
+Mutation events instead of the DOMContentLoaded event.  The idea is to listen
+to any addition of script nodes to the DOM tree under the construction, and
+execute the script on addition.  However, due to performance reasons the DOM
+Mutation events are deprecated, and are being replaced with DOM Mutation
+Observers. It is unclear whether the DOM Mutation Observers can be used to
+provide transparency, since events are grouped together, i.e., the mutation
+observer will not necessarily get an event each time a script is added, but one
+event covering all script additions.
+
+However, the exact order of loading is not standardized and differs between
+browsers. This forces scripts to be independent of such differences. Thus,
+using the method of executing scripts on the DOMContentLoaded event is not
+necessarily a problem in practice. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -668,8 +687,13 @@ protect the user input we must prevent it from being sent back to mlcalc.
 
 \subsection{Security experiments}
 %Jonas+Daniel
+In the following experiments we have utilized a web cache. There are two
+reasons for this. First, it makes the experiments reproducible --- web pages 
+are moving targets, subject to constant change. Second, it has allowed us
+to focus on the parts of the page where interesting information flows occur,
+by suppressing uninteresting scripts.
+\todo{I didn't say anything on the upgrades, since we haven't talked about NSU}
 
-\todo{Daniel: what about the caches ets - where do we speak about those}
 \paragraph{Browser extension}
 %:
 When the user loads mlcalc.com the extension traverses the page looking for
@@ -699,34 +723,24 @@ override the security error and allow the information to be sent.
 %1 page 
 \section{Related work}
 \label{sec:related}
+We first discuss original work on reference monitors and their
+inlining, then
+inlining security checks in the context of
+JavaScript, to relate to the architectures, 
+and finally inlining for information-flow, to relate to our instantiations
+of the architectures.
 
-Anderson~\cite{Anderson:72}
-
-Erlingsson and Schneider~\cite{DBLP:conf/nspw/ErlingssonS99}
-
-Language-based information-flow security encompasses a large body of
-work, see an overview~\cite{Sabelfeld:Myers:JSAC}. We briefly
-discuss inlining, followed by a consideration of most related work: on
-formalizations of purely dynamic and hybrid monitors for information flow.
-
-Inlined reference monitoring~\cite{Erlingsson:PhD04} is a mainstream
-technique for enforcing safety properties. 
-A prominent example in the context of the web is
-BrowserShield~\cite{Reis+:TWeb07} that instruments scripts with
-checks for known vulnerabilities.
-The focus of this paper is on inlining for information-flow security. Information flow is not
-a safety property~\cite{McLean:SSP94}, but can be approximated by
-safety properties
-(e.g.,~\cite{Boudol:FAST08,Sabelfeld:Russo:PSI09,Austin:Flanagan:PLAS09}),
-just like it is approximated in this paper (see the remark at the end of Section~\ref{sec:intro}).
-
-Chudnov and
-Naumann~\cite{Chudnov:Naumann:CSF10} have investigated an inlining
-approach to monitoring information flow. They inline a flow-sensitive
-hybrid monitor by Russo and
-Sabelfeld~\cite{Russo:Sabelfeld:CSF10}. The soundness of the inlined
-monitor is ensured by bisimulation of the inlined monitor and the
-original monitor.
+\paragraph{Inlined reference monitors}
+Anderson~\cite{Anderson:72} introduces reference monitors and
+outlines the principle requirements, recounted in Section~\ref{sec:intro}.
+%
+Erlingsson and Schneider~\cite{DBLP:conf/nspw/ErlingssonS99,Erlingsson:PhD04} instigate
+the area of inlining reference monitors. 
+This work studies both enforcement mechanisms and the policies
+that they are capable of enforcing, with the focus on safety properties.
+Inlined reference monitors
+have been proposed in a variety of languages and settings: from
+assembly code~\cite{DBLP:conf/nspw/ErlingssonS99} to Java~\cite{DBLP:conf/ecoop/DamJLP09,DBLP:journals/jcs/DamJLP10,DBLP:conf/ccs/DamGL12}.
 
 Ligatti et al. \cite{Ligatti05editautomata:} present a 
 general framework for security policies that can
@@ -734,15 +748,102 @@ be enforced by monitoring and modifying programs at runtime.
 They introduce \emph{edit automata} that enable
 monitors to stop, suppress, and modify the behavior of programs. 
 
-Magazinius et al.~\cite{DBLP:conf/nordsec/MagaziniusPS10}
 
-Magazinius et al.~\cite{DBLP:journals/compsec/MagaziniusRS12}
 
-Dam et al.~\cite{DBLP:conf/ecoop/DamJLP09,DBLP:journals/jcs/DamJLP10,DBLP:conf/ccs/DamGL12}
+\paragraph{Inlining for secure information flow}
+Language-based information-flow security~\cite{Sabelfeld:Myers:JSAC}
+features work on inlining monitor for security information flow.
+Secure information flow is not
+a safety property~\cite{McLean:SSP94}, but can be approximated by
+safety properties
+(e.g.,~\cite{Boudol:FAST08,Sabelfeld:Russo:PSI09,Austin:Flanagan:PLAS09}).
+
+Chudnov and
+Naumann~\cite{Chudnov:Naumann:CSF10} have investigated an inlining
+approach to monitoring information flow in a simple imperative language. They inline a flow-sensitive
+hybrid monitor by Russo and
+Sabelfeld~\cite{Russo:Sabelfeld:CSF10}. The soundness of the inlined
+monitor is ensured by bisimulation of the inlined monitor and the
+original monitor.
+
+Magazinius et
+al.~\cite{Magazinius+:SEC10,DBLP:journals/compsec/MagaziniusRS12} show
+how to cope with dynamic code evaluation instructions by inlining
+on-the-fly. 
+Dynamic code evaluation instructions are
+rewritten to make use of auxiliary functions that, when invoked at
+runtime, inject security checks into the available string. 
+The inlined code manipulates shadow variables to keep track of the
+security labels of the program's variables.
+See the discussion on the scalability of the shadow variable approach
+in Section~\ref{sec:intro}.
+
+
+\paragraph{Inlining for secure JavaScript}
+Inlining has been explored JavaScript, although often focusing on
+simple properties or preventing against fixed classes of vulnerabilities.
+A prominent example in the context of the web is
+BrowserShield~\cite{Reis+:TWeb07} by Reis et al. to instrument scripts with
+checks for known vulnerabilities.
+
+Yu et al.~\cite{Yu+:POPL07} and Kikuchi et
+al.~\cite{DBLP:conf/aplas/2008} present an instrumentation approach
+for JavaScript in the browser. Their framework allows instrumented
+code to encode edit automata-based policies.
+
+Phung et al.~\cite{DBLP:conf/ccs/PhungSC09} and 
+Magazinius et al.~\cite{DBLP:conf/nordsec/MagaziniusPS10} develop
+secure wrapping for self-protecting JavaScript. This approach is based
+on wrapping built-in JavaScript methods with secure wrappers that
+keep track of the security state and regulate access to the original built-ins.  
+
+
+
+Agten et al.~\cite{DBLP:conf/acsac/AgtenABPDP12} present JSand, a
+server-driven client-side sandboxing framework. The framework mediates
+attempts of untrusted code to access to resources in the browser.  
+In contrast to its predecessors such as
+ConScript~\cite{DBLP:conf/sp/MeyerovichL10}, WebJail~\cite{DBLP:conf/acsac/AckerRDPJ11}, and Contego~\cite{DBLP:conf/trust/LuoD11},
+the sandboxing is done purely at JavaScript level, requiring no
+browser modification.
+
+Despite the above progress on inlining security checks in JavaScript, achieving
+Information-flow security for client-side JavaScript by inlining has been out of
+reach for the current methods~\cite{Vogt+:NDSS07,DBLP:conf/pldi/ChughMJL09,Yip:Narula:Krohn:Morris:EUROSYS09,Jang+:CCS10,DeGroef+:CCS12}  that either
+modify the browser or perform the analysis out-of-the-browser.
 
 %1 page 
 \section{Conclusions}
 \label{sec:conc}
+Different stakeholders have different interests in the security of web
+applications. We have presented architectures for inlining security
+monitors, to take into account the security goals of the users, system and
+network administrators, and service providers and integrators.
+%
+We achieve great flexibility in the deployment options by considering
+security monitors implemented as security-enhanced JavaScript interpreters.
+%
+The architectures allow deploying such a monitor in a browser
+extension, web proxy, or web service.
+%
+We have reported on the security considerations and on the relative pros and
+cons for each architecture.
+%
+We have applied the architectures to inline an information-flow
+security monitor for JavaScript.
+%
+The security experiments show the
+flexibility in supporting the different policies on the sensitive
+information from the user. 
+%
+The performance experiments show reasonable overhead imposed by the
+architectures and point out to the relative pros and cons from the
+performance point of view. \todo{Make a bit more concrete when we have
+the experimental results.}
+
+Future work \todo{Daniel, Jonas: what's worth brining up here? Some
+tracks that give us the credibility - pointing out a rich research agenda, rather
+than pointing out the weaknesses of the current paper. :) }
 
 % Less than 4 pages 
 \bibliographystyle{plain}

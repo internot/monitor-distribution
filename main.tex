@@ -83,8 +83,94 @@ information-flow monitor with all three architectures.
 % 1-2 pages
 \section{Introduction}
 \label{sec:intro}
+JavaScript is at the heart of what defines the modern
+browsing experience on the web. JavaScript enables dynamic and interactive
+web pages as they are experienced by the users. Glued together,
+JavaScript code from different sources provides
+a rich execution platform. Reliance on third-party code is
+pervasive~\cite{Nikiforakis+:CCS12}, with the range of included code from
+format validation snippets, to helper
+libraries as jQuery, to helper services as Google Analytics, and all the way to fully-fledged services as
+Google Maps and Yahoo! Maps.
 
-\todo{Daniel: I assume that we give a description on IF and monitors for IF in general in this section}
+Securing JavaScript in the browser is an open and challenging
+problem. Third-party code inclusion exacerbates the
+problem. The \emph{same-origin policy (SOP)}, enforced by the modern
+browsers, allows free communication to the Internet origin of a given web page 
+while it
+places some restrictions on communication to Internet domains
+outside the origin. However, once third-party code is
+included in a web page, it is executed with the same privileges as the code
+that uses the libraries. This gives rise to a number of attack possibilities,
+such as leaking cookies and browsing history, location
+hijacking, behavioral tracking~\cite{Jang+:CCS10}. 
+
+An additional complication is that the different stakeholders have
+different interests in the security policies to be enforced
+in web applications. 
+%
+\emph{Users} might demand stronger guarantees than those
+offered by SOP when it is not desired that sensitive information leaves
+the browser. This makes sense in such popular web applications as loan
+calculators or password strength checkers.
+%
+\emph{Code developers} clearly have the interest in protecting the
+secrets associated with the web application. For example, they might
+allow access to the first-party cookie to code from third-party
+services, like Google (this is needed for the proper functionality of,
+i.e, Google Analytics), but under the condition that no sensitive part
+of the cookie is leaked to the third party.
+%
+\emph{Code integrators} might have different levels of trust to the
+different integrated components, perhaps depending on the origin. It
+is desirable to invoked different protection mechanisms for the
+different code that is integrated into the web application.
+%
+Finally, \emph{system and network administrators} also have a
+stake in the security goals. It might be desirable to configure the
+system and/or network so that certain users are protected to a larger
+extent or communication to certain web sites is restricted to a larger
+extent than to the others.  
+
+This paper proposes a novel approach to securing JavaScript in web
+applications in the presence of multiple stakeholders.
+%
+We focus on securing JavaScript code by \emph{inlining}
+security checks in the code before it is executed.
+%
+A key feature
+of our approach is focusing on security monitors implemented as
+security-enhanced JavaScript interpreters, written in JavaScript
+themselves. This, seemingly bold, approach leverages two-fold
+flexibility. First, having complete information about a given
+execution, security-enhanced JavaScript interpreters are able to
+enforce fine-grained security policies such as information-flow
+security. Second, because the monitor/interpreter is written itself in
+JavaScript, we achieve great flexibility in the deployment options.
+ 
+As our main contribution,
+we propose three architectures for inlining security monitors for JavaScript: in
+the browser, as a web, and as a suffix proxy (web service). 
+%
+These architectures offer great flexibility: they are parametric in the monitor itself,
+and they provide freedom in the choice of where the monitor is
+injected, allowing to serve the interests of the different stake
+holders: the users, code developers, code
+integrators, as well as the system and network administrators.
+
+We note that our approach is general: it applies to arbitrary security
+monitors, implemented as JavaScript interpreters. The 
+ Narcissus~\cite{Narcissus} project provides a baseline JavaScript
+ interpreter written in JavaScript, which can serve as a starting
+ point for supporting versatile security policies.
+
+In order to illustrate the usefulness of the approach, we present an
+instantiation of the architectures to enforce security information flow. 
+
+We report on security and performance experiments that demonstrate successful deployment of a JavaScript
+information-flow monitor with all three architectures.
+
+JSFlow~\cite{Hedin:Sabelfeld:CSF12,JSFlow} 
 
 When introducing reference monitoring, Anderson~\cite{Anderson:72}
 identifies the following requirements:
@@ -166,7 +252,7 @@ the monitor is written in JavaScript it is a simple matter to embed the
 monitor in an extension.
 This method was pioneered by Zaphod~\cite{Zaphod}, a
 FireFox extension, that replaces the standard JavaScript engine with the
-experimental Narcissus engine.
+experimental Narcissus~\cite{Narcissus} engine.
 
 \paragraph{Security considerations}
 
@@ -639,7 +725,7 @@ The features of wildcard certificates is that the user can browse HTTPS pages. T
 \label{sec:case}
 
 This section presents practical experiments made by instantiating the deployment
-methods with the JSFlow~\cite{JSFlow} information flow monitor. 
+methods with the JSFlow~\cite{Hedin:Sabelfeld:CSF12,JSFlow} information flow monitor. 
 
 \subsection{Monitor}
 
@@ -844,6 +930,13 @@ the experimental results.}
 Future work \todo{Daniel, Jonas: what's worth brining up here? Some
 tracks that give us the credibility - pointing out a rich research agenda, rather
 than pointing out the weaknesses of the current paper. :) }
+
+\paragraph{Acknowledgments}
+This work was funded by 
+the European Community under the ProSecuToR and WebSand projects
+and
+the Swedish research agencies SSF and VR.
+
 
 % Less than 4 pages 
 \bibliographystyle{plain}

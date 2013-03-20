@@ -292,20 +292,7 @@ JavaScript content is simply wrapped, whereas
 for HTML the web proxy has to identify and wrap all occurrences of inline 
 JavaScript, both script-tags and event handlers.
 
-Wrapping JavaScript requires converting the source code to a string, which can 
-be fed to the interpreting monitor. The source code is enclosed in quotes, and all 
-quotes within the source code is escaped to not interfere with the enclosing quotes.
-Additionally all escapes have to be escaped to not interfere with the escaped 
-quotes. Next, because new-lines may change the semantics of the code due to 
-JavaScript automatic semi-colon insertion, all new-line 
-characters must be replaced with the JavaScript string equivalent.
-These steps ensure that the wrapping cannot be evaded and that the source code 
-will be semantically equivalent when interpreted by the monitor.
 
-\begin{lstlisting}{}
-'Monitor.call("' + code.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\r?\n/g, "\\n\\\n") + '")';
-\end{lstlisting}
-\todo{Jonas: fix listing}
 
 Identifying inline JavaScript in HTML files is a complex task. 
 Due to the browser's error tolerant parsing of HTML-code, meaning that the 
@@ -573,7 +560,20 @@ each time a script is added, but one event covering all script additions.
 \item rewriting of JavaScript
 \end{itemize}
 
+Wrapping JavaScript requires converting the source code to a string, which can 
+be fed to the interpreting monitor. The source code is enclosed in quotes, and all 
+quotes within the source code is escaped to not interfere with the enclosing quotes.
+Additionally all escapes have to be escaped to not interfere with the escaped 
+quotes. Next, because new-lines may change the semantics of the code due to 
+JavaScript automatic semi-colon insertion, all new-line 
+characters must be replaced with the JavaScript string equivalent.
+These steps ensure that the wrapping cannot be evaded and that the source code 
+will be semantically equivalent when interpreted by the monitor.
 
+\begin{lstlisting}{}
+'Monitor.call("' + code.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\r?\n/g, "\\n\\\n") + '")';
+\end{lstlisting}
+\todo{Jonas: fix listing}
 
 \subsection{Suffix proxy (service)}
 

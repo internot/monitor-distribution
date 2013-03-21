@@ -127,7 +127,7 @@ of the cookie is leaked to the third party.
 %
 \emph{Code integrators} might have different levels of trust to the
 different integrated components, perhaps depending on the origin. It
-is desirable to invoked different protection mechanisms for the
+is desirable to invoke different protection mechanisms for the
 different code that is integrated into the web application.
 %
 Finally, \emph{system and network administrators} also have a
@@ -318,8 +318,7 @@ entirely satisfactory to traverse the DOM tree of the page after it has been
 constructed.  Rather, scripts need to be executed as soon as they are added to
 the tree, which can be achieved using DOM mutation events.
 
-\todo{This is not nec. a threat to conservativeness}
-Another obstacle for transparency is that not all
+Another obstacle for conservativeness and transparency is that not all
 functionality provided by the browser can be reproduced by the monitor. One
 example of this is \emph{document.write}. The semantics of
 \emph{document.write} is loosely specified~\cite{DOM:LVL2} saying that \emph{document.write}
@@ -355,6 +354,7 @@ implemented by the monitor.
 
 \subsection{Web proxy}
 
+\todo{Daniel: I'm not sure about the story how the secret info is in the browser}
 In a corporate setting, it is essential for a company to protect 
 sensitive information pertaining to the company, as well as their employees. 
 The common use of intranet portals to facilitate easy sharing of information 
@@ -383,15 +383,19 @@ all requests through the proxy, and the proxy rewrites the responses to include
 the monitor in each page. Modifying the response makes the method more 
 intrusive to the HTML content, but less intrusive to the users browser. 
 
+\todo{Strong wording; any. Later is in order to be effective is used}
 For the monitor to have any effect, all scripts bundled with 
 the page must be executed within the monitor. The scripts can either be inline, 
 e.g. included as part of the HTML page, or external, e.g. referenced in the 
 HTML page to be downloaded from an external source.
 Apart from including the monitor in all browsed pages, all inline and external 
 scripts must be identified and rewritten by the web proxy to direct execution to the monitor.
+\todo{A call to the monitor hard to understand - better use 'use the monitor to execute'?}
 This is achieved by wrapping all JavaScript source code, whether inline or external, in a call to the monitor.
 In the web proxy different rewriting rules apply depending on whether the 
-requested content is JavaScript, e.g. external, or HTML, e.g. inline. External 
+requested content is JavaScript, e.g. external, or HTML, e.g. inline. 
+\todo{Wrapped hard to understand}
+External 
 JavaScript content is simply wrapped, whereas 
 for HTML the web proxy has to identify and wrap all occurrences of inline 
 JavaScript, both script-tags and event handlers.
@@ -410,6 +414,7 @@ external scripts and rewrite them to ensure that they are executed within the
 monitored execution context. Failing to do so, script code will execute 
 along-side the monitor, giving it access to the sensitive information the 
 monitor was intended to protect. 
+\todo{Move this sentence up before last?}
 This effort continues as the monitor executes. Various JavaScript features, such as 
 \emph{document.write}, allow an arbitrary string to be 
 interpreted and rendered as HTML. Any scripts present in the string will be 
@@ -437,7 +442,8 @@ and all occurrences are wrapped to direct execution to the monitor.
 \todo{Jonas: Need to expand.}
 
 \paragraph{Pros and cons}
-
+\todo{Mass config is used; even chalmers uses images, i.e., nothing is configured per machine anyhow - browser independence is really
+the key?}
 In a corporate environment there are several benefits of using a web proxy 
 compared to a browser extension. As an example, a web proxy can be centrally 
 administered and configured, whereas a browser extension requires individual installation 
@@ -460,7 +466,9 @@ latency in comparison to that of a usual web proxy.
 As an individual user, the main benefits are browser independence and  
 increased security without having to modify the browser. How the proxy is 
 deployed determines the users influence over 
-the policies enforced. If deployed locally, the user has full influence over 
+the policies enforced.
+\todo{explain what locally means?}
+If deployed locally, the user has full influence over 
 how policies are to be used, while for a remotely deployed proxy, the user is 
 in the hand of the proxy administrator. 
 
@@ -484,7 +492,7 @@ configure certain trusted web pages to run unmonitored for performance reasons.
 %\item Server-side and client-side configuration possible?
 %\item Less general, only browsed pages
 %\end{itemize}
-
+\todo{Daniel: general comment - this section is mostly generic; speaks very little about the monitor}
 \todo{Users is one perspective, but  service providers is another
   important one}
 Certain users want to distinguish between trusted and untrusted web sites.
@@ -545,7 +553,7 @@ The consequence is that the suffix proxy has the opportunity to effectively disa
 policy by adding a JavaScript snippet that sets the \emph{document.domain} property
 to the proxy domain. This flexibility is beneficial to a monitor enforcing a policy that, e.g., is aiming 
 at replacing the same-origin policy.
-
+\todo{Daniel: yes, if expanded a bit}
 \todo{Jonas: Does the last sentence make sense?}
 
 
@@ -567,6 +575,7 @@ all requests. %It can be seen as though a suffix proxy is off by default, wherea
 Whether to apply the monitor is as simple as browsing to an alternate URL.
 
 
+\todo{Integration stuff missing from intro? Or did I read too fast?}
 \subsection{Integrator}
 
 %The mashup integrator includes the monitor and decides which JavaScript should 

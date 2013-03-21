@@ -62,8 +62,8 @@ security monitors implemented as security-enhanced JavaScript interpreters.
 %
 %A key ingredient to open up for such flexibility is security monitoring in the form of a
 %security monitor for JavaScript, written itself in JavaScript.
-We propose three architectures for inlining security monitors for JavaScript: in
-the browser, as a web, and as a suffix proxy (web service). 
+We propose architectures for inlining security monitors for JavaScript: via
+browser, via web proxy, and via suffix proxy (web service). 
 %
 These architectures offer great flexibility: they are parametric in the monitor itself,
 and they provide freedom in the choice of where the monitor is
@@ -72,7 +72,7 @@ holders: the users, code developers, code
 integrators, as well as the system and network administrators.
 %
 We report on experiments that demonstrate successful deployment of a JavaScript
-information-flow monitor with all three architectures.
+information-flow monitor with the different architectures.
 \end{abstract}
 
 
@@ -98,8 +98,9 @@ a rich execution platform. Reliance on third-party code is
 pervasive~\cite{Nikiforakis+:CCS12}, with the range of included code from
 format validation snippets, to helper
 libraries as jQuery, to helper services as Google Analytics, and all the way to fully-fledged services as
-Google Maps and Yahoo! Maps.
+Google Maps and Yahoo!\@ Maps.
 
+\paragraph{Securing JavaScript}
 Securing JavaScript in the browser is an open and challenging
 problem. Third-party code inclusion exacerbates the
 problem. The \emph{same-origin policy (SOP)}, enforced by the modern
@@ -109,23 +110,26 @@ places some restrictions on communication to Internet domains
 outside the origin. However, once third-party code is
 included in a web page, it is executed with the same privileges as the code
 that uses the libraries. This gives rise to a number of attack possibilities,
-such as leaking cookies and browsing history, location
-hijacking, behavioral tracking~\cite{Jang+:CCS10}. 
+such as location
+hijacking, behavioral tracking, leaking cookies, and sniffing browsing history~\cite{Jang+:CCS10}. 
 
+\paragraph{Security policy stakeholders}
 An additional complication is that the different stakeholders have
 different interests in the security policies to be enforced
 in web applications. 
 %
 \emph{Users} might demand stronger guarantees than those
 offered by SOP when it is not desired that sensitive information leaves
-the browser. This makes sense in such popular web applications as loan
-calculators or password strength checkers.
+the browser. This makes sense in such popular web applications as
+password strength checkers or loan
+calculators.
 %
 \emph{Code developers} clearly have the interest in protecting the
 secrets associated with the web application. For example, they might
 allow access to the first-party cookie to code from third-party
-services, like Google (this is needed for the proper functionality of,
-i.e, Google Analytics), but under the condition that no sensitive part
+services, like Google (this is needed for the proper functioning of
+such services
+as Google Analytics), but under the condition that no sensitive part
 of the cookie is leaked to the third party.
 %
 \emph{Code integrators} might have different levels of trust to the
@@ -139,6 +143,7 @@ system and/or network so that certain users are protected to a larger
 extent or communication to certain web sites is restricted to a larger
 extent than to the others.  
 
+\paragraph{Secure inlining for JavaScript}
 This paper proposes a novel approach to securing JavaScript in web
 applications in the presence of multiple stakeholders.
 %
@@ -151,13 +156,14 @@ security-enhanced JavaScript interpreters, written in JavaScript
 themselves. This, seemingly bold, approach leverages two-fold
 flexibility. First, having complete information about a given
 execution, security-enhanced JavaScript interpreters are able to
-enforce fine-grained security policies such as information-flow
-security. Second, because the monitor/interpreter is written itself in
+enforce fine-grained security policies such as \emph{information-flow
+security}~\cite{Sabelfeld:Myers:JSAC}. Second, because the monitor/interpreter is written itself in
 JavaScript, we achieve great flexibility in the deployment options.
- 
+
+\paragraph{Architectures for inlinig security monitors}
 As our main contribution,
-we propose three architectures for inlining security monitors for JavaScript: in
-the browser, as a web, and as a suffix proxy (web service). 
+we propose architectures for inlining security monitors for JavaScript: via
+browser, via web proxy, and via suffix proxy (web service). 
 %
 These architectures offer great flexibility: they are parametric in the monitor itself,
 and they provide freedom in the choice of where the monitor is
@@ -168,16 +174,8 @@ integrators, as well as the system and network administrators.
 We note that our approach is general: it applies to arbitrary security
 monitors, implemented as JavaScript interpreters. The 
  Narcissus~\cite{Narcissus} project provides a baseline JavaScript
- interpreter written in JavaScript, which can serve as a starting
+ interpreter written in JavaScript, an excellent starting
  point for supporting versatile security policies.
-
-In order to illustrate the usefulness of the approach, we present an
-instantiation of the architectures to enforce security information flow. 
-
-We report on security and performance experiments that demonstrate successful deployment of a JavaScript
-information-flow monitor with all three architectures.
-
-JSFlow~\cite{Hedin:Sabelfeld:CSF12,JSFlow} 
 
 When introducing reference monitoring, Anderson~\cite{Anderson:72}
 identifies the following requirements:
@@ -192,34 +190,57 @@ In addition, requirements of \emph{conservativeness} and
 ensure that no new behaviors are added or removed by monitors when the
 original program is secure in the first place.
 
-This paper proceeds as follows. Section~
+
+\paragraph{Instantiation}
+In order to illustrate the usefulness of the approach, we present an
+instantiation of the architectures to enforce secure information flow
+in JavaScript. Information-flow control for JavaScript allows tracking
+fine-grained security policies for web applications. Typically,
+information sources  and sinks are given sensitivity labels, for
+example, corresponding to the different Internet origins. The goal of
+information-flow enforcement is to prevent \emph{explicit flows}, via
+direct information propagation by assignment commands, as well as
+\emph{implicit flows} via the control flow in the program.
+
+Our focus on information flow is justified by
+the nature of the JavaScript attacks from the empirical
+studies~\cite{Jang+:CCS10,Nikiforakis+:CCS12} that demonstrate the current security
+practices fail to  prevent 
+location
+hijacking, behavioral tracking, leaking cookies, and sniffing browsing
+history. Jang et al. ~\cite{Jang+:CCS10} report on both explicit and
+implicit flows exploited in the empirical studies.
+%
+In addition, inlining by security-enhanced interpreting is a
+particularly suitable choice for tracking information flow in
+JavaScript, because alternative approaches to inlining suffer from
+scalability problems, as discussed in Section~\ref{sec:related}. 
+
+Our instantiation results demonstrate how to deploy
+\emph{JSFlow}~\cite{Hedin:Sabelfeld:CSF12,JSFlow}, secure information-flow
+monitor for JavaScript by Hedin et al., via
+browser, via web proxy, and via suffix proxy (web service).
+%
+We report on security and performance experiments that demonstrate successful deployment of a JavaScript
+information-flow monitor with the different architectures.
 
 
-
-\paragraph{Shadowing}
-\todo{Daniel: me must make sure to differentiate between the inlining ala older papers and the inlining we do here.}
-
-Inline the monitor into the JavaScript code. Appealing idea, previous work for 
-toy languages, but difficult in practice. Abandoned due to complexity with 
-coercion in expressions.
-
-
-A growing number of web pages provide not only content, but services to their
-users. In order to provide the service the provider requires the user to
-provide potentially sensitive information such as user credentials, and payment
-information. For such pages it is in the interest of the user that the
-sensitive information is only disclosed to the intended recipient.  Today, no
-browsers offer such guarantees. However, modern browsers allow the
-functionality of the browser to be enriched via \emph{extensions}. 
+% A growing number of web pages provide not only content, but services to their
+% users. In order to provide the service the provider requires the user to
+% provide potentially sensitive information such as user credentials, and payment
+% information. For such pages it is in the interest of the user that the
+% sensitive information is only disclosed to the intended recipient.  Today, no
+% browsers offer such guarantees. However, modern browsers allow the
+% functionality of the browser to be enriched via \emph{extensions}. 
 
 
-\paragraph{Third-party code integration}
+%\paragraph{Third-party code integration}
 %\label{sec:mash}
 
-Describe mashups, difficulties in mashup security and information flows in mashups.
+%Describe mashups, difficulties in mashup security and information flows in mashups.
 
 %4 pages 
-\section{Architecture}
+\section{Architectures}
 \label{sec:arch}
 
 This section presents the different architectures for inlining
@@ -240,7 +261,7 @@ the functionality of the browser to be enriched via \emph{extensions}. By
 deploying the security monitor via a browser extension it is possible to enforce
 properties not normally offered by browsers.  Regardless of whether the user is
 private or corporate, browser extensions provide a simple 
-install-once-protect-always deployment method.
+install-once deployment method.
 
 
 \paragraph{Description}
@@ -272,8 +293,8 @@ Since all scripts are executed using the monitor complete mediation is implied.
 In addition, this also implies that the deployment method is sound given that
 the monitor is sound. 
 
-As described above browser extension are installed into the browser. In order
-to be able to enrich the functionality of the browser the extensions run with
+As described above, browser extension are installed into the browser. In order
+to be able to enrich the functionality of the browser, the extensions run with
 the same privileges as the browser. This entails that the monitor will be
 running with elevated privileges. Compared to the other methods of deployment
 this means that a faulty monitor not only jeopardizes the property enforced by
@@ -365,8 +386,8 @@ within the company puts this sensitive information in the web browser.
 Meanwhile, employees are using the same web browsers for accessing untrusted content on 
 the Internet. Naturally, it is in the interest of the company to ensure that 
 the sensitive information is not accessible outside the domain of the company.
-In this distributed setting a \emph{web proxy} is a convenient way of delivering 
-the security monitor to all clients with minimal effort. 
+In this distributed setting, a \emph{web proxy} is a convenient way of delivering 
+the security monitor to all clients with little effort. 
 
 A web proxy is also appealing to a private user, as it includes the monitor in all browsed pages without modifying 
 the browser itself. By configuring the browser to use a web proxy, the user can ensure the security 
@@ -376,7 +397,7 @@ of sensitive data.
 A proxy specific to relaying HTTP requests is often referred to as a web proxy.
 All modern browsers support using web proxies to relay requests.
 It allows all outgoing HTTP requests to be 
-relayed through the proxy server. The web proxy will act as a middle-man, making 
+relayed through the proxy server. The web proxy will act as a man-in-the-middle, making 
 requests on behalf of the client. In the process, the proxy has the 
 opportunity of modifying both the request and the response. 
 As a monitor deployment method the opportunity to rewrite the response is 
@@ -384,19 +405,19 @@ of interest. A web proxy is a convenient way to include the monitor in browsed p
 modifying the browser itself. The browser is configured to relay 
 all requests through the proxy, and the proxy rewrites the responses to include 
 the monitor in each page. Modifying the response makes the method more 
-intrusive to the HTML content, but less intrusive to the users browser. 
+intrusive to the HTML content, but less intrusive to the user's browser. 
 
 \todo{Strong wording; any. Later is in order to be effective is used}
 For the monitor to have any effect, all scripts bundled with 
 the page must be executed within the monitor. The scripts can either be inline, 
-e.g. included as part of the HTML page, or external, e.g. referenced in the 
+e.g., included as part of the HTML page, or external, e.g., referenced in the 
 HTML page to be downloaded from an external source.
 Apart from including the monitor in all browsed pages, all inline and external 
 scripts must be identified and rewritten by the web proxy to direct execution to the monitor.
 \todo{A call to the monitor hard to understand - better use 'use the monitor to execute'?}
 This is achieved by wrapping all JavaScript source code, whether inline or external, in a call to the monitor.
-In the web proxy different rewriting rules apply depending on whether the 
-requested content is JavaScript, e.g. external, or HTML, e.g. inline. 
+In the web proxy, different rewriting rules apply depending on whether the 
+requested content is JavaScript, e.g., external, or HTML, e.g., inline. 
 \todo{Wrapped hard to understand}
 External 
 JavaScript content is simply wrapped, whereas 
@@ -507,13 +528,13 @@ A \emph{suffix proxy} is a specialized web proxy, with a different approach to r
 Instead of the common practice of configuring the browser to relay all requests through the web proxy,
 the suffix proxy makes use of DNS wildcards to redirect the request to it.
 Typically, the user navigates to a 
-web application associated with the proxy and enters the target URL, e.g. \emph{http://google.com/search?q=proxy}, in 
-an input field. To direct the request to the proxy the target domain name is altered
-by appending the domain name of the proxy, making the target domain a sub-domain of the proxy domain, e.g. \emph{http://google.com.proxy.domain/search?q=proxy}. 
+web application associated with the proxy and enters the target URL, e.g., \emph{http://google.com/search?q=proxy}, in 
+an input field. To direct the request to the proxy, the target domain name is altered
+by appending the domain name of the proxy, making the target domain a sub-domain of the proxy domain, e.g., \emph{http://google.com.proxy.domain/search?q=proxy}. 
 The browser is then navigated to the modified URL.
 The suffix proxy is set up such
 that all requests to any sub-domain of the proxy domain are directed to the proxy domain, 
-e.g. in DNS terms \emph{*.proxy.domain $\Rightarrow$ proxy.domain}. 
+e.g., in DNS terms \emph{*.proxy.domain $\Rightarrow$ proxy.domain}. 
 A web application on the proxy domain is set up to listen for such sub-domain requests.
 When a request for a sub-domain is registered, it is intercepted by the web application.
 The web application strips the proxy domain from the URL, leaving the original target URL, 
@@ -539,7 +560,7 @@ include the monitor in the response.
 A consequence of modifying the domain name is that the domain of the
 target URL and the modified URL no longer matches, making them two 
 separate origin as per the same-origin policy. This implies that all information in 
-the browser specific to the target origin, e.g. cookies and local storage, 
+the browser specific to the target origin, e.g., cookies and local storage, 
 are no longer associated with the modified origin, and vice versa. This results 
 in a clean separation between the proxied and unproxied content.  
 
@@ -592,7 +613,8 @@ Whether to apply the monitor is as simple as browsing to an alternate URL.
 %\item- Run independent part of the code outside the monitor, possible performance gains
 %\end{itemize}
 
-Today web pages make extensive use of third-party code to add features 
+As discussed earlier, today's
+ web pages make extensive use of third-party code to add features 
 and functionality to the page. The code is retrieved from external resources in 
 the form of JavaScript libraries. The third-party code is considered to be part 
 of the document and is executed in the same context as any other script 
@@ -604,9 +626,10 @@ is to run untrusted code in the monitored context, while running trusted code ou
 monitor. 
 
 \paragraph{Description}
-Integrator driven monitor inclusion is suitable for an integrating web page 
-that makes use of third-party code to extend the 
-functionality to the page. The security of the information contained on the web 
+Integrator-driven monitor inclusion is suitable for an integrating web page 
+that makes use of third-party code.
+% to extend the functionality to the page. 
+The security of the information contained on the web 
 page relies not only on the web page itself, but also on the security of all 
 included libraries. To protect against malicious or compromised libraries, 
 an integrator can execute part of, or all of the code in the monitor.
@@ -620,7 +643,7 @@ response to direct execution of the library to the monitor.
 
 \paragraph{Pros and cons}
 
-This developer centric approach gives the integrator full control over the 
+This developer-centric approach gives the integrator full control over the 
 configuration of the monitor and the policies to enforce. From the perspective of a user this 
 approach is not intrusive to the browser, requires no setup or configuration, 
 and provides additional security for the users sensitive information. However, 
@@ -644,7 +667,7 @@ if the trusted code is computation heavy.
 %Describe features and drawbacks with each implementation.
 %For each deployment option, we describe how it is implemented and show how the integrity of the monitor
 %and complete mediation are achieved.
-This section details our implementations of the three architectures
+This section details our implementations of the architectures
 from the previous section. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -717,7 +740,7 @@ HTML. It would require the search
 algorithm to account for all parser quirks in regard to malformed HTML;
 a task which is at least as complex as actually parsing the document.
 %As an example it is not regular expressions 
-In the web proxy Mozilla's JavaScript-based HTML-parser \emph{dom.js}~\cite{Mozilla:dom.js}, is used 
+In the web proxy, Mozilla's JavaScript-based HTML-parser \emph{dom.js}~\cite{Mozilla:dom.js}, is used 
 to parse the page. The DOM-tree can then be traversed to properly localize 
 all inline script code. All occurences of JavaScript code are rewritten as 
 outlined in Listing~\ref{lst:wrap-monitor}, wrapped in a call to the monitor.
@@ -742,7 +765,7 @@ The monitor must be added as the first script to be executed.
 \paragraph{Additional rewriting of HTML}
 
 
-The web proxy was used as a foundation for the suffix proxy, which is extended
+The web proxy provides a foundation for the suffix proxy, which is extended
 with support for the wildcard subdomain approach and an additional rewriting step. 
 To support wildcard subdomains, the proxy must strip the proxy domain to extract 
 the target domain from the request. 
@@ -764,7 +787,7 @@ identify and rewrite the domain of all such external references.
 Recall from the previous section the rather complex procedure required to add HTTPS support.
 Implementing support for HTTPS is easier in the suffix proxy compared to the web proxy. 
 Given that the suffix proxy builds on DNS wildcards, it is sufficient to issue a certificate
-for all subdomains of the proxy domain, e.g. \emph{*.proxy.domain}. Such a 
+for all subdomains of the proxy domain, e.g., \emph{*.proxy.domain}. Such a 
 certificate is valid for all target URLs relayed through the proxy.
 The main benefit of wildcard certificates is that the user can browse HTTPS pages. 
 The drawback is that the user must trust the monitor to correctly verify the 
@@ -802,11 +825,11 @@ iptables -t nat -A PREROUTING -p tcp --dport 1:65535 -j REDIRECT --to-ports 80
 \label{sec:case}
 
 This section presents practical experiments made by instantiating the deployment
-methods with the JSFlow~\cite{Hedin:Sabelfeld:CSF12,JSFlow} information flow monitor. 
+methods with the JSFlow~\cite{Hedin:Sabelfeld:CSF12,JSFlow} information-flow monitor. 
 
 \subsection{Monitor}
 
-JSFlow is a dynamic information flow monitor by tagging values with runtime
+JSFlow is a dynamic information-flow monitor by tagging values with runtime
 security labels used for security decisions. Whenever a potential security
 violation has been encountered the monitor stops the execution with a security
 error. 
@@ -938,9 +961,16 @@ rewritten to make use of auxiliary functions that, when invoked at
 runtime, inject security checks into the available string. 
 The inlined code manipulates shadow variables to keep track of the
 security labels of the program's variables.
-See the discussion on the scalability of the shadow variable approach
-in Section~\ref{sec:intro}.
 
+However, there are fundamental limits in the scalability of the shadow-variable approach.
+The execution of a vast majority of the JavaScript operations (with
+the prime example being the \lstinline{+} operation) is dependent on the types of
+their
+parameters. This might lead to  
+coercions that, in turn, invoke such functions as \lstinline{toString} and
+\lstinline{valueOf} whose execution and any possible side effects need to be taken
+into account. This implies that the inlined code ends up emulating the
+interpreter, leaving no advantages to the shadow-variable approach.
 
 \paragraph{Inlining for secure JavaScript}
 Inlining has been explored JavaScript, although often focusing on

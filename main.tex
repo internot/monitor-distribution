@@ -361,7 +361,7 @@ the sensitive information is not accessible outside the domain of the company.
 In this distributed setting a \emph{web proxy} is a convenient way of delivering 
 the security monitor to all clients with minimal effort. 
 
-This is also appealing to a private user, as it includes the monitor in all browsed pages without modifying 
+A web proxy is also appealing to a private user, as it includes the monitor in all browsed pages without modifying 
 the browser itself. By configuring the browser to use a web proxy, the user can ensure the security 
 of sensitive data.
 
@@ -391,24 +391,6 @@ requested content is JavaScript, e.g. external, or HTML, e.g. inline. External
 JavaScript content is simply wrapped, whereas 
 for HTML the web proxy has to identify and wrap all occurrences of inline 
 JavaScript, both script-tags and event handlers.
-
-
-
-Identifying inline JavaScript in HTML files is a complex task. 
-Due to the browser's error tolerant parsing of HTML-code, meaning that the 
-browser will make a best-effort attempt to make sense of malformed fragments of 
-HTML, simple search and replace is not satisfactory. It would require the search 
-algorithm to account for all parser quirks in regard to malformed HTML.
-A task which is at least as complex as actually parsing the document.
-%As an example it is not regular expressions 
-In the web proxy, a HTML-parser is utilized 
-to parse the page. The parse-tree can then be traversed to properly localize 
-all inline script code. All occurences of JavaScript code is rewritten as 
-outlined above, wrapped in a call to the monitor.
-Because all instances of the modified script code will reference the monitor, 
-The monitor must be added as the first script to be executed.
-
-\todo{Jonas: perhaps show a code snippet which would be difficult to search and replace? Example?}
 
 
 \paragraph{Security considerations}
@@ -446,7 +428,7 @@ the proxy must be trusted by the user, either because the key is added to
 the users list of trusted CAs, or signed by one that the user trusts.
 
 Complete mediation is achieved since all requests are relayed through the proxy 
-and all occurrences is wrapped to direct execution to the monitor.
+and all occurrences are wrapped to direct execution to the monitor.
 
 \todo{Jonas: Need to expand.}
 
@@ -463,8 +445,8 @@ need to adapt the web proxy to suit a particular browser, allowing
 users their choice of browser.
 Neither is it intrusive to the browser, as the user is not required to modify the 
 browser in order to take advantage of security benefits. 
-However, there 
-are certain drawbacks as well. 
+%However, there 
+%are certain drawbacks as well. 
 
 In order for the monitor to be effective, the web proxy 
 has to identify all scripts. The process of doing so may require additional 
@@ -546,11 +528,6 @@ identify and rewrite the domain of all such external references.
 %be inlined in all external requests. 
 
 
-Recall from the previous section the rather complex procedure required to add HTTPS support.
-Implementing support for HTTPS is easier in the suffix proxy compared to the web proxy. 
-Given that the suffix proxy builds on DNS wildcards, it is sufficient to issue a certificate
-for all subdomains of the proxy domain, e.g. \emph{*.proxy.domain}. Such a 
-certificate is valid for all target URLs relayed through the proxy.
 
 
 \paragraph{Security considerations}
@@ -578,17 +555,28 @@ at replacing the same-origin policy.
 
 \todo{Jonas: Does the last sentence make sense?}
 
+Recall from the previous section the rather complex procedure required to add HTTPS support.
+Implementing support for HTTPS is easier in the suffix proxy compared to the web proxy. 
+Given that the suffix proxy builds on DNS wildcards, it is sufficient to issue a certificate
+for all subdomains of the proxy domain, e.g. \emph{*.proxy.domain}. Such a 
+certificate is valid for all target URLs relayed through the proxy.
+
 
 \paragraph{Pros and cons}
 
-While sharing a common foundation, there are several differences between a suffix proxy compared to a traditional 
-web proxy. One beneficial difference is that it does not require any configuration and leaves the browser 
-completely unchanged. The user does not have to be concerned with the integrity of the browser
+While sharing a common foundation, there are several differences between a 
+suffix proxy compared to a traditional web proxy. The differences lie, not in 
+the way the monitor is included in the page, but in the way the proxy is 
+addressed. One beneficial difference is that it does not require any 
+configuration and leaves the browser completely unchanged. The user can take
+advantage of the security benefits without being concerned with the integrity 
+of the browser.
 
 Another significant difference is that the suffix proxy lets the user decide which pages to proxy on a 
 per-domain basis, making it more general than a traditional web proxy that covers 
-all requests. It can be seen as though a suffix proxy is off by default, whereas a web 
-proxy is on by default. Whether to apply the monitor is as simple as browsing to an alternate URL.
+all requests. %It can be seen as though a suffix proxy is off by default, whereas a web 
+%proxy is on by default. 
+Whether to apply the monitor is as simple as browsing to an alternate URL.
 
 
 \subsection{Integrator}
@@ -604,24 +592,48 @@ proxy is on by default. Whether to apply the monitor is as simple as browsing to
 %\item- Run independent part of the code outside the monitor, possible performance gains
 %\end{itemize}
 
-Today web pages make extensive use of libraries to extend the functionality of 
-the web page. As the code is executed in the context of the web page, it can 
-access the content of the page. This requires that the code integrator must 
+Today web pages make extensive use of third-party code to add features 
+and functionality to the page. The code is retrieved from external resources in 
+the form of JavaScript libraries. The third-party code is considered to be part 
+of the document and is executed in the same context as any other script 
+included in the document. This gives the code full access to all the information 
+of the page, including sensitive information such as form data and cookies. 
+This requires that the code integrator must 
 trust the library not to abuse this privilege. To a developer, an appealing alternative 
-is to run untrusted code monitored, while running trusted code outside of the 
-monitor. This can be achieved including the monitor in the page and loading the 
+is to run untrusted code in the monitored context, while running trusted code outside of the 
+monitor. 
+
+\paragraph{Description}
+Integrator driven monitor inclusion is suitable for an integrating web page 
+that makes use of third-party code to extend the 
+functionality to the page. The security of the information contained on the web 
+page relies not only on the web page itself, but also on the security of all 
+included libraries. To protect against malicious or compromised libraries, 
+an integrator can execute part of, or all of the code in the monitor.
+This can be achieved by manually including the monitor in the page and loading the 
 third-party code through the suffix proxy. The suffix proxy will rewrite the 
-response to direct execution of the library to the monitor. This can also result in performance 
-gains compared to running all code monitored, since a monitor typically introduces 
-a runtime overhead. Compared to the suffix proxy, integrator driven monitor 
+response to direct execution of the library to the monitor. 
+
+\paragraph{Security considerations}
+
+\todo{Jonas: need help defining the security considerations}
+
+\paragraph{Pros and cons}
+
+This developer centric approach gives the integrator full control over the 
+configuration of the monitor and the policies to enforce. From the perspective of a user this 
+approach is not intrusive to the browser, requires no setup or configuration, 
+and provides additional security for the users sensitive information. However, 
+it also limits the users control over which policies are applied to user information. 
+
+Compared to the suffix proxy, integrator driven monitor 
 inclusion is deliberately intrusive to the HTML code. Such specialized use of the suffix 
 proxy allows a developer to specify precisely which code will be subject to 
 monitoring, making the approach even more general. 
+Since a monitor typically introduces a runtime overhead this approach can also 
+result in performance gains compared to running all code monitored. Especially 
+if the trusted code is computation heavy.
 
-This developer centric approach gives the developer full control over the 
-configuration of the monitor and the policies to enforce. To a user this 
-approach is not intrusive to the browser, requires no setup or configuration, 
-but also limits the users control. 
 
 
 % 2-3 pages 
@@ -673,25 +685,46 @@ necessarily a problem in practice.
 \begin{itemize}
 \item Proxy implemented in NodeJS
 %\item- rewrite all or nothing, problem with passing configuration to proxy
-\item DOM parsing to find scripts, compared to regular expressions
-\item difficult to identify all contexts (SVG, CSS and PDF can be rewritten, not flash)
-\item rewriting of JavaScript
+%\item DOM parsing to find scripts, compared to regular expressions
+%\item difficult to identify all contexts (SVG, CSS and PDF can be rewritten, not flash)
+%\item rewriting of JavaScript
 \end{itemize}
+
+The web proxy is implemented as a NodeJS~\cite{NodeJS} server. 
 
 Wrapping JavaScript requires converting the source code to a string, which can 
 be fed to the interpreting monitor. The source code is enclosed in quotes, and all 
-quotes within the source code is escaped to not interfere with the enclosing quotes.
+quotes within the source code are escaped to not interfere with the enclosing quotes.
 Additionally all escapes have to be escaped to not interfere with the escaped 
 quotes. Next, because new-lines may change the semantics of the code due to 
 JavaScript automatic semi-colon insertion, all new-line 
 characters must be replaced with the JavaScript string equivalent.
-These steps ensure that the wrapping cannot be evaded and that the source code 
+These steps, exemplified in Listing~\ref{lst:wrap-monitor}, ensure that the wrapping cannot be evaded and that the source code 
 will be semantically equivalent when interpreted by the monitor.
 
-\begin{lstlisting}{}
-'Monitor.call("' + code.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\r?\n/g, "\\n\\\n") + '")';
+\begin{lstlisting}[label=lst:wrap-monitor, caption=Example of monitor wrapping]
+code = 'Monitor.call("' + code.replace(/\\/g, '\\\\')
+	.replace(/"/g, '\\"').replace(/\r?\n/g, "\\n\\\n")
+	+ '")';
 \end{lstlisting}
 \todo{Jonas: fix listing}
+
+
+Identifying inline JavaScript in HTML files is a complex task. 
+Simple search and replace is not satisfactory due to the browser's error tolerant parsing of HTML-code, meaning that the 
+browser will make a best-effort attempt to make sense of malformed fragments of 
+HTML. It would require the search 
+algorithm to account for all parser quirks in regard to malformed HTML;
+a task which is at least as complex as actually parsing the document.
+%As an example it is not regular expressions 
+In the web proxy Mozilla's JavaScript-based HTML-parser \emph{dom.js}~\cite{Mozilla:dom.js}, is used 
+to parse the page. The DOM-tree can then be traversed to properly localize 
+all inline script code. All occurences of JavaScript code are rewritten as 
+outlined in Listing~\ref{lst:wrap-monitor}, wrapped in a call to the monitor.
+Because all instances of the modified script code will reference the monitor, 
+The monitor must be added as the first script to be executed.
+
+\todo{Jonas: perhaps show a code snippet which would be difficult to search and replace? Example?}
 
 \subsection{Suffix proxy (service)}
 

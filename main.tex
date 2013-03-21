@@ -369,7 +369,7 @@ of sensitive data.
 A proxy specific to relaying HTTP requests is often referred to as a web proxy.
 All modern browsers support using web proxies to relay requests.
 It allows all outgoing HTTP requests to be 
-relayed through the proxy server. The web proxy will act as a middle-man, making 
+relayed through the proxy server. The web proxy will act as a man-in-the-middle, making 
 requests on behalf of the client. In the process, the proxy has the 
 opportunity of modifying both the request and the response. 
 As a monitor deployment method the opportunity to rewrite the response is 
@@ -380,7 +380,7 @@ the monitor in each page. Modifying the response makes the method more
 intrusive to the HTML content, but less intrusive to the users browser. 
 
 \todo{Strong wording; any. Later is in order to be effective is used}
-For the monitor to have any effect, all scripts bundled with 
+For the monitor to provide security guarantees, all scripts bundled with 
 the page must be executed within the monitor. The scripts can either be inline, 
 e.g. included as part of the HTML page, or external, e.g. referenced in the 
 HTML page to be downloaded from an external source.
@@ -416,6 +416,9 @@ This effort continues as the monitor executes. Various JavaScript features, such
 interpreted and rendered as HTML. Any scripts present in the string will be 
 executed upon interpretation. The monitor must account for this and again rewrite 
 the string to direct execution to the monitor.
+Complete mediation is achieved since all requests are relayed through the proxy 
+and all occurrences are wrapped to direct execution to the monitor.
+\todo{Jonas: reword slightly}
 
 Special consideration is required for secure HTTP connections (HTTPS). In an HTTPS 
 connection, a certificate containing the public key of the target domain is sent 
@@ -432,10 +435,7 @@ public key of the certificate with the private key of the proxy. Naturally the
 the proxy must be trusted by the user, either because the key is added to 
 the users list of trusted CAs, or signed by one that the user trusts.
 
-Complete mediation is achieved since all requests are relayed through the proxy 
-and all occurrences are wrapped to direct execution to the monitor.
 
-\todo{Jonas: Need to expand.}
 
 \paragraph{Pros and cons}
 \todo{Mass config is used; even chalmers uses images, i.e., nothing is configured per machine anyhow - browser independence is really
@@ -471,7 +471,7 @@ in the hand of the proxy administrator.
 Typically a web proxy relays and includes the monitor in all browsed pages, 
 trusted or not, will run monitored. With a browser extension a user can
 configure certain trusted web pages to run unmonitored for performance reasons.
-
+\todo{the power of configuring the monitor depends on the stakeholder and the }
 
 \subsection{Suffix proxy (service)}
 %\todo{Jonas: Just found out that the "service" we developed is actually a suffix proxy, which actually could have been implemented in a simpler way using .htaccess request rewriting. Also found a way to redirect all ports to a single port using iptables. Perfect solution.}
@@ -514,7 +514,7 @@ and makes the request on behalf of the client. As in the case of the web proxy,
 relaying the request to the target URL gives the suffix proxy an opportunity to modify and 
 include the monitor in the response.
 
-
+\todo{refer back to previous section, the same rules apply}
 
 %The latter implies that apart from rewriting scripts within a page, all URLs to 
 %external resources, i.e., to origins outside the scope of the original origin, 
@@ -608,7 +608,9 @@ third-party code through the suffix proxy. The suffix proxy will rewrite the
 response to direct execution of the library to the monitor. 
 
 \paragraph{Security considerations}
-
+\todo{sharing information between real code and monitored code if automatic is a security problem, must be done manually}
+\todo{none of the security considerations from previous section apply}
+\todo{two libraries loaded, one trusted the other one untrusted, the trusted can mess with the monitored code}
 \todo{Jonas: need help defining the security considerations}
 
 \paragraph{Pros and cons}

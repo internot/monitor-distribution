@@ -507,7 +507,7 @@ pages monitored to prevent leakage.
 
 \paragraph{Description}
 A \emph{suffix proxy} is a specialized web proxy, with a different approach to relaying the request. 
-Instead of the common practice of configuring the browser to relay all requests through a web proxy,
+Instead of the common practice of configuring the browser to relay all requests through the web proxy,
 the suffix proxy makes use of DNS wildcards to redirect the request to it.
 Typically, the user navigates to a 
 web application associated with the proxy and enters the target URL, e.g. \emph{http://google.com/search?q=proxy}, in 
@@ -524,15 +524,8 @@ and makes the request on behalf of the client. As in the case of the web proxy,
 relaying the request to the target URL gives the suffix proxy an opportunity to modify and 
 include the monitor in the response.
 
-A consequence of modifying the domain name is that the domain of the
-target URL and the modified URL no longer matches, making them two 
-separate origin as per the same-origin policy. This implies that all information in 
-the browser specific to the target origin, e.g. cookies and local storage, 
-are no longer associated with the modified origin, and vice versa. This results 
-in a clean separation between the proxied and unproxied content.  
-
 Since the suffix proxy is referenced by altering the domain name of the target, 
-the proxy ensures that resources associated with the target page is also 
+the proxy must ensure that resources associated with the target page are also 
 retrieved through the proxy. Resources with URLs relative to the current domain 
 requires no processing, as they are automatically loaded through the monitor. 
 However, resources loaded from external domains must 
@@ -556,26 +549,46 @@ identify and rewrite the domain of all such external references.
 Recall from the previous section the rather complex procedure required to add HTTPS support.
 Implementing support for HTTPS is easier in the suffix proxy compared to the web proxy. 
 Given that the suffix proxy builds on DNS wildcards, it is sufficient to issue a certificate
-for the all subdomains of the proxy domain, e.g. \emph{*.proxy.domain}. Such a 
+for all subdomains of the proxy domain, e.g. \emph{*.proxy.domain}. Such a 
 certificate is valid for all target URLs relayed through the proxy.
 
 
 \paragraph{Security considerations}
 
-Appending the domain name of the proxy allows the browser to relax the domain of the page to that of the proxy, allowing it to communicate freely with any other proxied page doing the same.
+A consequence of modifying the domain name is that the domain of the
+target URL and the modified URL no longer matches, making them two 
+separate origin as per the same-origin policy. This implies that all information in 
+the browser specific to the target origin, e.g. cookies and local storage, 
+are no longer associated with the modified origin, and vice versa. This results 
+in a clean separation between the proxied and unproxied content.  
 
-Similarly to a web proxy, all inline and external script must be rewritten, but to accomplish this, the suffix proxy must also rewrite all external references to go through the monitor.
+Another interesting consequence of altering the domain name, also relating to 
+the same-origin policy, is the concept of domain relaxing. Modern web browsers 
+allow relaxing of the same-origin policy for subdomains. Subdomains of the same 
+domain can relax their domains by setting the \emph{document.domain} attribute
+to their common domain. In doing so, they set aside the restrictions of the 
+same-origin policy and can freely access each others resources across subdomains. 
+Since the principle behind the suffix proxy is to make the target domain a subdomain of the proxy domain, two 
+domains loaded via the proxy, each relaxing their domain to the domain of the 
+proxy, can access each others resources across domains.
+The consequence is that the suffix proxy has the opportunity to effectively disable the same-origin 
+policy by adding a JavaScript snippet that sets the \emph{document.domain} property
+to the proxy domain. This flexibility is beneficial to a monitor enforcing a policy that, e.g., is aiming 
+at replacing the same-origin policy.
+
+\todo{Jonas: Does the last sentence make sense?}
+
 
 \paragraph{Pros and cons}
 
-
-
-
-There are several differences between a suffix proxy compared to a traditional 
+While sharing a common foundation, there are several differences between a suffix proxy compared to a traditional 
 web proxy. One beneficial difference is that it does not require any configuration and leaves the browser 
-completely unchanged. Another difference is that the suffix proxy lets the user decide which pages to proxy on a 
-per-domain basis, making it more general than a traditional proxy that covers 
-all requests. 
+completely unchanged. The user does not have to be concerned with the integrity of the browser
+
+Another significant difference is that the suffix proxy lets the user decide which pages to proxy on a 
+per-domain basis, making it more general than a traditional web proxy that covers 
+all requests. It can be seen as though a suffix proxy is off by default, whereas a web 
+proxy is on by default. Whether to apply the monitor is as simple as browsing to an alternate URL.
 
 
 \subsection{Integrator}

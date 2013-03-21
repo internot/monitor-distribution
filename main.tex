@@ -22,11 +22,14 @@
 \if 0
 March 28 - paper shipped
 March 27 - final polish
+March 25 - instantiation
 March 22 - intro and conclusions
-March 20 - case studies + related work
-March 17 - architecture and implementation done 
+March 22 - the bulk of instantiation
+March 22 - implementation
+March 21 - architecture
+March 20 - related work
 March 12 - implementation half-way
-March 11 - architecture
+March 11 - architecture first pass
 \fi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -429,10 +432,10 @@ certificate is issued by a certificate authority (CA)
 that validates the certificate by signing the public key. Given that the user 
 trusts the CA, it can also trust that the public key belongs 
 to the target domain, and that the response has not been modified in transit.
-This poses a challenge for a web proxy designed to exactly that. The solution 
+This poses a challenge for a web proxy designed exactly to modify the response. The solution 
 is for the proxy to act as a CA by generating a
 new certificate for the target domain on-the-fly, and sign the 
-public key of the certificate with the private key of the proxy. Naturally the 
+public key of the certificate with the private key of the proxy. Naturally, 
 the proxy must be trusted by the user, either because the key is added to 
 the users list of trusted CAs, or signed by one that the user trusts.
 
@@ -449,7 +452,7 @@ compared to a browser extension. As an example, a web proxy can be centrally
 administered and configured, whereas a browser extension requires individual installation 
 and configuration on each computer. Hence, using this approach can significantly 
 reduce administration efforts in a larger corporation. 
-Another benefit of using a web proxy is that it is browser independent. The 
+Another benefit of using a web proxy is that it is browser-independent. The 
 rewriting technique is the same regardless of the browser used, hence, there is no 
 need to adapt the web proxy to suit a particular browser, allowing 
 users their choice of browser.

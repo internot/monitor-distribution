@@ -270,17 +270,24 @@ A browser extension is a program that is installed into the browser in order to
 change or enrich the functionality of the browser.  The basic idea behind
 deploying via an extension is to replace the JavaScript engine with the monitor.
 (Recall that we consider only monitors that function as interpreters.)
-%
-This can be achieved by turning off the standard JavaScript engine, and have
+
+Even though the internal JavaScript engine cannot actually be replaced the same
+effect can be achieved by turning off the standard JavaScript engine, and have
 the extension traverse the page when loaded and execute the JavaScript scripts
 using the monitor. 
-%
+In addition to this, the extension must register the monitor as the target of
+all events to ensure that the event handlers are run by the monitor. Failing to
+do so will not compromise security; since the internal engine is turned off
+the event handler would simply not run, preventing the loaded page from functioning
+properly.
+
 The most common extension implementation language is JavaScript. Given that
 the monitor is written in JavaScript it is a simple matter to embed the 
 monitor in an extension.
 This method was pioneered by Zaphod~\cite{Zaphod}, a
 FireFox extension, that replaces the standard JavaScript engine with the
 experimental Narcissus~\cite{Narcissus} engine.
+
 
 \paragraph{Security considerations}
 
@@ -302,58 +309,65 @@ the monitor, but might jeopardize the integrity of the entire browser.
 
 \paragraph{Pros and cons}
 
-The main benefit of the approach is that the extension gives the user direct
-control over what security policies to enforce on the browsed pages. For
-instance, it is possible to have any security violations reported to the user,
-who can decide to allow or decline the violation. 
+\todo{Again, is this really true - one could just as well imagine the other 
+  methods to provide the same}
+Since the extension is installed on locally in the browser of the user, it has
+the benefit of giving the user direct control over what security policies to 
+enforce on the browsed pages.
 
-Further, features that are challenging for other deployment methods, like
-\emph{innerHTML}, can be handled with relative ease.  \emph{innerHTML} is a
-property on all DOM nodes which allows the text representation of the node to
-be changed. Any change of the \emph{innerHTML} property causes the content of
-the node to be changed by parsing the changed property. For other deployment
-methods this means that the value written to \emph{innerHTML} must be
-validated, and possibly changed before the write is allowed to occur --- even
-though script nodes added using \emph{innerHTML} are not executed, event
-handlers might still be run.
+The \emph{Document Object Model} (DOM) provides the tree model of HTML
+documents used in browsers. The DOM is a complex, richly linked tree structure,
+which offers many challenges.  One example of such a feature, that can be
+handled with relative ease compared to other methods of deployment, is
+\lstinline{innerHTML}. \lstinline{innerHTML} is a property on all DOM objects,
+that allows the text representation of the object to be changed. Any such
+change causes the content of the object to be changed by parsing the changed
+property. For other deployment methods this means that the value written to
+\lstinline{innerHTML} must be validated, and possibly changed before the write
+is allowed to occur --- even though scripts added using \lstinline{innerHTML}
+are not executed, event handlers might still be run.
 %
 For the extension based deployment this is not a problem.  Since the standard
 JavaScript execution engine is turned off it is safe to write to the
-\emph{innerHTML} property. The write will trigger the parser to rebuild the
-content of the node, but no scripts will be executed, and the result can be
+\lstinline{innerHTML} property. The write will trigger the parser to rebuild
+the content of the node, but no scripts will be executed, and the result can be
 handled in a manner analogous to the scripts on a loading page.
 
 Additionally, the extension is entirely independent of the method of transport,
-since the extension can tell the browser to download the resource using XHR.
-Thus, unlike other methods of deployment it is unimportant whether the scripts
-are fetched using HTTP or HTTPS.
+since the extension can tell the browser to download the resource. Since the 
+browser performs the operation the result
+is indistinguishable from the standard operation of the browser, and, unlike other 
+methods of deployment, it is unimportant whether the scripts
+are referenced using HTTP or HTTPS.
 
 Whether the requirements of conservativeness and transparency can be met
 depends on when the scripts are executed and that all functionality provided by
 the browser can be implemented by the monitor.
 
-Consider first the order in which scripts are executed.  When web pages are
+However, some features remain challenging for the extension deployment method.
+First, consider the order in which scripts are executed.  When web pages are
 loaded, the scripts of the pages are executed as they are encountered while
 parsing the web page. This means that the DOM tree of the page might not have
 been fully constructed when the scripts execute.  For scripts that interact
 with the DOM tree this is important, in particular if the script injects nodes
-into the tree. From a conservativeness and transparency perspective it is not
-entirely satisfactory to traverse the DOM tree of the page after it has been
-constructed.  Rather, scripts need to be executed as soon as they are added to
-the tree, which can be achieved using DOM mutation events.
+into the tree. Differences in the state of the DOM tree can be detected by 
+scripts at execution time. Hence, to guarantee conservativeness and transparency 
+the execution of scripts must occur at the same times in the DOM tree construction
+as they would have in the unmodified browser. With some effort this can be achieved
+using DOM mutation events.
 
-Another obstacle for conservativeness and transparency is that not all
-functionality provided by the browser can be reproduced by the monitor. One
-example of this is \emph{document.write}. The semantics of
-\emph{document.write} is loosely specified~\cite{DOM:LVL2} saying that \emph{document.write}
-writes a string into the current position of the document.  Intuitively,
-\emph{document.write} writes into the character stream that is fed to the HTML
-parser, which, for obvious reason can have drastic effects on the parsing of
-the page. For security reasons extensions are prohibited from calling
-\emph{document.write}. Hence, when run via an extension the monitor cannot
-easily provide the full functionality of \emph{document.write}.
-Consider the following example, where \emph{document.write} is used inside
-a div element.
+Another challenge pertaining to conservativeness and transparency is that some
+functionality provided by the browser might be difficult or expensive to
+provide.  One example of this is \lstinline{document.write}. The semantics of
+\lstinline{document.write} is loosely specified~\cite{DOM:LVL2} saying that
+\lstinline{document.write} writes a string into the current position of the
+document.  Intuitively, \lstinline{document.write} writes into the character
+stream that is fed to the HTML parser, which, for obvious reason can have
+drastic effects on the parsing of the page. For security reasons extensions are
+prohibited from calling \lstinline{document.write}. Hence, when run via an
+extension the monitor cannot easily provide the full functionality of
+\lstinline{document.write}.  Consider the following example, where
+\lstinline{document.write} is used inside a div element.
 
 \begin{verbatim}
   <div><script>document.write('</div><div>');</script></div>
@@ -361,13 +375,13 @@ a div element.
 
 The result is two div elements, rather than the original one. Since the write
 takes place during the parsing of the page, the end tag written by
-\emph{document.write} is matched with the initial div tag, and the written
+\lstinline{document.write} is matched with the initial div tag, and the written
 start tag is matched with the final end tag. In order to implement
-\emph{document.write} the monitor would have to take the interaction with the
-between the content written by \emph{document.write}, the already parsed parts
+\lstinline{document.write} the monitor would have to take the interaction with the
+between the content written by \lstinline{document.write}, the already parsed parts
 of the page and the remaining page into account. In essence, the monitor would
 have to reimplement the parsing process.  However, the practical use of
-\emph{document.write} is limited; the typical use case is to inject scripts
+\lstinline{document.write} is limited; the typical use case is to inject scripts
 into the page while loading. Such cases can be relatively easily identified
 from the string passed as a parameter, and the intended behavior can be
 implemented by the monitor.
@@ -832,76 +846,92 @@ methods with the JSFlow~\cite{Hedin:Sabelfeld:CSF12,JSFlow} information-flow mon
 JSFlow is a dynamic information-flow monitor by tagging values with runtime
 security labels used for security decisions. Whenever a potential security
 violation has been encountered the monitor stops the execution with a security
-error. 
+error. Suiting our need, the monitor implemented in JavaScript and supports
+full non-strict Ecma-262 (v5) including the standard API and large parts of the
+browser specific execution environment including the DOM.  From an information
+flow perspective, JSFlow supports a wide variety if information flow policies,
+including tracking of user input preventing it from leaving the browser used in
+the security experiments described below.
 
-JSFlow is implemented in JavaScript and supports full non-strict Ecma-262 (v5)
-including the standard API and large parts of the browser specific execution
-environment including the DOM.
-
-The standard security policy of JSFlow tracks user information.  Any
-information originating from the user is tagged and prevented from leaving the
-browser. Other policies can be provided, e.g., by placing policy labels in the
-HTML elements of the page. 
-
+\todo{The second site causes security errors due to NSU; shall we simply not agree on releasing the code if someone asks? Or shall we discuss the matter here?}
 
 \subsection{Experiment scenarios}
 
-Consider the scenario of a loan calculator service. To use the service the
-user is required to input potentially sensitive information about income, 
-loan amount, and loan term. The service then computes and displays, e.g., 
-rate and monthly payment. Unless the calculation makes use of any trade secrets
-it can be performed in its entirety on the client side; otherwise, the
-user inputs must be sent back to the service provider that performs the
-calculations and replies with the results. Even though it might be acceptable to 
-the user to disclose the sensitive information the service provider,
-doing so places a trust in the provider not to further disclose the information.
+Consider the scenario of a password strength checker. The use the service
+you input a password and the strength of the password is computed according
+to some metric and the result is displayed to the user, typically on a scale
+from \emph{weak} to \emph{strong}.
+%
+For this kind of service confidentiality of the password is of paramount importance --- 
+the strength of the password is of no importance if the password is not a secret.
+Unless the method of computing strength is a trade secret the service can be
+implemented as a client side service, and the password does not have to leave the
+browser. Sending back the password to the service provider to perform
+the strength computation puts a lot of trust in the service provider to transfer the
+password in a secure way, and make sure that no information about the password
+is stored. For vital secrets such as passwords, there is no reason for the user
+to give this trust. Hence, in this situation, it is important to guarantee that
+the password does not leave the browser.
 
-Below we investigate the different deployment methods on a calculator service
-that sends information back to the service provider. In particular, we
-investigate the loan and mortgage calculator \emph{mlcalc}. The user
-information that is sent back to the server is, in turn, embedded in the return
-page. There, the information is used to perform the loan calculation in
-addition to being passed on to Google analytics, presumably for statistics. Now
-assume that the user wants to prevent the information to be sent to Google.
-Without server support there is no way for the JSFlow monitor to link the
-values on the returned page to the values input by the user, regardless of
-deployment method. On the other hand, if the server was information flow aware
-it could tag the information originating from the user input on the returned
-page. If this is done, the monitor can easily prevent the information from
-being sent to Google analytics. Without server support, however, in order to
-protect the user input we must prevent it from being sent back to mlcalc. 
+We have investigated a number of password strength services. The services can
+be categorized based on whether the computation is server side or client side.
+Below we report on our results with two services selected from each category. 
+Even though it is conceivable to guarantee security of the client side service
+by isolation the service uses Google Analytics, which requires the ability
+to communicate over the Internet to function. In general it is not possible
+to achieve security via isolation without impairing the functionality of
+the service.
 
-\subsection{Security experiments}
-%Jonas+Daniel
-In the following experiments we have utilized a web cache. There are two
-reasons for this. First, it makes the experiments reproducible --- web pages 
-are moving targets, subject to constant change. Second, it has allowed us
-to focus on the parts of the page where interesting information flows occur,
-by suppressing uninteresting scripts.
-\todo{I didn't say anything on the upgrades, since we haven't talked about NSU}
+\todo{Way of referecing? use citations?}
+The first is the insecure site \url{https://testalosenord.pts.se/} provided by
+the Swedish authority PTS. The service presents the user with an input field
+and a button to initiate the test. Once the button is pressed, the
+password is sent in cleartext to the service provider.
+
+The second is the service
+\url{http://www.getsecurepassword.com/CheckPassword.aspx}, which provides a
+secure client side password strength checker. The user is presented with an
+input box, and the strength of the password is computed as the password
+is typed in.
+%
+It is interesting to note that even if the second service is secure, the input
+field used to input the password is contained in a form. Since the input field
+is not given a name, the password is not included when the form is posted.
+However, the small change of adding a name to the field would cause the
+password to be sent back in cleartext to the service provided rendering the
+service insecure.
 
 \paragraph{Browser extension}
-%:
-When the user loads mlcalc.com the extension traverses the page looking for
-scripts to execute. After the scripts have executed the user of the page
-enters the needed information and presses the calculate button. The extension
-traps the button press event and uses the monitor to run the script associated
-with the button. This script gathers the user information and tries to send
-it back to mlcalc, which casues the montior to stop execution with a security 
-error. At this point the user is presented with a security error message. 
-Additionally, one could envision that the user is given the choice to
-override the security error and allow the information to be sent.
+%
+Loading a page in Firefox with the extension enables causes the monitor to be used
+as the execution engine. In addition, the extension captures important events that
+might cause information to leave the browser, e.g., \lstinline{onsubmit}. 
+
+Loading the first site presents the user with the input form and the button. The user
+is allowed to type in the password, but as soon as the user presses the button to perform
+the check the monitor detects that the password is sent to the service provider
+as part of the post data and stops execution with a security error.
+
+Loading the second site presents the user with the input form and the strength of the password 
+is gradually computed as it is typed. If the user presses enter the form is posted back to
+the service provider, but since the password is not part of the post data, execution is
+allowed to continue. If, however, a name is added to the input field, the password is part
+of the post data, and the monitor stops execution with an error.
 
 
 \paragraph{Web proxy}
 
-\todo{Jonas, fill in the web proxy results on mlcalc}
+Loading a page through the inlining web proxy causes all scripts to be wrapped
+with the monitor. As above, the monitor is also registered as the handler to
+important events that might cause information flow. The result is the same
+for the two sites. Attempting to compute the password strength using the first
+site causes execution to be stopped with a security error, whereas the second
+site is allowed to run.
 
+\paragraph{Suffix proxy}
 
-\paragraph{Service}
-
-\todo{Jonas, fill in the service results on mlcalc}
-
+Loading the page via the suffix proxy causes the monitor to be injected into the page in 
+a similar way to the web proxy, with identical result.
 
 \subsection{Performance experiments}
 %Jonas

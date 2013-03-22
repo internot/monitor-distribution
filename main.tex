@@ -886,7 +886,8 @@ the service.
 The first is the insecure site \url{https://testalosenord.pts.se/} provided by
 the Swedish authority PTS. The service presents the user with an input field
 and a button to initiate the test. Once the button is pressed, the
-password is sent in cleartext to the service provider.
+password is sent to the service provider.
+\todo{Note: it is over https so it is not in clear text}
 
 The second is the service
 \url{http://www.getsecurepassword.com/CheckPassword.aspx}, which provides a
@@ -992,15 +993,15 @@ runtime, inject security checks into the available string.
 The inlined code manipulates shadow variables to keep track of the
 security labels of the program's variables.
 
-However, there are fundamental limits in the scalability of the shadow-variable approach.
-The execution of a vast majority of the JavaScript operations (with
-the prime example being the \lstinline{+} operation) is dependent on the types of
-their
-parameters. This might lead to  
-coercions that, in turn, invoke such functions as \lstinline{toString} and
-\lstinline{valueOf} whose execution and any possible side effects need to be taken
-into account. This implies that the inlined code ends up emulating the
-interpreter, leaving no advantages to the shadow-variable approach.
+However, there are fundamental limits in the scalability of the shadow-variable
+approach.  The execution of a vast majority of the JavaScript operations (with
+the prime example being the \lstinline{+} operation) is dependent on the types
+of their parameters.  This might lead to coercions of the parameters that, in
+turn, may invoke \lstinline{toString} and \lstinline{valueOf}. In order to take
+any side effects of those methods into account any operation that may case
+coercions must be wrapped. The end result of this is that the inlined code ends
+up emulating the interpreter, leaving no advantages to the shadow-variable
+approach.
 
 \paragraph{Inlining for secure JavaScript}
 Inlining has been explored JavaScript, although often focusing on

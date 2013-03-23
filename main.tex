@@ -379,11 +379,10 @@ implemented by the monitor.
 \subsection{Web proxy}
 
 \todo{Daniel: I'm not sure about the story how the secret info is in the browser}
+\todo{Jonas: addressed by removing the intranet stuff}
 In a corporate setting, it is essential for a company to protect 
 sensitive information pertaining to the company, as well as their employees. 
-The common use of intranet portals to facilitate easy sharing of information 
-within the company puts this sensitive information in the web browser. 
-Meanwhile, employees are using the same web browsers for accessing untrusted content on 
+Meanwhile, employees are using the web browser for accessing untrusted content on 
 the Internet. Naturally, it is in the interest of the company to ensure that 
 the sensitive information is not accessible outside the domain of the company.
 In this distributed setting, a \emph{web proxy} is a convenient way of delivering 
@@ -407,20 +406,21 @@ all requests through the proxy, and the proxy rewrites the responses to include
 the monitor in each page. Modifying the response makes the method more 
 intrusive to the HTML content, but less intrusive to the user's browser. 
 
-\todo{Strong wording; any. Later is in order to be effective is used}
+%\todo{Strong wording; any. Later is in order to be effective is used}
 For the monitor to provide security guarantees, all scripts bundled with 
 the page must be executed within the monitor. The scripts can either be inline, 
 e.g., included as part of the HTML page, or external, e.g., referenced in the 
 HTML page to be downloaded from an external source.
 Apart from including the monitor in all browsed pages, all inline and external 
 scripts must be identified and rewritten by the web proxy to direct execution to the monitor.
-\todo{A call to the monitor hard to understand - better use 'use the monitor to execute'?}
-This is achieved by wrapping all JavaScript source code, whether inline or external, in a call to the monitor.
+%\todo{A call to the monitor hard to understand - better use 'use the monitor to execute'?}
+This is achieved by wrapping all JavaScript source code, whether inline or 
+external, to be interpreted and executed by the monitor.
 In the web proxy, different rewriting rules apply depending on whether the 
 requested content is JavaScript, e.g., external, or HTML, e.g., inline. 
-\todo{Wrapped hard to understand}
-External 
-JavaScript content is simply wrapped, whereas 
+%\todo{Wrapped hard to understand}
+For external 
+JavaScript resources, containing only JavaScript, the entire response is rewritten to use the monitor to execute, whereas 
 for HTML the web proxy has to identify and wrap all occurrences of inline 
 JavaScript, both script-tags and event handlers.
 
@@ -435,11 +435,11 @@ page are executed. Whereas a
 browser extension intercepts execution of all scripts by replacing the JavaScript 
 engine of the browser, a web proxy must identify all inline and 
 external scripts and rewrite them to ensure that they are executed within the 
-monitored execution context. Failing to do so, script code will execute 
+monitored execution context. This effort continues as the monitor executes. Failing to do so, script code will execute 
 along-side the monitor, giving it access to the sensitive information the 
 monitor was intended to protect. 
-\todo{Move this sentence up before last?}
-This effort continues as the monitor executes. Various JavaScript features, such as 
+%\todo{Move this sentence up before last?}
+Various JavaScript features, such as 
 \emph{document.write}, allow an arbitrary string to be 
 interpreted and rendered as HTML. Any scripts present in the string will be 
 executed upon interpretation. The monitor must account for this and again rewrite 
@@ -466,40 +466,34 @@ the users list of trusted CAs, or signed by one that the user trusts.
 
 
 \paragraph{Pros and cons}
-\todo{Mass config is used; even chalmers uses images, i.e., nothing is configured per machine anyhow - browser independence is really
-the key?}
-In a corporate environment there are several benefits of using a web proxy 
-compared to a browser extension. As an example, a web proxy can be centrally 
-administered and configured, whereas a browser extension requires individual installation 
-and configuration on each computer. Hence, using this approach can significantly 
-reduce administration efforts in a larger corporation. 
-Another benefit of using a web proxy is that it is browser-independent. The 
+%\todo{Mass config is used; even chalmers uses images, i.e., nothing is configured per machine anyhow - browser independence is really
+%the key?}
+The main benefit of using a web proxy 
+compared to a browser extension is that the implementation is browser independent. The 
 rewriting technique is the same regardless of the browser used, hence, there is no 
 need to adapt the web proxy to suit a particular browser, allowing 
-users their choice of browser.
+the users their choice of browser.
 Neither is it intrusive to the browser, as the user is not required to modify the 
 browser in order to take advantage of security benefits. 
-%However, there 
-%are certain drawbacks as well. 
 
-In order for the monitor to be effective, the web proxy 
-has to identify all scripts. The process of doing so may require additional 
-resources and introduce additional 
-latency in comparison to that of a usual web proxy.
-
-As an individual user, the main benefits are browser independence and  
-increased security without having to modify the browser. How the proxy is 
+How the proxy is 
 deployed determines the users influence over 
 the policies enforced.
-\todo{explain what locally means?}
+The difference in a corporate environment the web proxy is likely to be 
+administered centrally to apply the same policy for all users. When deployed by 
+an individual user it is more likely to be installed locally on the users own machine.
 If deployed locally, the user has full influence over 
 how policies are to be used, while for a remotely deployed proxy, the user is 
 in the hand of the proxy administrator. 
 
-Typically a web proxy relays and includes the monitor in all browsed pages, 
-trusted or not, will run monitored. With a browser extension a user can
-configure certain trusted web pages to run unmonitored for performance reasons.
-\todo{the power of configuring the monitor depends on the stakeholder and the }
+%Typically a web proxy relays and applies the monitor to all browsed pages, 
+%trusted or not. With a browser extension a user can
+%configure certain trusted web pages to run unmonitored for performance reasons.
+%\todo{the power of configuring the monitor depends on the stakeholder and the }
+
+
+%\todo{explain what locally means?}
+
 
 \subsection{Suffix proxy (service)}
 %\todo{Jonas: Just found out that the "service" we developed is actually a suffix proxy, which actually could have been implemented in a simpler way using .htaccess request rewriting. Also found a way to redirect all ports to a single port using iptables. Perfect solution.}

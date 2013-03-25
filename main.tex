@@ -65,8 +65,8 @@ security monitors implemented as security-enhanced JavaScript interpreters.
 We propose architectures for inlining security monitors for JavaScript: via
 browser, via web proxy, and via suffix proxy (web service). 
 %
-These architectures offer great flexibility: they are parametric in the monitor itself,
-and they provide freedom in the choice of where the monitor is
+Being parametric in the monitor itself,
+the architectures provide freedom in the choice of where the monitor is
 injected, allowing to serve the interests of the different stake
 holders: the users, code developers, code
 integrators, as well as the system and network administrators.
@@ -97,7 +97,7 @@ JavaScript code from different sources provides
 a rich execution platform. Reliance on third-party code is
 pervasive~\cite{Nikiforakis+:CCS12}, with the range of included code from
 format validation snippets, to helper
-libraries as jQuery, to helper services as Google Analytics, and all the way to fully-fledged services as
+libraries as jQuery, to helper services as Google Analytics, and to fully-fledged services as
 Google Maps and Yahoo!\@ Maps.
 
 \paragraph{Securing JavaScript}
@@ -121,7 +121,7 @@ in web applications.
 \emph{Users} might demand stronger guarantees than those
 offered by SOP when it is not desired that sensitive information leaves
 the browser. This makes sense in such popular web applications as
-password strength checkers or loan
+password-strength checkers and loan
 calculators.
 %
 \emph{Code developers} clearly have the interest in protecting the
@@ -136,6 +136,9 @@ of the cookie is leaked to the third party.
 different integrated components, perhaps depending on the origin. It
 is desirable to invoke different protection mechanisms for the
 different code that is integrated into the web application.
+For example, an e-commerce web site might include jQuery from a trusted
+web site without protection while it might load advertisement scripts
+with the monitor on. 
 %
 Finally, \emph{system and network administrators} also have a
 stake in the security goals. It might be desirable to configure the
@@ -165,8 +168,8 @@ As our main contribution,
 we propose architectures for inlining security monitors for JavaScript: via
 browser, via web proxy, and via suffix proxy (web service). 
 %
-These architectures offer great flexibility: they are parametric in the monitor itself,
-and they provide freedom in the choice of where the monitor is
+Being parametric in the monitor itself,
+the architectures provide freedom in the choice of where the monitor is
 injected, allowing to serve the interests of the different stake
 holders: the users, code developers, code
 integrators, as well as the system and network administrators.
@@ -177,19 +180,24 @@ monitors, implemented as JavaScript interpreters. The
  interpreter written in JavaScript, an excellent starting
  point for supporting versatile security policies.
 
+Our evaluation of the architectures explores the relative security considerations.
 When introducing reference monitoring, Anderson~\cite{Anderson:72}
 identifies the following requirements:
-\begin{itemize}
-\item \emph{monitor integrity}: the monitor must be tamperproof,
-\item \emph{complete mediation}: the monitor must be always invoked, and
-\item \emph{soundness}: the monitor must enforce the desired
-  security policy.
-\end{itemize}
-In addition, requirements of \emph{conservativeness} and
+\emph{monitor integrity}, that the monitor must be tamperproof,
+\emph{complete mediation}, that the monitor must be always invoked, and
+\emph{soundness}, that the monitor must enforce the desired security policy.
+In addition, requirements of 
 \emph{transparency} are often in place for reference monitors to
 ensure that no new behaviors are added or removed by monitors when the
 original program is secure in the first place.
 
+Since the architectures are parametric in the actual monitor, we can
+often rely on the properties of the monitor itself to guarantee the
+above requirements. In particular, it is essential for soundness and
+transparency that the monitor itself supports them. Monitor integrity
+and complete mediation are of our particular focus in the security
+considerations because the choice of the architecture results in
+different approaches to the integrity of the monitor.
 
 \paragraph{Instantiation}
 In order to illustrate the usefulness of the approach, we present an
@@ -315,7 +323,7 @@ Since the extension is installed on locally in the browser of the user, it has
 the benefit of giving the user direct control over what security policies to 
 enforce on the browsed pages.
 
-The \emph{Document Object Model} (DOM) provides the tree model of HTML
+The \emph{Document Object Model} (DOM)~\cite{DOM2} provides the tree model of HTML
 documents used in browsers. The DOM is a complex, richly linked tree structure,
 which offers many challenges.  One example of such a feature, that can be
 handled with relative ease compared to other methods of deployment, is
@@ -1028,16 +1036,16 @@ a similar way to the web proxy, with identical result.
 %1 page 
 \section{Related work}
 \label{sec:related}
-We first discuss original work on reference monitors and their
+We first discuss the original work on reference monitors and their
 inlining, then
+inlining for secure information flow, 
+and, finally,
 inlining security checks in the context of
-JavaScript, to relate to the architectures, 
-and finally inlining for information-flow, to relate to our instantiations
-of the architectures.
+JavaScript.
 
 \paragraph{Inlined reference monitors}
 Anderson~\cite{Anderson:72} introduces reference monitors and
-outlines the principle requirements, recounted in Section~\ref{sec:intro}.
+outlines the principle requirements, mentioned in Section~\ref{sec:intro}.
 %
 Erlingsson and Schneider~\cite{DBLP:conf/nspw/ErlingssonS99,Erlingsson:PhD04} instigate
 the area of inlining reference monitors. 
@@ -1085,14 +1093,14 @@ However, there are fundamental limits in the scalability of the shadow-variable
 approach.  The execution of a vast majority of the JavaScript operations (with
 the prime example being the \lstinline{+} operation) is dependent on the types
 of their parameters.  This might lead to coercions of the parameters that, in
-turn, may invoke \lstinline{toString} and \lstinline{valueOf}. In order to take
-any side effects of those methods into account any operation that may case
+turn, may invoke such operations as \lstinline{toString} and \lstinline{valueOf}. In order to take
+any side effects of these methods into account, any operation that may case
 coercions must be wrapped. The end result of this is that the inlined code ends
 up emulating the interpreter, leaving no advantages to the shadow-variable
 approach.
 
 \paragraph{Inlining for secure JavaScript}
-Inlining has been explored JavaScript, although often focusing on
+Inlining has been explored for JavaScript, although focusing on
 simple properties or preventing against fixed classes of vulnerabilities.
 A prominent example in the context of the web is
 BrowserShield~\cite{Reis+:TWeb07} by Reis et al. to instrument scripts with
@@ -1120,7 +1128,7 @@ the sandboxing is done purely at JavaScript level, requiring no
 browser modification.
 
 Despite the above progress on inlining security checks in JavaScript, achieving
-Information-flow security for client-side JavaScript by inlining has been out of
+information-flow security for client-side JavaScript by inlining has been out of
 reach for the current methods~\cite{Vogt+:NDSS07,DBLP:conf/pldi/ChughMJL09,Yip:Narula:Krohn:Morris:EUROSYS09,Jang+:CCS10,DeGroef+:CCS12}  that either
 modify the browser or perform the analysis out-of-the-browser.
 
@@ -1149,13 +1157,20 @@ flexibility in supporting the different policies on the sensitive
 information from the user. 
 %
 The performance experiments show reasonable overhead imposed by the
-architectures and point out to the relative pros and cons from the
-performance point of view. \todo{Make a bit more concrete when we have
-the experimental results.}
+architectures.
+% and point out to the relative pros and cons from the
+%performance point of view.
 
-Future work \todo{Daniel, Jonas: what's worth brining up here? Some
-tracks that give us the credibility - pointing out a rich research agenda, rather
-than pointing out the weaknesses of the current paper. :) }
+Future work is focused on two promising directions. Recall that the
+integrator architecture relies on the developer to establish
+communication between the monitored and unmonitored code. With the
+goal to relieve the integrator from manual efforts, we develop a
+framework for secure communication that provides explicit support for
+integrating and monitored and unmonitored code.
+%
+The other direction we pursue is interplay of JavaScript-related
+information flows with those caused by other possibilities of running
+code in the browser: through Flash, PDF, SVG, and CSS.
 
 \paragraph{Acknowledgments}
 This work was funded by 

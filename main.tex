@@ -421,8 +421,8 @@ It allows all outgoing HTTP requests to be
 relayed through the proxy server. The web proxy will act as a man-in-the-middle, making 
 requests on behalf of the client. In the process, the proxy has the 
 opportunity of modifying both the request and the response. 
-As a monitor deployment method the opportunity to rewrite the response is 
-of interest. A web proxy is a convenient way to include the monitor in browsed pages without 
+The opportunity to rewrite the response is crucial for this architecture.
+A web proxy is a convenient way to include the monitor in browsed pages without 
 modifying the browser itself. The browser is configured to relay 
 all requests through the proxy, and the proxy rewrites the responses to include 
 the monitor in each page. Modifying the response makes the method more 
@@ -499,14 +499,16 @@ Neither is it intrusive to the browser, as the user is not required to modify th
 browser in order to take advantage of security benefits. 
 
 How the proxy is 
-deployed determines the users influence over 
+deployed determines the users' influence over 
 the policies enforced.
 The difference in a corporate environment the web proxy is likely to be 
 administered centrally to apply the same policy for all users. When deployed by 
 an individual user it is more likely to be installed locally on the users own machine.
 If deployed locally, the user has full influence over 
-how policies are to be used, while for a remotely deployed proxy, the user is 
-in the hand of the proxy administrator. 
+how policies are to be used, while for a remotely deployed proxy,
+whether the policy is user-specific is 
+in the hands of the proxy administrator. 
+
 
 %Typically a web proxy relays and applies the monitor to all browsed pages, 
 %trusted or not. With a browser extension a user can
@@ -561,7 +563,7 @@ include the monitor in the response.
 
 Like the web proxy, the suffix proxy must ensure that all script bundled with a 
 page is executed within the monitor. The procedure to to rewrite script is much the same as 
-detailed in the Section~\ref{sec:arch-web}. Apart from that, the URLs of links and 
+detailed in Section~\ref{sec:arch-web}. Apart from that, the URLs of links and 
 resources referring to content outside the target domain must also be rewritten. 
 Otherwise the content to will not be requested through the monitor which will 
 prevent it from being rewritten.
@@ -607,9 +609,11 @@ domains loaded via the proxy, each relaxing their domain to the domain of the
 proxy, can access each others resources across domains.
 The consequence is that the suffix proxy has the opportunity to effectively disable the same-origin 
 policy by adding a JavaScript snippet that sets the \emph{document.domain} property
-to the proxy domain. The flexibility of disabling the same-origin policy is beneficial to a monitor that is enforcing a policy aiming 
-at replacing the same-origin policy. This way, the effectiveness of the policy 
-can be tested without modifying the browser.
+to the proxy domain. The flexibility of disabling the same-origin
+policy opens up for monitors whose policies are aimed
+at replacing the same-origin policy. 
+%This way, the effectiveness of the policy 
+%can be tested without modifying the browser.
 %\todo{Daniel: yes, if expanded a bit}
 %\todo{Jonas: Does the last sentence make sense?}
 

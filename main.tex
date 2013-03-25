@@ -558,6 +558,14 @@ resources referring to content outside the target domain must also be rewritten.
 Otherwise the content to will not be requested through the monitor which will 
 prevent it from being rewritten.
 
+
+In the suffix proxy, not only the content is rewritten
+but also the headers of the incoming request and the returned response.
+Certain headers, like the \emph{Host} and \emph{Referrer} header of the request, includes the 
+modified domain name and need to be rewritten to make the proxy transparent. In 
+the response headers like the \emph{Location} contains the unmodified target URL and 
+need to be rewritten to include the monitor domain. 
+
 %\todo{refer back to previous section, the same rules apply}
 
 %The latter implies that apart from rewriting scripts within a page, all URLs to 
@@ -661,6 +669,10 @@ an integrator can execute part of, or all of the code in the monitor.
 This can be achieved by manually including the monitor in the page and loading the 
 third-party code through the suffix proxy. The suffix proxy will rewrite the 
 response to direct execution of the library to the monitor. 
+
+This approach allows for a well defined, per site, policy specification.
+The monitor is setup and configured with policies best suiting the need of the 
+site. 
 
 \paragraph{Security considerations}
 %\todo{sharing information between real code and monitored code if automatic is a security problem, must be done manually}
@@ -816,7 +828,7 @@ wrapping cannot be evaded and that the source code
 will be semantically equivalent when interpreted by the monitor.
 
 \begin{lstlisting}[label=lst:wrap-monitor, caption=Example of monitor wrapping]
-code = 'Monitor.call( " ' + code.replace(/\\/g, '\\\\')
+code = 'Monitor.eval( " ' + code.replace(/\\/g, '\\\\')
 	.replace(/"/g, '\\"').replace(/\r?\n/g, "\\n\\\n")
 	+ ' " )';
 \end{lstlisting}
@@ -862,10 +874,7 @@ The external references are identified in the same manner as inline JavaScript,
 by parsing the HTML to a DOM-tree and traversing the tree. When found, the 
 URL is substituted using a regular expression.% in Listing~\ref{lst:reg-exp}.
 
-In the suffix proxy, not only the content is rewritten, 
-but also the headers of the incoming request and the returned response.
-Certain headers, e.g. the \emph{Host} and \emph{Location} header, includes the modified domain name. These need to be replaced 
-
+\todo{Jonas: to be rewritten as Daniel suggested}
 Another difference to the web proxy relates to the use of non-standard ports.
 The web proxy will receive all requests regardless of the target port. The 
 suffix proxy, on the other hand, only listens to the standard ports for HTTP and HTTPS, port 80 and 
@@ -891,7 +900,25 @@ iptables -t nat -A PREROUTING -p tcp --dport 1:65535
 %\item- future reflection of monitored code?
 %\end{itemize}
 
-Currently rudimentary communication
+In line with Section\ref{sec:arch-integrator}, the integrator is implemented as 
+a web page that includes third-party code via the suffix proxy. The monitor is 
+manually included in the page, setup and the policies are configured as is 
+appropriate for the page. Requesting the third party code through the suffix 
+proxy ensures that it will be rewritten to be interpreted and executed by the 
+monitor.
+%
+Part of the code, the untrusted library and any supporting code,
+will run inside the monitor, whereas code dealing with sensitive 
+information is executed outside the monitor. To make use of the library, 
+the trusted code shares only the minimal information required for the 
+library to execute. Currently the communication between the trusted and the 
+untrusted code is rudimentary. The trusted code can interact with the monitored 
+code by evaluating expressions in the monitor, and the result of the computation
+is returned to the trusted code.
+
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

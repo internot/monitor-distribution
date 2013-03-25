@@ -391,9 +391,9 @@ implemented by the monitor.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Web proxy}
-
-\todo{Daniel: I'm not sure about the story how the secret info is in the browser}
-\todo{Jonas: addressed by removing the intranet stuff}
+\label{sec:arch-web}
+%\todo{Daniel: I'm not sure about the story how the secret info is in the browser}
+%\todo{Jonas: addressed by removing the intranet stuff}
 In a corporate setting, it is essential for a company to protect 
 sensitive information pertaining to the company, as well as their employees. 
 Meanwhile, employees are using the web browser for accessing untrusted content on 
@@ -449,18 +449,18 @@ page are executed. Whereas a
 browser extension intercepts execution of all scripts by replacing the JavaScript 
 engine of the browser, a web proxy must identify all inline and 
 external scripts and rewrite them to ensure that they are executed within the 
-monitored execution context. This effort continues as the monitor executes. Failing to do so, script code will execute 
-along-side the monitor, giving it access to the sensitive information the 
-monitor was intended to protect. 
+monitored execution context. This effort continues as the monitor executes. 
 %\todo{Move this sentence up before last?}
 Various JavaScript features, such as 
 \emph{document.write}, allow an arbitrary string to be 
 interpreted and rendered as HTML. Any scripts present in the string will be 
 executed upon interpretation. The monitor must account for this and again rewrite 
-the string to direct execution to the monitor.
-Complete mediation is achieved since all requests are relayed through the proxy 
-and all occurrences are wrapped to direct execution to the monitor.
-\todo{Jonas: reword slightly}
+the string to direct execution to the monitor. Failing to do so, script code will execute 
+along-side the monitor, giving it access to the sensitive information the 
+monitor was intended to protect. 
+Complete mediation is achieved given that all requests are relayed through the proxy 
+and all occurrences are of JavaScript within the page is wrapped to direct execution to the monitor.
+%\todo{Jonas: reword slightly}
 
 Special consideration is required for secure HTTP connections (HTTPS). In an HTTPS 
 connection, a certificate containing the public key of the target domain is sent 
@@ -510,6 +510,7 @@ in the hand of the proxy administrator.
 
 
 \subsection{Suffix proxy (service)}
+\label{sec:arch-suffix}
 %\todo{Jonas: Just found out that the "service" we developed is actually a suffix proxy, which actually could have been implemented in a simpler way using .htaccess request rewriting. Also found a way to redirect all ports to a single port using iptables. Perfect solution.}
 %\begin{itemize}
 %\item What is a web proxy
@@ -550,7 +551,14 @@ and makes the request on behalf of the client. As in the case of the web proxy,
 relaying the request to the target URL gives the suffix proxy an opportunity to modify and 
 include the monitor in the response.
 
-\todo{refer back to previous section, the same rules apply}
+Like the web proxy, the suffix proxy must ensure that all script bundled with a 
+page is executed within the monitor. The procedure to to rewrite script is much the same as 
+detailed in the Section~\ref{sec:arch-web}. Apart from that, the URLs of links and 
+resources referring to content outside the target domain must also be rewritten. 
+Otherwise the content to will not be requested through the monitor which will 
+prevent it from being rewritten.
+
+%\todo{refer back to previous section, the same rules apply}
 
 %The latter implies that apart from rewriting scripts within a page, all URLs to 
 %external resources, i.e., to origins outside the scope of the original origin, 
@@ -583,12 +591,21 @@ domains loaded via the proxy, each relaxing their domain to the domain of the
 proxy, can access each others resources across domains.
 The consequence is that the suffix proxy has the opportunity to effectively disable the same-origin 
 policy by adding a JavaScript snippet that sets the \emph{document.domain} property
-to the proxy domain. This flexibility is beneficial to a monitor enforcing a policy that, e.g., is aiming 
-at replacing the same-origin policy.
-\todo{Daniel: yes, if expanded a bit}
-\todo{Jonas: Does the last sentence make sense?}
+to the proxy domain. The flexibility of disabling the same-origin policy is beneficial to a monitor that is enforcing a policy aiming 
+at replacing the same-origin policy. This way, the effectiveness of the policy 
+can be tested without modifying the browser.
+%\todo{Daniel: yes, if expanded a bit}
+%\todo{Jonas: Does the last sentence make sense?}
 
 
+Recall from the previous section the rather complex procedure required to add HTTPS support.
+Implementing support for HTTPS is easier in the suffix proxy compared to the web proxy. 
+Given that the suffix proxy builds on DNS wildcards, it is sufficient to issue a certificate
+for all subdomains of the proxy domain, e.g., \emph{*.proxy.domain}. Such a 
+certificate is valid for all target URLs relayed through the proxy.
+The main benefit of wildcard certificates is that the user can browse HTTPS pages. 
+The drawback is that the user must trust the monitor to correctly verify the 
+certificate of the page.
 
 \paragraph{Pros and cons}
 
@@ -607,7 +624,7 @@ all requests. %It can be seen as though a suffix proxy is off by default, wherea
 Whether to apply the monitor is as simple as browsing to an alternate URL.
 
 
-\todo{Integration stuff missing from intro? Or did I read too fast?}
+%\todo{Integration stuff missing from intro? Or did I read too fast?}
 \subsection{Integrator}
 
 %The mashup integrator includes the monitor and decides which JavaScript should 
@@ -646,10 +663,32 @@ third-party code through the suffix proxy. The suffix proxy will rewrite the
 response to direct execution of the library to the monitor. 
 
 \paragraph{Security considerations}
-\todo{sharing information between real code and monitored code if automatic is a security problem, must be done manually}
-\todo{none of the security considerations from previous section apply}
-\todo{two libraries loaded, one trusted the other one untrusted, the trusted can mess with the monitored code}
-\todo{Jonas: need help defining the security considerations}
+%\todo{sharing information between real code and monitored code if automatic is a security problem, must be done manually}
+%\todo{none of the security considerations from previous section apply}
+%\todo{two libraries loaded, one trusted the other one untrusted, the trusted can mess with the monitored code}
+%\todo{Jonas: need help defining the security considerations}
+
+Despite the fact that the integrator is using the suffix proxy, none of the 
+respective security considerations apply. The same-origin policy has no effect 
+on requesting libraries through the proxy. The only consequence is that the library
+will be rewritten so that it will be executed by the monitor.
+
+One security consideration that arises is the sharing of information between the 
+trusted and untrusted code. It might be appealing to simplify sharing of 
+information between the two by reflecting a set of shared variables of one into the other.
+However, automatically 
+reflecting information from one context to the other, will 
+have severe security implications. If the trusted code depend on a 
+shared variable, the untrusted code can manipulate the value to control the
+execution.
+If the trusted code is required to share information 
+with the untrusted code, such as giving access to non-sensitive information, it 
+must be done by manually introducing it in the monitored context.
+
+It should be noted that since the trusted code is running along side the monitor, 
+it can access and manipulate the state of the monitor and thereby the state of 
+the untrusted code. It is impossible for the monitored code to protect against 
+such manipulation.
 
 \paragraph{Pros and cons}
 
@@ -667,6 +706,10 @@ Since a monitor typically introduces a runtime overhead this approach can also
 result in performance gains compared to running all code monitored. Especially 
 if the trusted code is computation heavy.
 
+As previously stated, sharing information 
+between trusted and untrusted code in a secure manner requires manual interaction. 
+This implies that the developer must to some degree understand the inner workings of the monitor
+and the implications of interacting with the monitor.
 
 
 % 2-3 pages 
@@ -715,33 +758,23 @@ necessarily a problem in practice.
 
 \subsection{Web proxy}
 
-\begin{itemize}
-\item Proxy implemented in NodeJS
+%\begin{itemize}
+%\item Proxy implemented in NodeJS
 %\item- rewrite all or nothing, problem with passing configuration to proxy
 %\item DOM parsing to find scripts, compared to regular expressions
 %\item difficult to identify all contexts (SVG, CSS and PDF can be rewritten, not flash)
 %\item rewriting of JavaScript
-\end{itemize}
+%\end{itemize}
 
-The web proxy is implemented as a NodeJS~\cite{NodeJS} server. 
-
-Wrapping JavaScript requires converting the source code to a string, which can 
-be fed to the interpreting monitor. The source code is enclosed in quotes, and all 
-quotes within the source code are escaped to not interfere with the enclosing quotes.
-Additionally all escapes have to be escaped to not interfere with the escaped 
-quotes. Next, because new-lines may change the semantics of the code due to 
-JavaScript automatic semi-colon insertion, all new-line 
-characters must be replaced with the JavaScript string equivalent.
-These steps, exemplified in Listing~\ref{lst:wrap-monitor}, ensure that the wrapping cannot be evaded and that the source code 
-will be semantically equivalent when interpreted by the monitor.
-
-\begin{lstlisting}[label=lst:wrap-monitor, caption=Example of monitor wrapping]
-code = 'Monitor.call("' + code.replace(/\\/g, '\\\\')
-	.replace(/"/g, '\\"').replace(/\r?\n/g, "\\n\\\n")
-	+ '")';
-\end{lstlisting}
-\todo{Jonas: fix listing}
-
+The web proxy is implemented as a NodeJS~\cite{NodeJS} HTTP-server. As the 
+proxy receives a request it extracts the target URL and in turn requests the 
+content from the target. Before the response is delivered to the client, it is 
+rewritten based on its content-type. Each content-type related to JavaScript is 
+rewritten, e.g. \emph{text/html}, \emph{text/javascript}, or \emph{text/json}. 
+Since only content that can contain JavaScript are of interest, other 
+content-types are simply passed through to the user. In HTML content, where 
+JavaScript is embedded in the HTML code, the monitor must identify the 
+the inline code in order to rewrite it.
 
 Identifying inline JavaScript in HTML files is a complex task. 
 Simple search and replace is not satisfactory due to the browser's error tolerant parsing of HTML-code, meaning that the 
@@ -749,7 +782,19 @@ browser will make a best-effort attempt to make sense of malformed fragments of
 HTML. It would require the search 
 algorithm to account for all parser quirks in regard to malformed HTML;
 a task which is at least as complex as actually parsing the document.
-%As an example it is not regular expressions 
+This problem is exemplified in Listing~\ref{lst:crazy-html}; the first line
+will be interpreted as a script followed by the text \emph{HTML}, the second
+line as a script that alerts the string \emph{JavaScript}, and the third will 
+display \emph{ac} and \emph{d} in two separate paragraphs and load a script
+from an external domain.
+
+\begin{lstlisting}[label=lst:crazy-html, caption=Example of complicated HTML]
+<script>0</script/> HTML </script>
+<script>0</script./> alert(JavaScript) </script>
+<p>a<sCript/"=/ src=//t.co/abcde a= >b</p></script>c<p>d
+\end{lstlisting}
+
+
 In the web proxy, Mozilla's JavaScript-based HTML-parser \emph{dom.js}~\cite{Mozilla:dom.js}, is used 
 to parse the page. The DOM-tree can then be traversed to properly localize 
 all inline script code. All occurences of JavaScript code are rewritten as 
@@ -757,76 +802,96 @@ outlined in Listing~\ref{lst:wrap-monitor}, wrapped in a call to the monitor.
 Because all instances of the modified script code will reference the monitor, 
 The monitor must be added as the first script to be executed.
 
-\todo{Jonas: perhaps show a code snippet which would be difficult to search and replace? Example?}
+
+Rewriting JavaScript requires converting the source code to a string, which can 
+be fed to the interpreting monitor. The first step is to enclose the source code 
+in quotes, and subsequently all quotes within the source code are escaped to 
+not interfere with these enclosing quotes.
+Additionally all escape characters have to be escaped to not interfere with the escaped 
+quotes. Next, because new-lines may change the semantics of the code due to 
+JavaScript automatic semi-colon insertion, all new-line 
+characters must be replaced with the JavaScript string equivalent.
+These steps, exemplified in Listing~\ref{lst:wrap-monitor}, ensure that the 
+wrapping cannot be evaded and that the source code 
+will be semantically equivalent when interpreted by the monitor.
+
+\begin{lstlisting}[label=lst:wrap-monitor, caption=Example of monitor wrapping]
+code = 'Monitor.call( " ' + code.replace(/\\/g, '\\\\')
+	.replace(/"/g, '\\"').replace(/\r?\n/g, "\\n\\\n")
+	+ ' " )';
+\end{lstlisting}
+
+
+
 
 \subsection{Suffix proxy (service)}
 
-\begin{itemize}
+%\begin{itemize}
 %\item rewrite all or some, can pass configuration through cookie
 %\item piggybacking, wildcard DNS
 %\item SSL? wildcard certificates? features and drawbacks 
 %\item disable SOP, domain relaxing?
 %\item DOM parsing to find scripts, compared to regular expressions
 %\item difficult to identify all contexts (SVG, CSS and PDF can be rewritten, not flash)
-\item non-standard ports by forwarding all ports to one
-\end{itemize}
+%\item non-standard ports by forwarding all ports to one
+%\end{itemize}
 
 
-\paragraph{Additional rewriting of HTML}
+%
 
-
-The web proxy provides a foundation for the suffix proxy, which is extended
-with support for the wildcard subdomain approach and an additional rewriting step. 
-To support wildcard subdomains, the proxy must strip the proxy domain to extract 
-the target domain from the request. 
-The additional rewriting is also related to the wildcard subdomain approach.
+Just as the web proxy, the suffix proxy is implemented in NodeJS. 
+As discussed in Section~\ref{sec:arch-suffix}, the web proxy serves as a 
+foundation for the suffix proxy, which is extended with an additional rewriting step. 
+%The additional rewriting is also related to the wildcard subdomain approach.
+%\paragraph{Additional rewriting of HTML}
 Since the suffix proxy is referenced by altering the domain name of the target, 
 the proxy must ensure that resources associated with the target page are also 
 retrieved through the proxy. Resources with URLs relative to the current domain 
-requires no processing, as they are automatically loaded through the monitor. 
-However, resources loaded from external domains must 
+requires no processing, as they are relative to the monitor domain and will by 
+definition be loaded through the monitor. 
+However, the URLs of resources targeting external domains must be rewritten to 
 include the monitor domain. Similarly, links to external pages must include the domain of the monitor 
-for the user to stay %within the 
-monitored %domain 
+for the %user to stay %within the 
+monitor%ed %domain 
+to apply 
 when links are followed.
 Apart from the rewriting of inline 
 scripts and event handlers done in the web proxy, the suffix proxy must 
 identify and rewrite the domain of all such external references. 
+The external references are identified in the same manner as inline JavaScript, 
+by parsing the HTML to a DOM-tree and traversing the tree. When found, the 
+URL is substituted using a regular expression.% in Listing~\ref{lst:reg-exp}.
 
-
-Recall from the previous section the rather complex procedure required to add HTTPS support.
-Implementing support for HTTPS is easier in the suffix proxy compared to the web proxy. 
-Given that the suffix proxy builds on DNS wildcards, it is sufficient to issue a certificate
-for all subdomains of the proxy domain, e.g., \emph{*.proxy.domain}. Such a 
-certificate is valid for all target URLs relayed through the proxy.
-The main benefit of wildcard certificates is that the user can browse HTTPS pages. 
-The drawback is that the user must trust the monitor to correctly verify the 
-certificate of the page.
+In the suffix proxy, not only the content is rewritten, 
+but also the headers of the incoming request and the returned response.
+Certain headers, e.g. the \emph{Host} and \emph{Location} header, includes the modified domain name. These need to be replaced 
 
 Another difference to the web proxy relates to the use of non-standard ports.
 The web proxy will receive all requests regardless of the target port. The 
 suffix proxy, on the other hand, only listens to the standard ports for HTTP and HTTPS, port 80 and 
-443 respectively. Since the port in a URL is specified in conjunction to, but not included in the domain.
+443 respectively. The port in a URL is specified in conjunction to, but not included in the domain.
 Hence any URLs specifying non-standard ports would attempt to connect to closed 
-ports on the proxy server. The solution to this problem is to locally redirect 
-all external ports to the standard ports. This can be done using \emph{iptables} in Linux, 
+ports on the proxy server. A solution to this problem is to locally redirect 
+all external ports to the standard ports. This is done using \emph{iptables} in Linux, 
 Listing~\ref{lst:iptables} shows an example of the command to setup iptables to do this.
 
 \begin{lstlisting}[label=lst:iptables, caption=Example of redirecting ports using iptables]
-iptables -t nat -A PREROUTING -p tcp --dport 1:65535 -j REDIRECT --to-ports 80
+iptables -t nat -A PREROUTING -p tcp --dport 1:65535 
+	-j REDIRECT --to-ports 80
 \end{lstlisting}
-\todo{Jonas: fix listing}
 
 \subsection{Integrator}
 
-\begin{itemize}
-\item- rewrite some, integrator driven, no or limited user configuration
-\item- no need for parsing, integrator decides
-\item- well defined per site policy
-\item- site could allow user to configure policy
-\item- requires developer understanding of the monitor
-\item- future reflection of monitored code?
-\end{itemize}
+%\begin{itemize}
+%\item- rewrite some, integrator driven, no or limited user configuration
+%\item- no need for parsing, integrator decides
+%\item- well defined per site policy
+%\item- site could allow user to configure policy
+%\item- requires developer understanding of the monitor
+%\item- future reflection of monitored code?
+%\end{itemize}
+
+Currently rudimentary communication
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

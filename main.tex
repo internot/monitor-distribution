@@ -180,24 +180,35 @@ monitors, implemented as JavaScript interpreters. The
  interpreter written in JavaScript, an excellent starting
  point for supporting versatile security policies.
 
-Our evaluation of the architectures explores the relative security considerations.
+Our evaluation of the architectures explores the relative security
+considerations.
 When introducing reference monitoring, Anderson~\cite{Anderson:72}
-identifies the following requirements:
-\emph{monitor integrity}, that the monitor must be tamperproof,
-\emph{complete mediation}, that the monitor must be always invoked, and
-\emph{soundness}, that the monitor must enforce the desired security policy.
-In addition, requirements of 
-\emph{transparency} are often in place for reference monitors to
-ensure that no new behaviors are added or removed by monitors when the
+identifies the following principles:
+(i) the monitor must be tamperproof (\emph{monitor integrity}),
+(ii) the monitor must be always invoked (\emph{complete
+  mediation}~\cite{Saltzer:Schroeder:TCB}), and
+(iii) the monitor must be small enough to be subject to correctness
+analysis (\emph{small trusted computing base
+  (TCB)}~\cite{Saltzer:Schroeder:TCB,DBLP:dblp_conf/sosp/Rushby81}). Overall,
+the key requirements often considered in the context of monitoring are 
+that the monitor must enforce the desired security policy
+(\emph{soundness}) and that the monitor is transparent to the
+applications (\emph{transparency}). Note the relation of
+the soundness to Anderson's principles: while the principles do not
+automatically imply soundness, they facilitate establishing soundness. 
+Transparency requirements are often in place for reference monitors to
+ensure that no new behaviors are added by monitors for any programs, and no
+behaviors are removed by monitors when the
 original program is secure in the first place.
 
 Since the architectures are parametric in the actual monitor, we can
-often rely on the properties of the monitor itself to guarantee the
-above requirements. In particular, it is essential for soundness and
-transparency that the monitor itself supports them. Monitor integrity
-and complete mediation are of our particular focus in the security
-considerations because the choice of the architecture results in
-different approaches to the integrity of the monitor.
+often draw on the properties of the monitor itself to guarantee the
+above requirements. It is essential for soundness and
+transparency that the monitor itself supports them. Monitor integrity,
+complete mediation, and small TCB are of particular focus in our security
+considerations for the architectures because the choice of the architecture results in
+different implications for the security and transparency of the
+deployed monitor.
 
 \paragraph{Instantiation}
 In order to illustrate the usefulness of the approach, we present an
@@ -1049,7 +1060,7 @@ JavaScript.
 
 \paragraph{Inlined reference monitors}
 Anderson~\cite{Anderson:72} introduces reference monitors and
-outlines the principle requirements, mentioned in Section~\ref{sec:intro}.
+outlines the basic principles, recounted in Section~\ref{sec:intro}.
 %
 Erlingsson and Schneider~\cite{DBLP:conf/nspw/ErlingssonS99,Erlingsson:PhD04} instigate
 the area of inlining reference monitors. 

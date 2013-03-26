@@ -415,22 +415,18 @@ the browser itself. By configuring the browser to use a web proxy, the user can 
 of sensitive data.
 
 \paragraph{Description}
-A proxy specific to relaying HTTP requests is often referred to as a web proxy.
-All modern browsers support using web proxies to relay requests.
-It allows all outgoing HTTP requests to be 
-relayed through the proxy server. The web proxy will act as a man-in-the-middle, making 
-requests on behalf of the client. In the process, the proxy has the 
-opportunity of modifying both the request and the response. 
-As a monitor deployment method the opportunity to rewrite the response is 
-of interest. A web proxy is a convenient way to include the monitor in browsed pages without 
-modifying the browser itself. The browser is configured to relay 
-all requests through the proxy, and the proxy rewrites the responses to include 
+All modern browsers support using proxies to relay all requests through a proxy.
+A proxy specific to relaying HTTP requests is referred to as a web proxy.
+The web proxy acts as a man-in-the-middle, making 
+requests on behalf of the client. In the process, the proxy can
+modify both the request and the response. 
+A web proxy is a convenient way to rewrite the response to include 
 the monitor in each page. Modifying the response makes the method more 
 intrusive to the HTML content, but less intrusive to the user's browser. 
 
 %\todo{Strong wording; any. Later is in order to be effective is used}
 For the monitor to provide security guarantees, all scripts bundled with 
-the page must be executed within the monitor. The scripts can either be inline, 
+the page must be executed by the monitor. The scripts can either be inline, 
 e.g., included as part of the HTML page, or external, e.g., referenced in the 
 HTML page to be downloaded from an external source.
 Apart from including the monitor in all browsed pages, all inline and external 
@@ -438,8 +434,8 @@ scripts must be identified and rewritten by the web proxy to direct execution to
 %\todo{A call to the monitor hard to understand - better use 'use the monitor to execute'?}
 This is achieved by wrapping all JavaScript source code, whether inline or 
 external, to be interpreted and executed by the monitor.
-In the web proxy, different rewriting rules apply depending on whether the 
-requested content is JavaScript, e.g., external, or HTML, e.g., inline. 
+Different rewriting rules apply depending on whether the 
+requested content is JavaScript, e.g. external, or HTML, e.g. inline. 
 %\todo{Wrapped hard to understand}
 For external 
 JavaScript resources, containing only JavaScript, the entire response is rewritten to use the monitor to execute, whereas 
@@ -449,25 +445,19 @@ JavaScript, both script-tags and event handlers.
 
 \paragraph{Security considerations}
 
-As opposed to a browser extension, which replaces the 
-JavaScript engine, the monitor will be executed by the engine of the browser. 
-By including the monitor in the page, it is executed in the context of the page. Naturally 
-this is the same execution context in which all scripts bundled with the 
-page are executed. Whereas a 
-browser extension intercepts execution of all scripts by replacing the JavaScript 
-engine of the browser, a web proxy must identify all inline and 
-external scripts and rewrite them to ensure that they are executed within the 
-monitored execution context. This effort continues as the monitor executes. 
-%\todo{Move this sentence up before last?}
+As opposed to a browser extension, that replaces the 
+JavaScript engine, the monitor will be executed by the engine of the browser, in the context of the page. Naturally 
+this is the same context in which all scripts bundled with the 
+page are normally executed. The web proxy must ensure that they are all executed within the 
+monitored context. This effort must continue as the monitor executes. 
 Various JavaScript features, such as 
 \emph{document.write}, allow an arbitrary string to be 
 interpreted and rendered as HTML. Any scripts present in the string will be 
 executed upon interpretation. The monitor must account for this and again rewrite 
 the string to direct execution to the monitor. Failing to do so, script code will execute 
-along-side the monitor, giving it access to the sensitive information the 
-monitor was intended to protect. 
+along-side the monitor, thereby bypassing it. 
 Complete mediation is achieved given that all requests are relayed through the proxy 
-and all occurrences are of JavaScript within the page is wrapped to direct execution to the monitor.
+and all occurrences of JavaScript within the page is rewritten to direct execution to the monitor.
 %\todo{Jonas: reword slightly}
 
 Special consideration is required for secure HTTP connections (HTTPS). In an HTTPS 
@@ -482,8 +472,8 @@ This poses a challenge for a web proxy designed exactly to modify the response. 
 is for the proxy to act as a CA by generating a
 new certificate for the target domain on-the-fly, and sign the 
 public key of the certificate with the private key of the proxy. Naturally, 
-the proxy must be trusted by the user, either because the key is added to 
-the users list of trusted CAs, or signed by one that the user trusts.
+the proxy must be trusted by the user, either by adding the key to 
+the users list of trusted CAs, or having the key signed by a CA the user trusts.
 
 
 

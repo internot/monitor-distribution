@@ -346,11 +346,9 @@ the monitor, but might jeopardize the integrity of the entire browser.
 
 \paragraph{Pros and cons}
 
-\todo{Again, is this really true - one could just as well imagine the other 
-  methods to provide the same}
 Since the extension is installed on locally in the browser of the user, it has
 the benefit of giving the user direct control over what security policies to 
-enforce on the browsed pages.
+enforce on the browsed pages without relying on and trusting other parties.
 
 The \emph{Document Object Model} (DOM)~\cite{DOM2} provides the tree model of HTML
 documents used in browsers. The DOM is a complex, richly linked tree structure,
@@ -982,8 +980,6 @@ flow perspective, JSFlow supports a wide variety if information flow policies,
 including tracking of user input preventing it from leaving the browser used in
 the security experiments described below.
 
-\todo{The second site causes security errors due to NSU; shall we simply not agree on releasing the code if someone asks? Or shall we discuss the matter here?}
-
 \subsection{Experiment scenarios}
 
 Consider the scenario of a password strength checker. The use the service
@@ -999,68 +995,69 @@ browser. Sending back the password to the service provider to perform
 the strength computation puts a lot of trust in the service provider to transfer the
 password in a secure way, and make sure that no information about the password
 is stored. For vital secrets such as passwords, there is no reason for the user
-to give this trust. Hence, in this situation, it is important to guarantee that
+to give this trust; in this situation, it is important to guarantee that
 the password does not leave the browser.
 
 We have investigated a number of password strength services. The services can
 be categorized based on whether the computation is server side or client side.
 Below we report on our results with two services selected from each category. 
-Even though it is conceivable to guarantee security of the client side service
+Even though it would be conceivable to guarantee security of the client side service
 by isolation the service uses Google Analytics, which requires the ability
 to communicate over the Internet to function. In general it is not possible
 to achieve security via isolation without impairing the functionality of
 the service.
 
-\todo{Way of referecing? use citations?}
-The first is the insecure site \emph{Testa losenord}~\cite{pts} provided by
+The first is the \emph{Testa losenord}~\cite{pts} site provided by
 the Swedish authority PTS. The service presents the user with an input field
 and a button to initiate the test. Once the button is pressed, the
 password is sent to the service provider.
-\todo{Note: it is over https so it is not in clear text}
 
-The second is the service the \emph{Check Password Strength}~\cite{GSP}, which provides a
-secure client side password strength checker. The user is presented with an
+The second is the service the \emph{Check Password Strength}~\cite{GSP} site, providing a pure
+client side password strength checker. The user is presented with an
 input box, and the strength of the password is computed as the password
 is typed in.
 %
-It is interesting to note that even if the second service is secure, the input
-field used to input the password is contained in a form. Since the input field
-is not given a name, the password is not included when the form is posted.
-However, the small change of adding a name to the field would cause the
-password to be sent back in cleartext to the service provided rendering the
-service insecure.
+%It is interesting to note that even if the second service is secure, the input
+%field used to input the password is contained in a form. Since the input field
+%is not given a name, the password is not included when the form is posted.
+%However, the small change of adding a name to the field would cause the
+%password to be sent back in cleartext to the service provided rendering the
+%service insecure.
 
-\paragraph{Browser extension}
+
+For all different deployment methods, loading the page in Firefox causes the monitor
+to be used to execute the scripts on the page with the following result.
 %
-Loading a page in Firefox with the extension enables causes the monitor to be used
-as the execution engine. In addition, the extension captures important events that
-might cause information to leave the browser, e.g., \lstinline{onsubmit}. 
+Loading the first site presents the user with the input form and the button.
+The user is allowed to type in the password, but as soon as the user presses
+the button to perform the check the monitor detects that the password is sent
+to the service provider as part of the post data and stops execution with a
+security error.
+%
+Loading the second site presents the user with the input form and the strength
+of the password is gradually computed as it is typed. If the user presses enter
+the form is posted back to the service provider, but since the password is not
+part of the POST data, execution is allowed to continue. 
 
-Loading the first site presents the user with the input form and the button. The user
-is allowed to type in the password, but as soon as the user presses the button to perform
-the check the monitor detects that the password is sent to the service provider
-as part of the post data and stops execution with a security error.
+For these two sites it is possible to envision different security policies. 
+For instance, the user might decide to trust PTS based on the fact that it
+is an authority, and that the password is sent over HTTPS. At the same time,
+the user might want to enforce that the password is not sent back to
+\url{getsecurepassword.com}. Even though the password is not sent back in the
+current version, a small change would include it in the POST data and
+send it in cleartext.
 
-Loading the second site presents the user with the input form and the strength of the password 
-is gradually computed as it is typed. If the user presses enter the form is posted back to
-the service provider, but since the password is not part of the post data, execution is
-allowed to continue. If, however, a name is added to the input field, the password is part
-of the post data, and the monitor stops execution with an error.
+For the browser extension, the user can control the policies without relying on
+or trusting other parties, since the extension resides on the user's computer.
+For the web proxy, the user has to trust the web proxy provider to honor any
+policy decisions. From a corporration perspective, controlling the web proxy
+might be beneficial. Even though the user may trust PTS, it is not unreasonable
+to assume that a company is interested in enforcing a stricter password regime,
+prohibiting passwords from leaving the computer altogether. 
+While the suffix proxy provides similar benefits as the web proxy, it also allows 
+the user to selectively browse without monitoring. While convenient it also
+might open up for security breaches.
 
-
-\paragraph{Web proxy}
-
-Loading a page through the inlining web proxy causes all scripts to be wrapped
-with the monitor. As above, the monitor is also registered as the handler to
-important events that might cause information flow. The result is the same
-for the two sites. Attempting to compute the password strength using the first
-site causes execution to be stopped with a security error, whereas the second
-site is allowed to run.
-
-\paragraph{Suffix proxy}
-
-Loading the page via the suffix proxy causes the monitor to be injected into the page in 
-a similar way to the web proxy, with identical result.
 
 \subsection{Performance experiments}
 %Jonas

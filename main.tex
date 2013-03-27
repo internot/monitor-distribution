@@ -1008,37 +1008,35 @@ After the user inputs a password, the strength of the password is computed accor
 to some metric, and the result is displayed to the user, typically on a scale
 from \emph{weak} to \emph{strong}. This type of service is ubiquitous
 on the web, with service providers ranging from private web sites to web sites
-of national telecommunication authorities (discussed below).
+of national telecommunication authorities.
 
 Clearly, the confidentiality of the password needs to be protected.  The
 strength of the password is of no importance if the password is leaked.  We
 have investigated a number of password-strength services. 
 Our experiments identify services that enforce two types of policies: (i)
 allow the password to be sent back to the origin web site, but not to
-any other site (\emph{server-side checkers}); and (ii) disallow the password
-to leave the browser (\emph{client-side checkers}). 
-Clearly, the first type places trust on the service provide not to
+any other site (suitable for server-side checkers); and (ii) disallow the password
+to leave the browser (suitable for client-side checkers). 
+Clearly, the first type places trust on the service provider not to
 abuse the password, while the second type does not require such trust,
-in line with the principle of least
-privilege~\cite{Saltzer:Schroeder:TCB}.
+in line with the \emph{principle of least
+privilege}~\cite{Saltzer:Schroeder:TCB}.
 Note that these policies are indistinguishable from SOP's point of
 view because SOP is not powerful enough to express the second type.
 %The services can be
 %categorized based on whether the computation is server side or client side.
 
-One way to enforce the second type of policy, that the password does not leave the browser, is to
+One seemingly reasonable way to enforce the second type of policy is to
 isolate the service, i.e., prevent it from performing any communication.
-While effective, such a stern policy risks breaking the functionality of the service.
-It is common that pages employ some for of usage statistics tracking such as Google
+While effective, such a stern approach risks breaking the functionality of the service.
+It is common that pages employ usage statistics tracking such as Google
 Analytics. Google Analytics requires that usage information is allowed to be gathered and
-sent to Google for aggregation. Using information-flow tracking we can guarantee
-that the password is not sent to the service provider or Google without disallowing
-communication in general.
-
+sent to Google for aggregation. Using information-flow tracking, we
+can allow communication to Google Analytics but with the guarantee
+that the password will not be leaked to it.
 
 The sites that fall into the first category include 
-\url{https://testalosenord.pts.se/}, provided by the Swedish Post
-and Telecom Authority, as well as 
+\url{https://testalosenord.pts.se/}, 
 \todo{Add list}.
 The sites that fall into the second category include 
 \url{http://www.getsecurepassword.com/CheckPassword.aspx},
@@ -1054,78 +1052,94 @@ The sites that fall into the second category include
 %password in a secure way, and make sure that no information about the password
 %is stored. 
 
+From the above list, it is worth commenting on two sites, 
+\url{https://testalosenord.pts.se/} and
+\url{http://www.getsecurepassword.com/CheckPassword.aspx}, one in each
+category. Interestingly, the first site is provided by the Swedish Post
+and Telecom Authority. The site contains a count of how many passwords 
+have been submitted to the service, with over 1,000,000 tried
+passwords so far. It is unclear why the Swedish authority follows the
+policy that requires more trust from the users. The second site is an example of a web site that uses
+Google Analytics. Our monitor rightfully allows communication to
+Google while ensuring the password cannot be leaked anywhere outside the browser. 
 
-Of the different service we have selected two that we present in greater
-detail. 
-%
-The first site, \url{https://testalosenord.pts.se/}, is a server side service
-provided by the Swedish authority PTS.  The service presents the user with an
-input field and a button to initiate the test. Once the button is pressed, the
-password is sent to the service provider, which responds with information on
-the password strength.
-%
-The second site, \url{http://www.getsecurepassword.com/CheckPassword.aspx},
-is a client side service. Again the user is presented with an
-input box, but for this service the strength is computed on the fly by a 
-client side script.
+The benefit of the architectures for the scenario of password-strength checking is
+that users can get strong security guarantees either by installing an
+extension, using a web proxy or a suffix proxy. In the latter two
+cases, the system and network administrators have a stake in deciding
+what policies to enforce. Further, the integrator architecture is an
+excellent fit for including a third-party password-strength checker
+into web pages of a service, say a social web site, with no
+information leaked to the third party.
+
+% The first site, \url{https://testalosenord.pts.se/}, is a server-side service
+% provided by the Swedish authority PTS.  The service presents the user with an
+% input field and a button to initiate the test. Once the button is pressed, the
+% password is sent to the service provider, which responds with information on
+% the password strength.
+% %
+% The second site, \url{http://www.getsecurepassword.com/CheckPassword.aspx},
+% is a client side service. Again the user is presented with an
+% input box, but for this service the strength is computed on the fly by a 
+% client side script.
 
 
-For the different deployment methods, loading a page causes the monitor
-to be used to execute the scripts. Regardless of the deployment method chosen,
-loading the above sites gives the following results.
-%
-Consider first the stricter policy that prevents the password from leaving the
-browser.
-Loading the first site under this policy presents the user with the input form and the button.
-The user is allowed to type in the password, but as soon as the user presses
-the button to perform the check the monitor detects that the password is sent
-to the service provider as part of the post data and stops execution with a
-security error. Relaxing the policy to allow the password to be sent back
-to the service provider allows the site to function normally.
+% For the different deployment methods, loading a page causes the monitor
+% to be used to execute the scripts. Regardless of the deployment method chosen,
+% loading the above sites gives the following results.
+% %
+% Consider first the stricter policy that prevents the password from leaving the
+% browser.
+% Loading the first site under this policy presents the user with the input form and the button.
+% The user is allowed to type in the password, but as soon as the user presses
+% the button to perform the check the monitor detects that the password is sent
+% to the service provider as part of the post data and stops execution with a
+% security error. Relaxing the policy to allow the password to be sent back
+% to the service provider allows the site to function normally.
 
-Loading the second site under the stricter policy does not prevent the site
-from functioning properly. As the page is loaded user statistics is collected
-and sent back to Google Analytics. Since this information does not contain the
-password it is allowed without complaints. The user is presented with the input
-form and the strength of the password is gradually computed as it is typed. If
-the user presses enter selected data from form is sent back to the service
-provider.  Importantly, the password is not part of this data, and execution is
-allowed to continue.  However, relaxing the security policy as above for the
-second site is potentially dangerous.  Even though the password is not part of
-the data sent back to the service provider, such relaxation would allow it to
-be. Not only would this be suspicious, since the computation is client side,
-and, hence, there is no need for the service provider to be in possession of
-the password, but the password would be sent in cleartext, since the site is
-available over HTTP.  
-%
-This highlights the fact that different sites need different policies, which
-differentiates the different deployment methods.
+% Loading the second site under the stricter policy does not prevent the site
+% from functioning properly. As the page is loaded user statistics is collected
+% and sent back to Google Analytics. Since this information does not contain the
+% password it is allowed without complaints. The user is presented with the input
+% form and the strength of the password is gradually computed as it is typed. If
+% the user presses enter selected data from form is sent back to the service
+% provider.  Importantly, the password is not part of this data, and execution is
+% allowed to continue.  However, relaxing the security policy as above for the
+% second site is potentially dangerous.  Even though the password is not part of
+% the data sent back to the service provider, such relaxation would allow it to
+% be. Not only would this be suspicious, since the computation is client side,
+% and, hence, there is no need for the service provider to be in possession of
+% the password, but the password would be sent in cleartext, since the site is
+% available over HTTP.  
+% %
+% This highlights the fact that different sites need different policies, which
+% differentiates the different deployment methods.
 
-\paragraph{Browser extension}
-The browser extension resides locally on the user's computer under her control.
-This allows the user to freely set different policies for different pages, without
-relying on or trusting other parties. Unless the extension allows for remote control,
-this makes the extension less deployment method less attractive to corporations. 
-In such case, the corporation would have to trust the user to abide with corporate
-policies.
+% \paragraph{Browser extension}
+% The browser extension resides locally on the user's computer under her control.
+% This allows the user to freely set different policies for different pages, without
+% relying on or trusting other parties. Unless the extension allows for remote control,
+% this makes the extension less deployment method less attractive to corporations. 
+% In such case, the corporation would have to trust the user to abide with corporate
+% policies.
 
-\paragraph{Web proxy} For the web proxy the situation is different. In this
-case the proxy provider is in control of which policies are enforced. On one hand
-the user does not need to trust the extension and install it locally. On the other hand, 
-it forces the user to trust the proxy provider to enforce the policies the user
-wants.  From the perspective of the corporation this is attractive.  In the
-case the corporation allows their user to provide their own policies, those can
-be merged with the corporate policies.  Thus, deploying the monitor via a web
-proxy, the corporation is able to guarantee that the corporate policies are
-enforced.
+% \paragraph{Web proxy} For the web proxy the situation is different. In this
+% case the proxy provider is in control of which policies are enforced. On one hand
+% the user does not need to trust the extension and install it locally. On the other hand, 
+% it forces the user to trust the proxy provider to enforce the policies the user
+% wants.  From the perspective of the corporation this is attractive.  In the
+% case the corporation allows their user to provide their own policies, those can
+% be merged with the corporate policies.  Thus, deploying the monitor via a web
+% proxy, the corporation is able to guarantee that the corporate policies are
+% enforced.
 
-\paragraph{Suffix proxy}
-From the users perspective the suffix proxy shares the benefits and drawbacks of the
-web proxy. However, it allows the user to use the monitor at her own discretion, by only
-using the suffix proxy service when called for. Allowing
-users to bypass all forms of monitoring by not using the suffix proxy makes the deployment
-method less suited for corporations. Rather, this deployment method is more targeted to
-non-corporate users that sometimes need additional security guarantees.
+% \paragraph{Suffix proxy}
+% From the users perspective the suffix proxy shares the benefits and drawbacks of the
+% web proxy. However, it allows the user to use the monitor at her own discretion, by only
+% using the suffix proxy service when called for. Allowing
+% users to bypass all forms of monitoring by not using the suffix proxy makes the deployment
+% method less suited for corporations. Rather, this deployment method is more targeted to
+% non-corporate users that sometimes need additional security guarantees.
 
 
 

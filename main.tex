@@ -377,7 +377,7 @@ is indistinguishable from the standard operation of the browser, and, unlike oth
 methods of deployment, it is unimportant whether the scripts
 are referenced using HTTP or HTTPS.
 
-Whether the requirements of conservativeness and transparency can be met
+Whether the requirements of transparency can be met
 depends on when the scripts are executed and that all functionality provided by
 the browser can be implemented by the monitor.
 
@@ -388,12 +388,12 @@ parsing the web page. This means that the DOM tree of the page might not have
 been fully constructed when the scripts execute.  For scripts that interact
 with the DOM tree this is important, in particular if the script injects nodes
 into the tree. Differences in the state of the DOM tree can be detected by 
-scripts at execution time. Hence, to guarantee conservativeness and transparency 
+scripts at execution time. Hence, to guarantee transparency 
 the execution of scripts must occur at the same times in the DOM tree construction
 as they would have in the unmodified browser. With some effort this can be achieved
 using DOM mutation events.
 
-Another challenge pertaining to conservativeness and transparency is that some
+Another challenge pertaining to transparency is that some
 functionality provided by the browser might be difficult or expensive to
 provide.  One example of this is \lstinline{document.write}. The semantics of
 \lstinline{document.write} is loosely specified~\cite{DOM:LVL2} saying that
@@ -795,14 +795,13 @@ and the implications of interacting with the monitor.
 %For each deployment option, we describe how it is implemented and show how the integrity of the monitor
 %and complete mediation are achieved.
 This section details our implementations of the architectures
-from Section~\ref{sec:arch}. 
+from Section~\ref{sec:arch}. The code is available on request.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Browser extension}
 
 The browser extension is a Firefox extension based on Zaphod~\cite{Zaphod}.
-The extension consists of 1100 lines of JavaScript and XUL code.
 When loaded, the extension first turns off the standard JavaScript engine by
 disallowing JavaScript and listens for the \lstinline{DOMContentLoaded} event.  The
 \lstinline{DOMContentLoaded} event is fired as soon as the DOM tree construction is
@@ -813,7 +812,7 @@ each found script node, the source is downloaded using XHR if needed, and the
 monitor is used to execute the script.
 
 As discussed above, the downside of this method is that it breaks
-conservativeness and transparency, since the scripts all execute after the DOM
+transparency, since the scripts all execute after the DOM
 tree has been constructed. It is possible to regain transparency by using DOM
 \lstinline{MutationEvent}~\cite{DOM3Event} instead of the \lstinline{DOMContentLoaded} event.  The idea is to listen
 to any addition of script nodes to the DOM tree under the construction, and
@@ -828,6 +827,10 @@ However, the exact order of loading is not standardized and differs between
 browsers. This forces scripts to be independent of such differences. Thus,
 using the method of executing scripts on the \lstinline{DOMContentLoaded} event is not
 necessarily a problem in practice. 
+
+The extension consists of 1100 lines of JavaScript and XUL code.
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -888,6 +891,7 @@ interpreter, as exemplified in Listing~\ref{lst:wrap-monitor}.
 code = 'Monitor.eval(' + JSON.stringify(code) + ')';
 \end{lstlisting}
 
+The implementation consists of 256 lines of JavaScript code.
 
 
 
@@ -941,6 +945,8 @@ the port number is included between the two, e.g., \emph{http://target.domain.co
 This does not clash with the target domain because the top domain of the target domain cannot be numeric.
 Neither does it clash with the proxy domain because it is still a subdomain of the proxy domain.
 
+The implementation consists of 276 lines of JavaScript code.
+
 \subsection{Integrator}
 
 %\begin{itemize}
@@ -978,7 +984,7 @@ is returned to the trusted code.
 \label{sec:case}
 
 This section presents practical experiments made by instantiating the deployment
-methods with the \emph{JSFlow}~\cite{Hedin:Sabelfeld:CSF12,JSFlow} information-flow monitor. 
+architectures with the \emph{JSFlow}~\cite{Hedin:Sabelfeld:CSF12,JSFlow} information-flow monitor. 
 We briefly describe the monitor and discuss security and performance experiments.
 
 \subsection{Monitor}
@@ -1006,30 +1012,48 @@ of national telecommunication authorities (discussed below).
 
 Clearly, the confidentiality of the password needs to be protected.  The
 strength of the password is of no importance if the password is leaked.  We
-have investigated a number of password strength services. The services can be
-categorized based on whether the computation is server side or client side.
+have investigated a number of password-strength services. 
+Our experiments identify services that enforce two types of policies: (i)
+allow the password to be sent back to the origin web site, but not to
+any other site (\emph{server-side checkers}); and (ii) disallow the password
+to leave the browser (\emph{client-side checkers}). 
+Clearly, the first type places trust on the service provide not to
+abuse the password, while the second type does not require such trust,
+in line with the principle of least
+privilege~\cite{Saltzer:Schroeder:TCB}.
+Note that these policies are indistinguishable from SOP's point of
+view because SOP is not powerful enough to express the second type.
+%The services can be
+%categorized based on whether the computation is server side or client side.
 
-\todo{Add list}
-
-For the server side services to function properly the security
-policy must allow the password to be communicated to
-the service provider.
-For the client side services a stronger security policy, that 
-prohibits the password from leaving the browser, is possible.
- Sending back the password to the service provider to perform
-the strength computation puts a lot of trust in the service provider to transfer the
-password in a secure way, and make sure that no information about the password
-is stored. 
-
-One way to enforce that the password does not leave the browser is to
-isolate the service, i.e., prevent it from performing any communication at all.
-While effective, such a stern policy risk breaking the functionality of the service.
-Even though the password does not need to be communicated back to the service provider
-it is common that pages employ some for of usage statistics tracking such as Google
+One way to enforce the second type of policy, that the password does not leave the browser, is to
+isolate the service, i.e., prevent it from performing any communication.
+While effective, such a stern policy risks breaking the functionality of the service.
+It is common that pages employ some for of usage statistics tracking such as Google
 Analytics. Google Analytics requires that usage information is allowed to be gathered and
-sent to Google for aggregation. Using information flow tracking we can guarantee
+sent to Google for aggregation. Using information-flow tracking we can guarantee
 that the password is not sent to the service provider or Google without disallowing
 communication in general.
+
+
+The sites that fall into the first category include 
+\url{https://testalosenord.pts.se/}, provided by the Swedish Post
+and Telecom Authority, as well as 
+\todo{Add list}.
+The sites that fall into the second category include 
+\url{http://www.getsecurepassword.com/CheckPassword.aspx},
+\todo{Add list}.
+
+%For the server side services to function properly the security
+%policy must allow the password to be communicated to
+%the service provider.
+%For the client side services a stronger security policy, that 
+%prohibits the password from leaving the browser, is possible.
+% Sending back the password to the service provider to perform
+%the strength computation puts a lot of trust in the service provider to transfer the
+%password in a secure way, and make sure that no information about the password
+%is stored. 
+
 
 Of the different service we have selected two that we present in greater
 detail. 
@@ -1040,7 +1064,7 @@ input field and a button to initiate the test. Once the button is pressed, the
 password is sent to the service provider, which responds with information on
 the password strength.
 %
-The second site,\url{http://www.getsecurepassword.com/CheckPassword.aspx},
+The second site, \url{http://www.getsecurepassword.com/CheckPassword.aspx},
 is a client side service. Again the user is presented with an
 input box, but for this service the strength is computed on the fly by a 
 client side script.
@@ -1108,6 +1132,9 @@ non-corporate users that sometimes need additional security guarantees.
 
 \subsection{Performance experiments}
 %Jonas
+Experimental setup (machine, processor, OS,,,,)
+What we measure and on what pages
+Results in a form of a table (8 numbers)
 
 %1 page 
 \section{Related work}

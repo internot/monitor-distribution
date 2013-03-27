@@ -32,6 +32,24 @@ March 12 - implementation half-way
 March 11 - architecture first pass
 \fi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\lstdefinelanguage{lang}
+{
+ sensitive=true,
+ morecomment=[l]{--},
+ morestring=[b]'',
+basicstyle=\ttfamily,
+fontadjust=true
+}
+
+\lstdefinelanguage{langsmall}
+{
+ sensitive=true,
+ morecomment=[l]{--},
+ morestring=[b]'',
+basicstyle=\ttfamily\footnotesize,
+fontadjust=true
+}
+\lstset{language=lang}
 
 % comment out for the final version
 \pagestyle{plain}
@@ -328,11 +346,9 @@ the monitor, but might jeopardize the integrity of the entire browser.
 
 \paragraph{Pros and cons}
 
-\todo{Again, is this really true - one could just as well imagine the other 
-  methods to provide the same}
 Since the extension is installed on locally in the browser of the user, it has
 the benefit of giving the user direct control over what security policies to 
-enforce on the browsed pages.
+enforce on the browsed pages without relying on and trusting other parties.
 
 The \emph{Document Object Model} (DOM)~\cite{DOM2} provides the tree model of HTML
 documents used in browsers. The DOM is a complex, richly linked tree structure,
@@ -388,9 +404,9 @@ extension the monitor cannot easily provide the full functionality of
 \lstinline{document.write}.  Consider the following example, where
 \lstinline{document.write} is used inside a div element.
 
-\begin{verbatim}
-  <div><script>document.write('</div><div>');</script></div>
-\end{verbatim}
+\begin{lstlisting}[language=langsmall]
+<div><script>document.write('</div><div>');</script></div>
+\end{lstlisting}
 
 The result is two div elements, rather than the original one. Since the write
 takes place during the parsing of the page, the end tag written by
@@ -463,7 +479,7 @@ this is the same context in which all scripts bundled with the
 page are normally executed. The web proxy must ensure that they are all executed within the 
 monitored context. This effort must continue as the monitor executes. 
 Various JavaScript features, such as 
-\emph{document.write}, allow an arbitrary string to be 
+\lstinline{document.write}, allow an arbitrary string to be 
 interpreted and rendered as HTML. Any scripts present in the string will be 
 executed upon interpretation. The monitor must account for this and again rewrite 
 the string to direct execution to the monitor. Failing to do so, script code will execute 
@@ -550,9 +566,9 @@ the suffix proxy takes advantage of the domain name system (DNS) to redirect the
 Wildcard domain names allow all requests to any subdomain of the domain name to resolve to a single domain name, 
 i.e., in DNS terms \emph{*.proxy.domain $\Rightarrow$ proxy.domain}.
 Typically, the user navigates to a 
-web application associated with the proxy and enters the target URL, e.g., \emph{http://google.com/search?q=proxy}, in 
+web application associated with the proxy and enters the target URL, e.g., \url{http://google.com/search?q=proxy}, in 
 an input field. To direct the request to the proxy, the target domain name is altered
-by appending the domain name of the proxy, making the target domain a subdomain of the proxy domain, e.g., \emph{http://google.com.proxy.domain/search?q=proxy}. 
+by appending the domain name of the proxy, making the target domain a subdomain of the proxy domain, e.g., \url{http://google.com.proxy.domain/search?q=proxy}. 
 The browser is then navigated to the modified URL.
 The suffix proxy is set up so
 that all requests to any subdomain of the proxy domain are directed to the proxy domain. 
@@ -603,7 +619,7 @@ in a clean separation between the proxied and unproxied content.
 Another interesting consequence of altering the domain name, also relating to 
 the same-origin policy, is the concept of domain relaxing. Modern web browsers 
 allow relaxing of the same-origin policy for subdomains. Documents from different subdomains of the same 
-domain can relax their domains by setting the \emph{document.domain} attribute
+domain can relax their domains by setting the \lstinline{document.domain} attribute
 to their common domain. In doing so, they set aside the restrictions of the 
 same-origin policy and can freely access each others resources across subdomains. 
 Since the principle behind the suffix proxy is to make the target domain a subdomain of the proxy domain, two 
@@ -614,7 +630,7 @@ separation between origins. However, the flexibility of disabling the same-origi
 policy opens up for monitors whose policies are aimed
 at replacing the same-origin policy. 
 For such usage, the suffix proxy can effectively disable the same-origin 
-policy by adding a JavaScript snippet that sets the \emph{document.domain} property
+policy by adding a JavaScript snippet that sets the \lstinline{document.domain} property
 to the proxy domain. 
 %This way, the effectiveness of the policy 
 %can be tested without modifying the browser.
@@ -625,7 +641,7 @@ to the proxy domain.
 Recall from the previous section the rather complex procedure required to add HTTPS support.
 Implementing support for HTTPS is easier in the suffix proxy compared to the web proxy. 
 Given that the suffix proxy builds on DNS wildcards, it is sufficient to issue a certificate
-for all subdomains of the proxy domain, e.g., \emph{*.proxy.domain}. Such a 
+for all subdomains of the proxy domain, e.g., \url{*.proxy.domain}. Such a 
 certificate is valid for all target URLs relayed through the proxy.
 The main benefit of wildcard certificates is that the user can browse HTTPS pages. 
 %The drawback is that the user must trust the monitor to correctly verify the 
@@ -783,10 +799,11 @@ from the previous section.
 
 \subsection{Browser extension}
 
-The browser extension is a Firefox extension based on Zaphod~\cite{Zaphod}.
+The browser extension is a Firefox extension based on Zaphod~\cite{Zaphod}. All
+in all the extension is around 1000 lines of JavaScript and XUL code.
 When loaded the extension first turns off the standard JavaScript engine by
-disallowing JavaScript and listens for the DOMContentLoaded event.  The
-DOMContentLoaded event is fired as soon as the DOM tree construction is
+disallowing JavaScript and listens for the \lstinline{DOMContentLoaded} event.  The
+\lstinline{DOMContentLoaded} event is fired as soon as the DOM tree construction is
 finished.  On this event the DOM tree is traversed twice. The first traversal
 checks every node for event handlers, e.g., onclick, and registers the monitor
 to handle them. The second traversal looks for JavaScript script nodes.  For
@@ -796,18 +813,18 @@ monitor is used to execute the script.
 As discussed above, the downside of this method is that it breaks
 conservativeness and transparency, since the scripts all execute after the DOM
 tree has been constructed. It is possible to regain transparency by using DOM
-Mutation events instead of the DOMContentLoaded event.  The idea is to listen
+\lstinline{MutationEvent}~\cite{DOM3Event} instead of the \lstinline{DOMContentLoaded} event.  The idea is to listen
 to any addition of script nodes to the DOM tree under the construction, and
 execute the script on addition.  However, due to performance reasons the DOM
-Mutation events are deprecated, and are being replaced with DOM Mutation
-Observers. It is unclear whether the DOM Mutation Observers can be used to
+Mutation events are deprecated, and are being replaced with DOM \lstinline{MutationObserver}~\cite{DOM4}. 
+It is unclear whether the \lstinline{MutationObserver} can be used to
 provide transparency, since events are grouped together, i.e., the mutation
 observer will not necessarily get an event each time a script is added, but one
 event covering all script additions.
 
 However, the exact order of loading is not standardized and differs between
 browsers. This forces scripts to be independent of such differences. Thus,
-using the method of executing scripts on the DOMContentLoaded event is not
+using the method of executing scripts on the \lstinline{DOMContentLoaded} event is not
 necessarily a problem in practice. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -844,7 +861,7 @@ line as a script that alerts the string \emph{JavaScript}, and the third will
 display \emph{ac} and \emph{d} in two separate paragraphs and load a script
 from an external domain.
 
-\begin{lstlisting}[label=lst:crazy-html, caption=Example of complicated HTML]
+\begin{lstlisting}[language=langsmall,label=lst:crazy-html, caption=Example of complicated HTML]
 <script>0</script/> HTML </script>
 <script>0</script./> alert(JavaScript) </script>
 <p>a<sCript/"=/ src=//t.co/abcde a= >b</p></script>c<p>d
@@ -865,7 +882,7 @@ provides this functionality and will properly escape the string to ensure that
 it is semantically equivalent when interpreted by the monitor. The code string is then enclosed in a call to the monitors 
 interpreter, as exemplified in Listing~\ref{lst:wrap-monitor}.
 
-\begin{lstlisting}[label=lst:wrap-monitor, caption=Example of monitor wrapping]
+\begin{lstlisting}[language=langsmall,label=lst:wrap-monitor, caption=Example of monitor wrapping]
 code = 'Monitor.eval(' + JSON.stringify(code) + ')';
 \end{lstlisting}
 
@@ -920,7 +937,7 @@ ports on the proxy server. A solution to this problem is to locally redirect
 all external ports to the standard ports. This is done using \emph{iptables} in Linux, 
 Listing~\ref{lst:iptables} shows an example of the command to setup iptables to do this.
 
-\begin{lstlisting}[label=lst:iptables, caption=Example of redirecting ports using iptables]
+\begin{lstlisting}[language=langsmall,label=lst:iptables, caption=Example of redirecting ports using iptables]
 iptables -t nat -A PREROUTING -p tcp --dport 1:65535 
 	-j REDIRECT --to-ports 80
 \end{lstlisting}
@@ -977,8 +994,6 @@ flow perspective, JSFlow supports a wide variety if information flow policies,
 including tracking of user input preventing it from leaving the browser used in
 the security experiments described below.
 
-\todo{The second site causes security errors due to NSU; shall we simply not agree on releasing the code if someone asks? Or shall we discuss the matter here?}
-
 \subsection{Experiment scenarios}
 
 Consider the scenario of a password strength checker. The use the service
@@ -994,69 +1009,69 @@ browser. Sending back the password to the service provider to perform
 the strength computation puts a lot of trust in the service provider to transfer the
 password in a secure way, and make sure that no information about the password
 is stored. For vital secrets such as passwords, there is no reason for the user
-to give this trust. Hence, in this situation, it is important to guarantee that
+to give this trust; in this situation, it is important to guarantee that
 the password does not leave the browser.
 
 We have investigated a number of password strength services. The services can
 be categorized based on whether the computation is server side or client side.
 Below we report on our results with two services selected from each category. 
-Even though it is conceivable to guarantee security of the client side service
+Even though it would be conceivable to guarantee security of the client side service
 by isolation the service uses Google Analytics, which requires the ability
 to communicate over the Internet to function. In general it is not possible
 to achieve security via isolation without impairing the functionality of
 the service.
 
-\todo{Way of referecing? use citations?}
-The first is the insecure site \url{https://testalosenord.pts.se/} provided by
+The first is the \emph{Testa losenord}~\cite{pts} site provided by
 the Swedish authority PTS. The service presents the user with an input field
 and a button to initiate the test. Once the button is pressed, the
 password is sent to the service provider.
-\todo{Note: it is over https so it is not in clear text}
 
-The second is the service
-\url{http://www.getsecurepassword.com/CheckPassword.aspx}, which provides a
-secure client side password strength checker. The user is presented with an
+The second is the service the \emph{Check Password Strength}~\cite{GSP} site, providing a pure
+client side password strength checker. The user is presented with an
 input box, and the strength of the password is computed as the password
 is typed in.
 %
-It is interesting to note that even if the second service is secure, the input
-field used to input the password is contained in a form. Since the input field
-is not given a name, the password is not included when the form is posted.
-However, the small change of adding a name to the field would cause the
-password to be sent back in cleartext to the service provided rendering the
-service insecure.
+%It is interesting to note that even if the second service is secure, the input
+%field used to input the password is contained in a form. Since the input field
+%is not given a name, the password is not included when the form is posted.
+%However, the small change of adding a name to the field would cause the
+%password to be sent back in cleartext to the service provided rendering the
+%service insecure.
 
-\paragraph{Browser extension}
+
+For all different deployment methods, loading the page in Firefox causes the monitor
+to be used to execute the scripts on the page with the following result.
 %
-Loading a page in Firefox with the extension enables causes the monitor to be used
-as the execution engine. In addition, the extension captures important events that
-might cause information to leave the browser, e.g., \lstinline{onsubmit}. 
+Loading the first site presents the user with the input form and the button.
+The user is allowed to type in the password, but as soon as the user presses
+the button to perform the check the monitor detects that the password is sent
+to the service provider as part of the post data and stops execution with a
+security error.
+%
+Loading the second site presents the user with the input form and the strength
+of the password is gradually computed as it is typed. If the user presses enter
+the form is posted back to the service provider, but since the password is not
+part of the POST data, execution is allowed to continue. 
 
-Loading the first site presents the user with the input form and the button. The user
-is allowed to type in the password, but as soon as the user presses the button to perform
-the check the monitor detects that the password is sent to the service provider
-as part of the post data and stops execution with a security error.
+For these two sites it is possible to envision different security policies. 
+For instance, the user might decide to trust PTS based on the fact that it
+is an authority, and that the password is sent over HTTPS. At the same time,
+the user might want to enforce that the password is not sent back to
+\url{getsecurepassword.com}. Even though the password is not sent back in the
+current version, a small change would include it in the POST data and
+send it in cleartext.
 
-Loading the second site presents the user with the input form and the strength of the password 
-is gradually computed as it is typed. If the user presses enter the form is posted back to
-the service provider, but since the password is not part of the post data, execution is
-allowed to continue. If, however, a name is added to the input field, the password is part
-of the post data, and the monitor stops execution with an error.
+For the browser extension, the user can control the policies without relying on
+or trusting other parties, since the extension resides on the user's computer.
+For the web proxy, the user has to trust the web proxy provider to honor any
+policy decisions. From a corporration perspective, controlling the web proxy
+might be beneficial. Even though the user may trust PTS, it is not unreasonable
+to assume that a company is interested in enforcing a stricter password regime,
+prohibiting passwords from leaving the computer altogether. 
+While the suffix proxy provides similar benefits as the web proxy, it also allows 
+the user to selectively browse without monitoring. While convenient it also
+might open up for security breaches.
 
-
-\paragraph{Web proxy}
-
-Loading a page through the inlining web proxy causes all scripts to be wrapped
-with the monitor. As above, the monitor is also registered as the handler to
-important events that might cause information flow. The result is the same
-for the two sites. Attempting to compute the password strength using the first
-site causes execution to be stopped with a security error, whereas the second
-site is allowed to run.
-
-\paragraph{Suffix proxy}
-
-Loading the page via the suffix proxy causes the monitor to be injected into the page in 
-a similar way to the web proxy, with identical result.
 
 \subsection{Performance experiments}
 %Jonas

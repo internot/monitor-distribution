@@ -485,7 +485,7 @@ is for the proxy to act as a CA by generating a
 new certificate for the target domain on-the-fly, and sign the 
 public key of the certificate with the private key of the proxy. Naturally, 
 the proxy must be trusted by the user, either by adding the key to 
-the users list of trusted CAs, or having the key signed by a CA the user trusts.
+the user's list of trusted CAs, or having the key signed by a CA that the user trusts.
 
 
 
@@ -523,25 +523,22 @@ in the hands of the proxy administrator.
 
 \subsection{Suffix proxy (service)}
 \label{sec:arch-suffix}
-%\todo{Jonas: Just found out that the "service" we developed is actually a suffix proxy, which actually could have been implemented in a simpler way using .htaccess request rewriting. Also found a way to redirect all ports to a single port using iptables. Perfect solution.}
-%\begin{itemize}
-%\item What is a web proxy
-%\item How can a web proxy help in distributing the monitor
-%\item 
-%\item Delivering the associated cookies?
-%\item Same-origin policy in respect to different design choices
-%\item More intrusive in HTML content, rewrite links and external references 
-%\item Browser independent? Depends on the monitor
-%\item Not intrusive to the browser
-%\item Even less cumbersome to setup, browse to server URL
-%\item Server-side and client-side configuration possible?
-%\item Less general, only browsed pages
-%\end{itemize}
-\todo{Users is one perspective, but  service providers is another
-  important one}
-Certain users might want to distinguish between trusted and untrusted web sites.
+
+
+For trusted web sites, a user of a proxy service may not want to disclose
+sensitive information, e.g., passwords or cookies, to the provider of the service.
+Still, for untrusted web sites the user wants the increased security provided 
+by the proxy.
 A \emph{suffix proxy} particularly suits a user who wants to run certain untrusted 
-pages monitored to increase security, but not include the monitor in trusted pages.
+pages monitored, but not include the monitor in trusted pages.
+
+
+A proxy service may provide specific policies applied only to a few 
+particular web sites. In this case, relaying requests to other web sites is an 
+unnecessary waste of resources. It would be beneficial to the service provider to be
+able to control precisely which web sites will be relayed through the proxy. 
+This is not possible in a web proxy, that covers all requests, but a suffix proxy 
+provides the means to do so.
 
 
 
@@ -557,7 +554,7 @@ web application associated with the proxy and enters the target URL, e.g., \emph
 an input field. To direct the request to the proxy, the target domain name is altered
 by appending the domain name of the proxy, making the target domain a subdomain of the proxy domain, e.g., \emph{http://google.com.proxy.domain/search?q=proxy}. 
 The browser is then navigated to the modified URL.
-The suffix proxy is set up such
+The suffix proxy is set up so
 that all requests to any subdomain of the proxy domain are directed to the proxy domain. 
 A web application on the proxy domain is set up to listen for such subdomain requests.
 When a request for a subdomain is registered, it is intercepted by the web application.
@@ -638,22 +635,32 @@ The main benefit of wildcard certificates is that the user can browse HTTPS page
 
 While sharing a common foundation, there are several differences between a 
 suffix proxy compared to a traditional web proxy. The differences lie, not in 
-the way the monitor is included in the page, but in the way the proxy is 
-addressed. One beneficial difference is that it does not require any 
+how the monitor is included in the page, but in the way the proxy is 
+addressed. A consequence of the use of wildcard domain names is that the suffix proxy requires 
+heavier rewriting than the web proxy in order to capture all requests. On the other 
+hand, it helps in managing HTTPS requests, that is complicated in the web proxy.
+Another questionable consequence is that it allows for web sites to relax the 
+same-origin policy. From a monitor perspective this can be devastating under the wrong circumstances, 
+while beneficial under other.
+
+Another significant difference is that the suffix proxy lets the user and the 
+service provider decide which pages to proxy on a per-domain basis, making it 
+more general than a traditional web proxy that covers all requests. 
+Contrary to the web proxy, the suffix proxy can be set up to only relay a few selected 
+web sites, whereas requests for other web sites are redirected to their original 
+addresses. This can both reduce the load on the proxy service, as well as decrease the 
+overhead for the end user, thus benefiting both the user and the service provider.
+For a user, deciding whether to apply the monitor or not is as simple as browsing 
+to an alternate URL.
+
+One beneficial difference is that the suffix proxy does not require any 
 configuration and leaves the browser completely unchanged. The user can take
 advantage of the security benefits without being concerned with the integrity 
 of the browser.
 
-Another significant difference is that the suffix proxy lets the user decide which pages to proxy on a 
-per-domain basis, making it more general than a traditional web proxy that covers 
-all requests. %It can be seen as though a suffix proxy is off by default, whereas a web 
-%proxy is on by default. 
-Whether to apply the monitor is as simple as browsing to an alternate URL.
-
-
 %\todo{Integration stuff missing from intro? Or did I read too fast?}
 \subsection{Integrator}
-
+\label{sec:arch-integrator}
 %The mashup integrator includes the monitor and decides which JavaScript should 
 %run within the monitor. (Don't mention sandbox.) You're done.
 %\begin{itemize}
@@ -680,22 +687,36 @@ monitor.
 \paragraph{Description}
 Integrator-driven monitor inclusion is suitable for an integrating web page 
 that makes use of third-party code.
-% to extend the functionality to the page. 
 The security of the information contained on the web 
 page relies not only on the web page itself, but also on the security of all 
 included libraries. To protect against malicious or compromised libraries, 
 an integrator can execute part of, or all of the code in the monitor.
+The code executing outside of the monitor is trusted with full access to the 
+sensitive information in the page, and the untrusted code will be executed 
+by the monitor, restricted from accessing the information.
 This can be achieved by manually including the monitor in the page and loading the 
 third-party code either through the suffix proxy, or from cached rewritten 
-versions of the code. The suffix proxy will rewrite the 
-response to direct execution of the library to the monitor. 
-The trusted code executing outside the monitor can interact with the code 
-executed in the monitor by evaluating expressions in the monitor. This way, the 
-the trusted code can share specific non-sensitive information with the library, 
-that the library requires to execute.
-This approach allows for a well defined, per site, policy specification.
+versions of the code. %The suffix proxy will rewrite the 
+%response to direct execution of the library to the monitor. 
+This approach allows for a well defined, site specific, policy specification.
 The monitor is setup and configured with policies best suiting the need of the 
 site. 
+
+
+One important aspect of integrator-driven monitor inclusion is the interaction 
+between trusted and untrusted code. 
+The trusted code executing outside the monitor can interact with the code 
+executed in the monitor. This way, the 
+the trusted code can share specific non-sensitive information with the library, 
+that the library requires to execute. There are different means of introducing this 
+information to the monitor. The most rudimentary solution is to evaluate 
+expressions in the monitor, containing the information in a serialized form.
+The monitor can also provide an API for reading and writing variables, or 
+calling functions in the monitor. This simplifies the process and is less error 
+prone. An even more advanced solution is to have a set of shared variables
+that are bi-directionally reflected from one context to the other when the 
+their values are updated.
+
 
 \paragraph{Security considerations}
 %\todo{sharing information between real code and monitored code if automatic is a security problem, must be done manually}
@@ -708,7 +729,7 @@ respective security considerations apply. The same-origin policy has no effect
 on requesting libraries through the proxy. The only consequence is that the library
 will be rewritten so that it will be executed by the monitor.
 
-One security consideration that arises is the sharing of information between the 
+One security consideration that arises is the implication of sharing information between the 
 trusted and untrusted code. It might be appealing to simplify sharing of 
 information between the two by reflecting a set of shared variables of one into the other.
 However, automatically 
@@ -730,8 +751,8 @@ such manipulation.
 This developer-centric approach gives the integrator full control over the 
 configuration of the monitor and the policies to enforce. From the perspective of a user this 
 approach is not intrusive to the browser, requires no setup or configuration, 
-and provides additional security for the users sensitive information. However, 
-it also limits the users control over which policies are applied to user information. 
+and provides additional security for the user's sensitive information. However, 
+it also limits the user's control over which policies are applied to user information. 
 
 Compared to the suffix proxy, integrator driven monitor 
 inclusion is deliberately intrusive to the HTML code. Such specialized use of the suffix 
@@ -839,21 +860,13 @@ the monitor must be added as the first script to be executed.
 
 
 Rewriting JavaScript requires converting the source code to a string, which can 
-be fed to the interpreting monitor. The first step is to enclose the source code 
-in quotes, and subsequently all quotes within the source code are escaped to 
-not interfere with these enclosing quotes.
-Additionally all escape characters have to be escaped to not interfere with the escaped 
-quotes. Next, because new-lines may change the semantics of the code due to 
-JavaScript automatic semi-colon insertion, all new-line 
-characters must be replaced with the JavaScript string equivalent.
-These steps, exemplified in Listing~\ref{lst:wrap-monitor}, ensure that the 
-wrapping cannot be evaded and that the source code 
-will be semantically equivalent when interpreted by the monitor.
+be fed to the interpreting monitor. The method \lstinline{JSON.stringify()} 
+provides this functionality and will properly escape the string to ensure that 
+it is semantically equivalent when interpreted by the monitor. The code string is then enclosed in a call to the monitors 
+interpreter, as exemplified in Listing~\ref{lst:wrap-monitor}.
 
 \begin{lstlisting}[label=lst:wrap-monitor, caption=Example of monitor wrapping]
-code = 'Monitor.eval( " ' + code.replace(/\\/g, '\\\\')
-	.replace(/"/g, '\\"').replace(/\r?\n/g, "\\n\\\n")
-	+ ' " )';
+code = 'Monitor.eval(' + JSON.stringify(code) + ')';
 \end{lstlisting}
 
 
@@ -923,7 +936,7 @@ iptables -t nat -A PREROUTING -p tcp --dport 1:65535
 %\item- future reflection of monitored code?
 %\end{itemize}
 
-In line with Section\ref{sec:arch-integrator}, the integrator is implemented as 
+In line with Section~\ref{sec:arch-integrator}, the integrator is implemented as 
 a web page that includes third-party code via the suffix proxy. The monitor is 
 manually included in the page, setup and the policies are configured as is 
 appropriate for the page. Requesting the third party code through the suffix 

@@ -339,7 +339,7 @@ Since all scripts are executed using the monitor complete mediation is implied.
 In addition, this also implies that the deployment method is sound given that
 the monitor is sound. 
 
-As described above, browser extension are installed into the browser. In order
+As described above, browser extensions are installed into the browser. In order
 to be able to enrich the functionality of the browser, the extensions run with
 the same privileges as the browser. This entails that the monitor will be
 running with elevated privileges. Compared to the other methods of deployment
@@ -354,8 +354,9 @@ enforce on the browsed pages without relying on and trusting other parties.
 
 The \emph{Document Object Model} (DOM)~\cite{DOM2} provides the tree model of HTML
 documents used in browsers. The DOM is a complex, richly linked tree structure,
-which offers many challenges.  One example of such a feature, that can be
-handled with relative ease compared to other methods of deployment, is
+which offers many challenges. Which features that pose challenges depends to a certain degree
+on the deployment method. One example of a feature that can be handled with 
+relative easy when deploying via a browser extension is 
 \lstinline{innerHTML}. \lstinline{innerHTML} is a property on all DOM objects,
 that allows the text representation of the object to be changed. Any such
 change causes the content of the object to be changed by parsing the changed
@@ -377,11 +378,11 @@ is indistinguishable from the standard operation of the browser, and, unlike oth
 methods of deployment, it is unimportant whether the scripts
 are referenced using HTTP or HTTPS.
 
-Whether the requirements of transparency can be met
-depends on when the scripts are executed and that all functionality provided by
-the browser can be implemented by the monitor.
+However, some DOM features remain challenging for the extension deployment
+method, which may affect whether the requirements of transparency can be met
+--- transparency requires that all functionality provided by the browser is
+faithfully implemented by the monitor.
 
-However, some features remain challenging for the extension deployment method.
 First, consider the order in which scripts are executed.  When web pages are
 loaded, the scripts of the pages are executed as they are encountered while
 parsing the web page. This means that the DOM tree of the page might not have
@@ -463,7 +464,7 @@ Apart from including the monitor in all browsed pages, all inline and external
 scripts must be identified and rewritten by the web proxy to direct execution to the monitor.
 %\todo{A call to the monitor hard to understand - better use 'use the monitor to execute'?}
 This is achieved by wrapping all JavaScript source code, whether inline or 
-external, to be interpreted and executed by the monitor.
+external, to be executed by the monitor.
 Different rewriting rules apply depending on whether the 
 requested content is JavaScript, i.e., external, or HTML, i.e., inline. 
 %\todo{Wrapped hard to understand}
@@ -550,7 +551,7 @@ by the proxy.
 A \emph{suffix proxy} particularly suits a user who wants to run certain untrusted 
 pages monitored, but not include the monitor in trusted pages.
 
-
+\todo{Daniel: I found the following paragraph hard to read}
 A proxy service may provide specific policies applied only to a few 
 particular web sites. In this case, relaying requests to other web sites is an 
 unnecessary waste of resources. It would be beneficial to the service provider to be
@@ -627,6 +628,7 @@ same-origin policy and can freely access each others resources across subdomains
 Since the principle behind the suffix proxy is to make the target domain a subdomain of the proxy domain, two 
 domains loaded via the proxy, each relaxing their domain to the domain of the 
 proxy, can access each others resources across domains.
+\todo{Daniel: devastating is such a strong word}
 This is devastating for monitors that rely on the same-origin policy to enforce 
 separation between origins. However, the flexibility of disabling the same-origin
 policy opens up for monitors whose policies are aimed
@@ -658,7 +660,9 @@ addressed. A consequence of the use of wildcard domain names is that the suffix 
 heavier rewriting than the web proxy in order to capture all requests. On the other 
 hand, it helps in managing HTTPS requests, that is complicated in the web proxy.
 Another questionable consequence is that it allows for web sites to relax the 
-same-origin policy. From a monitor perspective this can be devastating under the wrong circumstances, 
+same-origin policy. 
+\todo{Daniel, again - devastating is very strong}
+From a monitor perspective this can be devastating under the wrong circumstances, 
 while beneficial under other.
 
 Another significant difference is that the suffix proxy lets the user and the 
@@ -716,7 +720,7 @@ This can be achieved by manually including the monitor in the page and loading t
 third-party code either through the suffix proxy, or from cached rewritten 
 versions of the code. %The suffix proxy will rewrite the 
 %response to direct execution of the library to the monitor. 
-This approach allows for a well defined, site specific, policy specification.
+This approach allows for a well defined, site-specific policy specification.
 The monitor is setup and configured with policies best suiting the need of the 
 site. 
 
@@ -801,7 +805,8 @@ from Section~\ref{sec:arch}. The code is available on request.
 
 \subsection{Browser extension}
 
-The browser extension is a Firefox extension based on Zaphod~\cite{Zaphod}.
+The browser extension is a Firefox extension based on Zaphod~\cite{Zaphod}
+
 When loaded, the extension first turns off the standard JavaScript engine by
 disallowing JavaScript and listens for the \lstinline{DOMContentLoaded} event.  The
 \lstinline{DOMContentLoaded} event is fired as soon as the DOM tree construction is

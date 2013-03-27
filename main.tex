@@ -291,7 +291,7 @@ security considerations as well as the pros and cons for each choice.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Browser extension}
+\subsection{Browser extension}\label{sec:arch:ext}
 
 Many websites require the user to provide sensitive information, e.g., user
 credentials, or payment information. It lies in the interest of the user to
@@ -371,40 +371,37 @@ JavaScript execution engine is turned off it is safe to write to the
 the content of the node, but no scripts will be executed, and the result can be
 handled in a manner analogous to the scripts on a loading page.
 
-Additionally, the extension is entirely independent of the method of transport,
-since the extension can tell the browser to download the resource. Since the 
-browser performs the operation the result
-is indistinguishable from the standard operation of the browser, and, unlike other 
-methods of deployment, it is unimportant whether the scripts
-are referenced using HTTP or HTTPS.
+In addition, no special consideration is needed for secure HTTP connections
+(HTTPS). The extension uses the browser to perform the operation making
+it indistinguishable from the standard operation of the browser.
 
-However, some DOM features remain challenging for the extension deployment
-method, which may affect whether the requirements of transparency can be met
---- transparency requires that all functionality provided by the browser is
-faithfully implemented by the monitor.
+Some DOM features remain challenging for the extension deployment method. This
+may affect whether the requirements of transparency can be met or not. All
+functionality provided by the browser must be faithfully implemented as any
+discrepancies can be detected, which breaks transparency. 
 
-First, consider the order in which scripts are executed.  When web pages are
-loaded, the scripts of the pages are executed as they are encountered while
+First, the order in which scripts are executed is important.  When web pages
+are loaded, the scripts of the pages are executed as they are encountered while
 parsing the web page. This means that the DOM tree of the page might not have
-been fully constructed when the scripts execute.  For scripts that interact
-with the DOM tree this is important, in particular if the script injects nodes
-into the tree. Differences in the state of the DOM tree can be detected by 
-scripts at execution time. Hence, to guarantee transparency 
-the execution of scripts must occur at the same times in the DOM tree construction
-as they would have in the unmodified browser. With some effort this can be achieved
-using DOM mutation events.
+been fully constructed when the scripts execute. Differences in the state of
+the DOM tree can be detected by scripts at execution time. Hence, to guarantee
+transparency the execution of scripts must occur at the same times in the DOM
+tree construction as they would have in the unmodified browser. With some
+effort this can be achieved using DOM \lstinline{MutationEvent}~\cite{DOM3Event}.
 
-Another challenge pertaining to transparency is that some
-functionality provided by the browser might be difficult or expensive to
-provide.  One example of this is \lstinline{document.write}. The semantics of
-\lstinline{document.write} is loosely specified~\cite{DOM:LVL2} saying that
+An example of functionality that is difficult to implement faithfully is is
+\lstinline{document.write}. The semantics of \lstinline{document.write} is
+loosely specified~\cite{DOM:LVL2} essentially saying that
 \lstinline{document.write} writes a string into the current position of the
 document.  Intuitively, \lstinline{document.write} writes into the character
 stream that is fed to the HTML parser, which, for obvious reason can have
 drastic effects on the parsing of the page. For security reasons extensions are
 prohibited from calling \lstinline{document.write}. Hence, when run via an
-extension the monitor cannot easily provide the full functionality of
-\lstinline{document.write}.  Consider the following example, where
+extension the monitor cannot practically provide the full functionality of
+\lstinline{document.write} --- to implement \lstinline{document.write}
+the monitor would have to take the interaction between the content
+written by \lstinline{document.write}, the already parsed parts of the page and
+the remaining page into account.  Consider the following example, where
 \lstinline{document.write} is used inside a div element.
 
 \begin{lstlisting}[language=langsmall]
@@ -414,15 +411,13 @@ extension the monitor cannot easily provide the full functionality of
 The result is two div elements, rather than the original one. Since the write
 takes place during the parsing of the page, the end tag written by
 \lstinline{document.write} is matched with the initial div tag, and the written
-start tag is matched with the final end tag. In order to implement
-\lstinline{document.write} the monitor would have to take the interaction with the
-between the content written by \lstinline{document.write}, the already parsed parts
-of the page and the remaining page into account. In essence, the monitor would
-have to reimplement the parsing process.  However, the practical use of
-\lstinline{document.write} is limited; the typical use case is to inject scripts
-into the page while loading. Such cases can be relatively easily identified
-from the string passed as a parameter, and the intended behavior can be
-implemented by the monitor.
+start tag is matched with the final end tag. Capturing such interaction would 
+in essence require reimplementing the parsing process of the browser.
+
+However, the practical use of \lstinline{document.write} is limited; the
+typical use case is to inject scripts into the page while loading. Such cases
+can be relatively easily identified from the string passed as a parameter, and
+the intended behavior can be implemented by the monitor.
 
 
 
@@ -490,8 +485,8 @@ along-side the monitor, thereby bypassing it.
 Complete mediation is achieved given that all requests are relayed through the proxy 
 and all occurrences of JavaScript within the page are rewritten to direct execution to the monitor.
 %\todo{Jonas: reword slightly}
-
-Special consideration is required for secure HTTP connections (HTTPS). In an HTTPS 
+% Daniel: I define HTTPS above now
+Special consideration is required for HTTPS connections. In an HTTPS 
 connection, a certificate containing the public key of the target domain is sent 
 along with the response. The response is encrypted using the private key of the target 
 domain and decrypted with the public key contained in the certificate. The 
@@ -818,8 +813,8 @@ monitor is used to execute the script.
 
 As discussed above, the downside of this method is that it breaks
 transparency, since the scripts all execute after the DOM
-tree has been constructed. It is possible to regain transparency by using DOM
-\lstinline{MutationEvent}~\cite{DOM3Event} instead of the \lstinline{DOMContentLoaded} event.  The idea is to listen
+tree has been constructed. As mentioned in Section~\ref{sec:arch:ext}, it is possible to regain transparency by using DOM
+\lstinline{MutationEvent} instead of the \lstinline{DOMContentLoaded} event.  The idea is to listen
 to any addition of script nodes to the DOM tree under the construction, and
 execute the script on addition.  However, due to performance reasons the DOM
 Mutation events are deprecated, and are being replaced with DOM \lstinline{MutationObserver}~\cite{DOM4}. 

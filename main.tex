@@ -927,20 +927,17 @@ The external references are identified in the same manner as inline JavaScript,
 by parsing the HTML to a DOM-tree and traversing the tree. When found, the 
 URL is substituted using a regular expression.% in Listing~\ref{lst:reg-exp}.
 
-\todo{Jonas: to be rewritten as Daniel suggested}
+%\todo{Jonas: to be rewritten as Daniel suggested}
 Another difference to the web proxy relates to the use of non-standard ports.
 The web proxy will receive all requests regardless of the target port. The 
 suffix proxy, on the other hand, only listens to the standard ports for HTTP and HTTPS, port 80 and 
 443 respectively. The port in a URL is specified in conjunction to, but not included in the domain.
 Hence any URLs specifying non-standard ports would attempt to connect to closed 
-ports on the proxy server. A solution to this problem is to locally redirect 
-all external ports to the standard ports. This is done using \emph{iptables} in Linux, 
-Listing~\ref{lst:iptables} shows an example of the command to setup iptables to do this.
-
-\begin{lstlisting}[language=langsmall,label=lst:iptables, caption=Example of redirecting ports using iptables]
-iptables -t nat -A PREROUTING -p tcp --dport 1:65535 
-	-j REDIRECT --to-ports 80
-\end{lstlisting}
+ports on the proxy server. A solution to this problem is to include the port as part 
+of the modified domain name. To prevent clashing with the target domain or the proxy domain, 
+the port number is included between the two, e.g., \emph{http://target.domain.com.8080.proxy.domain/}.
+This does not clash with the target domain because the top domain of the target domain cannot be numeric.
+Neither does it clash with the proxy domain because it is still a subdomain of the proxy domain.
 
 \subsection{Integrator}
 
@@ -956,19 +953,18 @@ iptables -t nat -A PREROUTING -p tcp --dport 1:65535
 In line with Section~\ref{sec:arch-integrator}, the integrator is implemented as 
 a web page that includes third-party code via the suffix proxy. The monitor is 
 manually included in the page, setup and the policies are configured as is 
-appropriate for the page. Requesting the third party code through the suffix 
-proxy ensures that it will be rewritten to be interpreted and executed by the 
+appropriate for the page. Requesting the third party code rewritten by the suffix 
+proxy ensures that it will be interpreted and executed by the 
 monitor.
 %
-Part of the code, the untrusted library and any supporting code,
-will run inside the monitor, whereas code dealing with sensitive 
+Part of the code, the untrusted libraries and any supporting code,
+are executed by the monitor, whereas code dealing with sensitive 
 information is executed outside the monitor. To make use of the library, 
 the trusted code shares only the minimal information required for the 
 library to execute. Currently the communication between the trusted and the 
 untrusted code is rudimentary. The trusted code can interact with the monitored 
 code by evaluating expressions in the monitor, and the result of the computation
-is returned to the trusted code.
-
+is returned to the trusted code. 
 
 
 

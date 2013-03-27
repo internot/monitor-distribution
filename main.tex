@@ -564,7 +564,7 @@ provides the means to do so.
 A \emph{suffix proxy} is a specialized web proxy, with a different approach to relaying the request. 
 The web proxy serves as a foundation for the suffix proxy, as they have much in common.
 Instead of the common practice of configuring the browser to relay all requests through the web proxy,
-the suffix proxy takes advantage of the domain name system (DNS) to redirect the request to it.
+the suffix proxy takes advantage of the \emph{domain name system (DNS)} to redirect the request to it.
 Wildcard domain names allow all requests to any subdomain of the domain name to resolve to a single domain name, 
 i.e., in DNS terms \emph{*.proxy.domain $\Rightarrow$ proxy.domain}.
 Typically, the user navigates to a 
@@ -577,11 +577,11 @@ that all requests to any subdomain of the proxy domain are directed to the proxy
 A web application on the proxy domain is set up to listen for such subdomain requests.
 When a request for a subdomain is registered, it is intercepted by the web application.
 The web application strips the proxy domain from the URL, leaving the original target URL, 
-and makes the request on behalf of the client. As in the case of the web proxy, 
+and makes the request on behalf of the client. As with the web proxy, 
 relaying the request to the target URL gives the suffix proxy an opportunity to modify and 
 include the monitor in the response.
 
-Like the web proxy, the suffix proxy must ensure that all script bundled with a 
+As the web proxy, the suffix proxy must ensure that all script bundled with a 
 page is executed by the monitor. The procedure to rewrite script is much the same as the one
 detailed in Section~\ref{sec:arch-web}. Apart from that, the URLs of links and 
 resources referring to content outside the target domain must also be rewritten to point to the suffix proxy. 
@@ -671,7 +671,7 @@ overhead for the end user, thus benefiting both the user and the service provide
 For a user, deciding whether to apply the monitor or not is as simple as browsing 
 to an alternate URL.
 
-One beneficial difference is that the suffix proxy does not require any 
+A beneficial difference is that the suffix proxy does not require any 
 configuration and leaves the browser completely unchanged. The user can take
 advantage of the security benefits without being concerned with the integrity 
 of the browser.
@@ -721,7 +721,7 @@ The monitor is setup and configured with policies best suiting the need of the
 site. 
 
 
-One important aspect of integrator-driven monitor inclusion is the interaction 
+An important aspect of integrator-driven monitor inclusion is the interaction 
 between trusted and untrusted code. 
 The trusted code executing outside the monitor can interact with the code 
 executed in the monitor. This way, the 
@@ -730,9 +730,9 @@ that the library requires to execute. There are different means of introducing t
 information to the monitor. The most rudimentary solution is to evaluate 
 expressions in the monitor, containing the information in a serialized form.
 The monitor can also provide an API for reading and writing variables, or 
-calling functions in the monitor. This simplifies the process and is less error 
-prone. An even more advanced solution is to have a set of shared variables
-that are bi-directionally reflected from one context to the other when the 
+calling functions in the monitor. This simplifies the process and
+makes it less error-prone. A more advanced solution is a set of shared variables
+that are bidirectionally reflected from one context to the other when 
 their values are updated.
 
 
@@ -772,13 +772,13 @@ approach is not intrusive to the browser, requires no setup or configuration,
 and provides additional security for the user's sensitive information. However, 
 it also limits the user's control over which policies are applied to user information. 
 
-Compared to the suffix proxy, integrator driven monitor 
+Compared to the suffix proxy, integrator-driven monitor 
 inclusion is deliberately intrusive to the HTML code. Such specialized use of the suffix 
 proxy allows a developer to specify precisely which code will be subject to 
-monitoring, making the approach even more general. 
-Since a monitor typically introduces a runtime overhead this approach can also 
-result in performance gains compared to running all code monitored. Especially 
-if the trusted code is computation heavy.
+monitoring, making the approach more general. 
+Since a monitor typically introduces a runtime overhead, this approach can also 
+result in performance gains compared to running all code monitored, especially 
+if the trusted code is computation-heavy.
 
 As previously stated, sharing information 
 between trusted and untrusted code in a secure manner requires manual interaction. 

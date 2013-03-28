@@ -428,8 +428,7 @@ the intended behavior can be implemented by the monitor.
 
 \subsection{Web proxy}
 \label{sec:arch-web}
-%\todo{Daniel: I'm not sure about the story how the secret info is in the browser}
-%\todo{Jonas: addressed by removing the intranet stuff}
+
 In a corporate setting, it is essential to protect 
 sensitive information pertaining to both the organization and its employees. 
 It is not uncommon that the employees are using the web browser for accessing untrusted content on 
@@ -443,31 +442,30 @@ the browser itself. By configuring the browser to use a web proxy, the user can 
 of sensitive data.
 
 \paragraph{Description}
-All modern browsers support using proxies to relay all requests through a proxy.
+All modern browsers support %using proxies to 
+relaying all requests through a proxy.
 A proxy specific to relaying HTTP requests is referred to as a web proxy.
 The web proxy acts as a man-in-the-middle, making 
 requests on behalf of the client. 
-\todo{Daniel: I found the following few sentences in need of some shaping up}
+%\todo{Daniel: I found the following few sentences in need of some shaping up}
 In the process, the proxy can
-modify both the request and the response. 
-The opportunity to rewrite the response is crucial for this architecture.
-A web proxy is a convenient way to rewrite the response to include 
-the monitor in each page. Modifying the response makes the method more 
+modify both the request and the response, making it 
+%The opportunity to rewrite the response is crucial for this architecture.
+%A web proxy is 
+a convenient way to rewrite the response to include 
+the monitor in each page.Doing so makes the method more 
 intrusive to the HTML content, but less intrusive to the user's browser. 
 
-%\todo{Strong wording; any. Later is in order to be effective is used}
 For the monitor to guarantee security, all scripts bundled with 
 the page must be executed by the monitor. The scripts can either be inline, 
 i.e., included as part of the HTML page, or external, i.e., referenced in the 
 HTML page to be downloaded from an external source.
 Apart from including the monitor in all browsed pages, all inline and external 
 scripts must be identified and rewritten by the web proxy to direct execution to the monitor.
-%\todo{A call to the monitor hard to understand - better use 'use the monitor to execute'?}
 This is achieved by wrapping all JavaScript source code, whether inline or 
 external, to be executed by the monitor.
 Different rewriting rules apply depending on whether the 
 requested content is JavaScript, i.e., external, or HTML, i.e., inline. 
-%\todo{Wrapped hard to understand}
 For external 
 JavaScript resources, containing only JavaScript, the entire response is rewritten to use the monitor to execute, whereas 
 for HTML the web proxy has to identify and wrap all occurrences of inline 
@@ -482,38 +480,44 @@ this is the same context in which all scripts bundled with the
 page are normally executed. 
 \todo{Daniel: The following sentences need improved flow}
 The web proxy must ensure that they are all executed within the 
-monitored context. This effort must continue as the monitor executes. 
+monitored context; an effort that must continue as the monitor executes. 
 Various JavaScript features, such as 
 \lstinline{document.write}, allow an arbitrary string to be 
 interpreted and rendered as HTML. Any scripts present in the string will be 
-executed upon interpretation. The monitor must account for this and again rewrite 
-the string to direct execution to the monitor. Failing to do so, script code will execute 
+executed upon interpretation. Failing to address this problem, the script code will execute 
 along-side the monitor, thereby bypassing it. 
 Complete mediation is achieved given that all requests are relayed through the proxy 
 and all occurrences of JavaScript within the page are rewritten to direct execution to the monitor.
 %\todo{Jonas: reword slightly}
 % Daniel: I define HTTPS above now
 \todo{Daniel: this section must be revised based on this mornings experiments}
-Special consideration is required for HTTPS connections. In an HTTPS 
-connection, a certificate containing the public key of the target domain is sent 
-along with the response. The response is encrypted using the private key of the target 
-domain and decrypted with the public key contained in the certificate. The 
-certificate is issued by a certificate authority (CA)
-that validates the certificate by signing the public key. Given that the user 
-trusts the CA, it can also trust that the public key belongs 
-to the target domain, and that the response has not been modified in transit.
-This poses a challenge for a web proxy designed exactly to modify the response. The solution 
-is for the proxy to act as a CA by generating a
-new certificate for the target domain on-the-fly, and sign the 
-public key of the certificate with the private key of the proxy. Naturally, 
-the proxy must be trusted by the user, either by adding the key to 
-the user's list of trusted CAs, or having the key signed by a CA that the user trusts.
+Special consideration is required for HTTPS connections, as
+%
+HTTPS is designed to prevent the connection from being eavesdropped or modified in transit.
+%
+%  In an HTTPS 
+%connection, a certificate containing the public key of the target domain is sent 
+%along with the response. The response is encrypted using the private key of the target 
+%domain and decrypted with the public key contained in the certificate. The 
+%certificate is issued by a certificate authority (CA)
+%that validates the certificate by signing the public key. Given that the user 
+%trusts the CA, it can also trust that the public key belongs 
+%to the target domain, and that the response has not been modified in transit.
+This poses a challenge for a web proxy designed %exactly 
+to modify the response. 
+To circumvent the problem
+\todo{Massive todo!}
+
+%The solution 
+%is for the proxy to act as a CA by generating a
+%new certificate for the target domain on-the-fly, and sign the 
+%public key of the certificate with the private key of the proxy. Naturally, 
+%the proxy must be trusted by the user, either by adding the key to 
+%the user's list of trusted CAs, or having the key signed by a CA that the user trusts.
 
 
 
 \paragraph{Pros and cons}
-%\todo{Mass config is used; even chalmers uses images, i.e., nothing is configured per machine anyhow - browser independence is really
-%the key?}
 The main benefit of using a web proxy 
 compared to a browser extension is that the implementation is browser independent. The 
 rewriting technique is the same regardless of the browser used. Hence, there is no 
@@ -534,13 +538,7 @@ whether the policy is user-specific is
 in the hands of the proxy administrator. 
 
 
-%Typically a web proxy relays and applies the monitor to all browsed pages, 
-%trusted or not. With a browser extension a user can
-%configure certain trusted web pages to run unmonitored for performance reasons.
-%\todo{the power of configuring the monitor depends on the stakeholder and the }
 
-
-%\todo{explain what locally means?}
 
 
 \subsection{Suffix proxy (service)}
@@ -554,11 +552,11 @@ by the proxy.
 A \emph{suffix proxy} particularly suits a user who wants to run certain untrusted 
 pages monitored, but not include the monitor in trusted pages.
 
-\todo{Daniel: I found the following paragraph hard to read}
-A proxy service may provide specific policies applied only to a few 
-particular web sites. In this case, relaying requests to other web sites is an 
-unnecessary waste of resources. It would be beneficial to the service provider to be
-able to control precisely which web sites will be relayed through the proxy. 
+%\todo{Daniel: I found the following paragraph hard to read}
+A proxy service may provide site-specific policies only for a small number 
+of web sites. In this case, relaying requests to other web sites is an 
+unnecessary waste of resources. To the service provider it would be beneficial to 
+control precisely which web sites will be relayed through the proxy. 
 This is not possible in a web proxy, that covers all requests, but a suffix proxy 
 provides the means to do so.
 
@@ -567,16 +565,16 @@ provides the means to do so.
 \paragraph{Description}
 A \emph{suffix proxy} is a specialized web proxy, with a different approach to relaying the request. 
 %The web proxy serves as a foundation for the suffix proxy, as they have much in common.
-\todo{Daniel: zapped a sentence here}
+%\todo{Daniel: zapped a sentence here}
 %Instead of the common practice of configuring the browser to relay all requests through the web proxy,
 The suffix proxy takes advantage of the \emph{domain name system (DNS)} to redirect the request to it.
 Wildcard domain names allow all requests to any subdomain of the domain name to resolve to a single domain name, 
 i.e., in DNS terms \emph{*.proxy.domain $\Rightarrow$ proxy.domain}.
-\todo{Daniel: maybe using q=proxy is unfortunate, we should use another search term}
+%\todo{Daniel: maybe using q=proxy is unfortunate, we should use another search term}
 Typically, the user navigates to a 
-web application associated with the proxy and enters the target URL, e.g., \url{http://google.com/search?q=proxy}, in 
+web application associated with the proxy and enters the target URL, e.g., \url{http://google.com/search?q=sunrise}, in 
 an input field. To direct the request to the proxy, the target domain name is altered
-by appending the domain name of the proxy, making the target domain a subdomain of the proxy domain, e.g., \url{http://google.com.proxy.domain/search?q=proxy}. 
+by appending the domain name of the proxy, making the target domain a subdomain of the proxy domain, e.g., \url{http://google.com.proxy.domain/search?q=sunrise}. 
 The browser is then navigated to the modified URL.
 The suffix proxy is set up so
 that all requests to any subdomain of the proxy domain are directed to the proxy domain. 
@@ -602,7 +600,6 @@ modified domain name and need to be rewritten to make the proxy transparent. In
 the response headers like the \emph{Location} contains the unmodified target URL and 
 need to be rewritten to include the monitor domain. 
 
-%\todo{refer back to previous section, the same rules apply}
 
 %The latter implies that apart from rewriting scripts within a page, all URLs to 
 %external resources, i.e., to origins outside the scope of the original origin, 
@@ -633,18 +630,14 @@ same-origin policy and can freely access each others resources across subdomains
 Since the principle behind the suffix proxy is to make the target domain a subdomain of the proxy domain, two 
 domains loaded via the proxy, each relaxing their domain to the domain of the 
 proxy, can access each others resources across domains.
-\todo{Daniel: devastating is such a strong word}
-This is devastating for monitors that rely on the same-origin policy to enforce 
+%\todo{Daniel: devastating is such a strong word}
+This is problematic for monitors that rely on the same-origin policy to enforce 
 separation between origins. However, the flexibility of disabling the same-origin
 policy opens up for monitors whose policies are aimed
 at replacing the same-origin policy. 
 For such usage, the suffix proxy can effectively disable the same-origin 
 policy by adding a JavaScript snippet that sets the \lstinline{document.domain} property
 to the proxy domain. 
-%This way, the effectiveness of the policy 
-%can be tested without modifying the browser.
-%\todo{Daniel: yes, if expanded a bit}
-%\todo{Jonas: Does the last sentence make sense?}
 
 
 Recall from the previous section the rather complex procedure required to add HTTPS support.
@@ -652,8 +645,8 @@ Implementing support for HTTPS is easier in the suffix proxy compared to the web
 Given that the suffix proxy builds on DNS wildcards, it is sufficient to issue a certificate
 for all subdomains of the proxy domain, e.g., \url{*.proxy.domain}. Such a 
 certificate is valid for all target URLs relayed through the proxy.
-\todo{Daniel: I find the following sentence a tad odd}
-The main benefit of wildcard certificates is that the user can browse HTTPS pages. 
+%\todo{Daniel: I find the following sentence a tad odd}
+%The main benefit of wildcard certificates is that the user can browse HTTPS pages. 
 %The drawback is that the user must trust the monitor to correctly verify the 
 %certificate of the page.
 
@@ -667,17 +660,17 @@ heavier rewriting than the web proxy in order to capture all requests. On the ot
 hand, it helps in managing HTTPS requests, that is complicated in the web proxy.
 Another questionable consequence is that it allows for web sites to relax the 
 same-origin policy. 
-\todo{Daniel, again - devastating is very strong}
-From a monitor perspective this can be devastating under the wrong circumstances, 
+%\todo{Daniel, again - devastating is very strong}
+From a monitor perspective this can be problematic under the wrong circumstances, 
 while beneficial under other.
 
 Another significant difference is that the suffix proxy lets the user and the 
 service provider decide which pages to proxy on a per-domain basis, making it 
 more general than a traditional web proxy that covers all requests. 
-\todo{Daniel: I have misthought twice here before realizing it is true; maybe clarify?}
-Contrary to the web proxy, the suffix proxy can be set up to only relay a few selected 
-web sites, whereas requests for other web sites are redirected to their original 
-addresses. This can both reduce the load on the proxy service, as well as decrease the 
+%\todo{Daniel: I have misthought twice here before realizing it is true; maybe clarify?}
+The suffix proxy can be set up to only relay requests for a few selected 
+web sites and for all other web sites immediately respond with a redirect to the target
+URL, telling the browser to make the request itself. This can both reduce the load on the proxy service, as well as decrease the 
 overhead for the end user, thus benefiting both the user and the service provider.
 For a user, deciding whether to apply the monitor or not is as simple as browsing 
 to an alternate URL.
@@ -687,7 +680,6 @@ configuration and leaves the browser completely unchanged. The user can take
 advantage of the security benefits without being concerned with the integrity 
 of the browser.
 
-%\todo{Integration stuff missing from intro? Or did I read too fast?}
 \subsection{Integrator}
 \label{sec:arch-integrator}
 %The mashup integrator includes the monitor and decides which JavaScript should 
@@ -748,10 +740,6 @@ their values are updated.
 
 
 \paragraph{Security considerations}
-%\todo{sharing information between real code and monitored code if automatic is a security problem, must be done manually}
-%\todo{none of the security considerations from previous section apply}
-%\todo{two libraries loaded, one trusted the other one untrusted, the trusted can mess with the monitored code}
-%\todo{Jonas: need help defining the security considerations}
 
 Despite the fact that the integrator is using the suffix proxy, none of the 
 respective security considerations apply. The same-origin policy has no effect 
@@ -801,7 +789,6 @@ and the implications of interacting with the monitor.
 \section{Implementation}
 \label{sec:impl}
 
-%\todo{Daniel: may I suggest we replace the pros and cons with implementation challenges}
 %Describe features and drawbacks with each implementation.
 %For each deployment option, we describe how it is implemented and show how the integrity of the monitor
 %and complete mediation are achieved.
@@ -849,19 +836,13 @@ The extension consists of 1100 lines of JavaScript and XUL code.
 
 \subsection{Web proxy}
 
-%\begin{itemize}
-%\item Proxy implemented in NodeJS
-%\item- rewrite all or nothing, problem with passing configuration to proxy
-%\item DOM parsing to find scripts, compared to regular expressions
-%\item difficult to identify all contexts (SVG, CSS and PDF can be rewritten, not flash)
-%\item rewriting of JavaScript
-%\end{itemize}
-
 \todo{Daniel: should we not rework this based on the email discussion on content types?}
-The web proxy is implemented as an HTTP-server. As the 
+The web proxy is implemented as an HTTP-server. When the 
 proxy receives a request it extracts the target URL and in turn requests the 
-content from the target. Before the response is delivered to the client, it is 
-rewritten based on its content-type. Each content-type related to JavaScript is 
+content from the target. 
+
+Before the response is delivered to the client, it is 
+rewritten. Each content-type related to JavaScript is 
 rewritten, e.g., \emph{text/html}, \emph{text/javascript}, or \emph{text/json}. 
 Since only content that can contain JavaScript is of interest, other 
 content-types are simply passed through to the user. In HTML, where 
@@ -945,7 +926,6 @@ The external references are identified in the same manner as inline JavaScript,
 by parsing the HTML to a DOM-tree and traversing the tree. When found, the 
 URL is substituted using a regular expression.% in Listing~\ref{lst:reg-exp}.
 
-%\todo{Jonas: to be rewritten as Daniel suggested}
 Another difference to the web proxy relates to the use of non-standard ports.
 The web proxy will receive all requests regardless of the target port. The 
 suffix proxy, on the other hand, only listens to the standard ports for HTTP and HTTPS, port 80 and 
@@ -1166,9 +1146,26 @@ information leaked to the third party.
 
 \paragraph{Performance experiments}
 %Jonas
-Experimental setup (machine, processor, OS,,,,)
+%xperimental setup (machine, processor, OS,,,,)
 What we measure and on what pages
 Results in a form of a table (8 numbers)
+
+We measure the average overhead introduced by three 
+of the four architectures. The overhead of the fourth architecture would depend 
+entirely on its implementation and usage and can therefore not be generally measured.
+
+The tests were performed in Firefox under the Windows 7 64 bit Service Pack 1 operating system on a machine running on an Intel Core i7-3250M 2.9 GHz CPU, with 8 GB of memory.
+
+\begin{table}[h!]
+\center
+\begin{tabular}{l|c|c|c|c}
+& Reference & Browser Extension & Web proxy & Suffix proxy \\ \hline
+Via HTTP & Yes & Yes & Yes \\ \hline
+Via HTTPS & Yes & Yes & No \\ \hline
+\end{tabular}
+\caption{Comparison of browsers}
+\label{tab:comparison}
+\end{table}
 
 %1 page 
 \section{Related work}

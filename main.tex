@@ -324,7 +324,7 @@ The most common extension implementation language is JavaScript. Given that
 the monitor is written in JavaScript it is a simple matter to embed the 
 monitor in an extension.
 This method was pioneered by Zaphod~\cite{Zaphod}, a
-FireFox extension, that replaces the standard JavaScript engine with the
+Firefox extension, that replaces the standard JavaScript engine with the
 experimental Narcissus~\cite{Narcissus} engine.
 
 
@@ -453,7 +453,7 @@ the monitor in each page. Modifying the response makes the method more
 intrusive to the HTML content, but less intrusive to the user's browser. 
 
 %\todo{Strong wording; any. Later is in order to be effective is used}
-For the monitor to provide security guarantees, all scripts bundled with 
+For the monitor to guarantee security, all scripts bundled with 
 the page must be executed by the monitor. The scripts can either be inline, 
 i.e., included as part of the HTML page, or external, i.e., referenced in the 
 HTML page to be downloaded from an external source.
@@ -474,7 +474,7 @@ JavaScript, both script-tags and event handlers.
 \paragraph{Security considerations}
 
 As opposed to a browser extension, that replaces the 
-JavaScript engine, the monitor will be executed by the engine of the browser, in the context of the page. Naturally 
+JavaScript engine, the monitor is executed by the engine of the browser, in the context of the page. Naturally 
 this is the same context in which all scripts bundled with the 
 page are normally executed. The web proxy must ensure that they are all executed within the 
 monitored context. This effort must continue as the monitor executes. 
@@ -519,10 +519,10 @@ browser in order to take advantage of security benefits.
 How the proxy is 
 deployed determines the users' influence over 
 the enforced policies.
-In a corporate environment the web proxy is likely to be 
+In a corporate environment, the web proxy is likely to be 
 administered centrally to apply the same policy for all users. When deployed by 
-an individual user it is more likely to be installed locally on the user's own machine.
-If deployed locally, the user has full influence over 
+an individual user, it is more likely to be installed locally on the user's own machine.
+Then, the user has full influence over 
 policies, while for a remotely deployed proxy,
 whether the policy is user-specific is 
 in the hands of the proxy administrator. 
@@ -560,7 +560,7 @@ provides the means to do so.
 
 \paragraph{Description}
 A \emph{suffix proxy} is a specialized web proxy, with a different approach to relaying the request. 
-The web proxy serves as a foundation for the suffix proxy, as they have much in common.
+%The web proxy serves as a foundation for the suffix proxy, as they have much in common.
 Instead of the common practice of configuring the browser to relay all requests through the web proxy,
 the suffix proxy takes advantage of the \emph{domain name system (DNS)} to redirect the request to it.
 Wildcard domain names allow all requests to any subdomain of the domain name to resolve to a single domain name, 
@@ -1298,11 +1298,12 @@ The other direction we pursue is interplay of JavaScript-related
 information flows with those caused by other possibilities of running
 code in the browser: through Flash, PDF, SVG, and CSS.
 
+\vspace{-.2cm}
 \paragraph{Acknowledgments}
 This work was funded by 
 the European Community under the ProSecuToR and WebSand projects
 and
-the Swedish research agencies SSF and VR.
+the Swedish agencies SSF and VR.
 
 
 % Less than 4 pages 

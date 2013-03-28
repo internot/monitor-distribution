@@ -281,7 +281,7 @@ information-flow monitor with the different architectures.
 %4 pages 
 \section{Architectures}
 \label{sec:arch}
-
+\vspace{-.04cm}
 This section presents the architectures for inlining
 security monitors. We motivate each architecture by scenarios of
 intended usage, describe the architectures, report on
@@ -353,8 +353,9 @@ the benefit of giving the user direct control over what security policies to
 enforce on the browsed pages without relying on and trusting other parties.
 
 The \emph{Document Object Model} (DOM)~\cite{DOM2} provides the tree model of HTML
-documents used in browsers. The DOM is a complex, richly linked tree structure,
-which offers many challenges. Which features that pose challenges depends to a certain degree
+documents used in browsers. The DOM is a complex, richly linked tree structure.
+%which offers many challenges. 
+Which features that pose challenges depends to a certain degree
 on the deployment method. One example of a feature that can be handled with 
 relative easy when deploying via a browser extension is 
 \lstinline{innerHTML}. \lstinline{innerHTML} is a property on all DOM objects,
@@ -362,44 +363,45 @@ that allows the text representation of the object to be changed. Any such
 change causes the content of the object to be changed by parsing the changed
 property. For other deployment methods this means that the value written to
 \lstinline{innerHTML} must be validated, and possibly changed before the write
-is allowed to occur --- even though scripts added using \lstinline{innerHTML}
+is allowed to occur. Although scripts added using \lstinline{innerHTML}
 are not executed, event handlers might still be run.
 %
-For the extension based deployment this is not a problem.  Since the standard
-JavaScript execution engine is turned off it is safe to write to the
+For the extension-based deployment this is not a problem.  Since the standard
+JavaScript execution engine is turned off, it is safe to write to the
 \lstinline{innerHTML} property. The write will trigger the parser to rebuild
 the content of the node, but no scripts will be executed, and the result can be
-handled in a manner analogous to the scripts on a loading page.
+handled similarly to the scripts on a loading page.
 
 In addition, no special consideration is needed for secure HTTP connections
 (HTTPS). The extension uses the browser to perform the operation making
 it indistinguishable from the standard operation of the browser.
 
-Some DOM features remain challenging for the extension deployment method. This
-may affect whether the requirements of transparency can be met or not. All
-functionality provided by the browser must be faithfully implemented as any
-discrepancies can be detected, which breaks transparency. 
-
-First, the order in which scripts are executed is important.  When web pages
+%Some DOM features remain challenging for the extension deployment%
+%method. 
+In order to respect transparency, all
+functionality provided by the browser must be faithfully implemented.
+% as any
+%discrepancies can be detected, which breaks transparency. 
+%
+Crucially, the order in which scripts are executed is important.  When web pages
 are loaded, the scripts of the pages are executed as they are encountered while
 parsing the web page. This means that the DOM tree of the page might not have
 been fully constructed when the scripts execute. Differences in the state of
 the DOM tree can be detected by scripts at execution time. Hence, to guarantee
 transparency the execution of scripts must occur at the same times in the DOM
-tree construction as they would have in the unmodified browser. With some
-effort this can be achieved using DOM \lstinline{MutationEvent}~\cite{DOM3Event}.
+tree construction as they would have in the unmodified browser.
+This can be achieved using DOM \lstinline{MutationEvent}~\cite{DOM3Event}.
 
-An example of functionality that is difficult to implement faithfully is is
-\lstinline{document.write}. The semantics of \lstinline{document.write} is
-loosely specified~\cite{DOM:LVL2} essentially saying that
-\lstinline{document.write} writes a string into the current position of the
+An example of functionality that requires particular care is
+\lstinline{document.write}. The effect of \lstinline{document.write} is
+prescribed~\cite{DOM:LVL2} to write a string into the current position of the
 document.  Intuitively, \lstinline{document.write} writes into the character
-stream that is fed to the HTML parser, which, for obvious reason can have
-drastic effects on the parsing of the page. For security reasons extensions are
+stream that is fed to the HTML parser, which can have
+drastic effects on the parsing of the page. For security reasons, extensions are
 prohibited from calling \lstinline{document.write}. Hence, when run via an
-extension the monitor cannot practically provide the full functionality of
-\lstinline{document.write} --- to implement \lstinline{document.write}
-the monitor would have to take the interaction between the content
+extension, the monitor cannot practically provide the full functionality of
+\lstinline{document.write}. To implement \lstinline{document.write}
+the monitor has to take the interaction between the content
 written by \lstinline{document.write}, the already parsed parts of the page and
 the remaining page into account.  Consider the following example, where
 \lstinline{document.write} is used inside a div element.
@@ -411,8 +413,8 @@ the remaining page into account.  Consider the following example, where
 The result is two div elements, rather than the original one. Since the write
 takes place during the parsing of the page, the end tag written by
 \lstinline{document.write} is matched with the initial div tag, and the written
-start tag is matched with the final end tag. Capturing such interaction would 
-in essence require reimplementing the parsing process of the browser.
+start tag is matched with the final end tag. Capturing this interaction
+implies emulating the parsing process of the browser.
 
 However, the practical use of \lstinline{document.write} is limited; the
 typical use case is to inject scripts into the page while loading. Such cases
@@ -427,14 +429,14 @@ the intended behavior can be implemented by the monitor.
 \label{sec:arch-web}
 %\todo{Daniel: I'm not sure about the story how the secret info is in the browser}
 %\todo{Jonas: addressed by removing the intranet stuff}
-In a corporate setting, it is essential for a company to protect 
-sensitive information pertaining to the company, as well as their employees. 
-Meanwhile, employees are using the web browser for accessing untrusted content on 
-the Internet. Naturally, it is in the interest of the company to ensure that 
+In a corporate setting, it is essential to protect 
+sensitive information pertaining to both the organization and its employees. 
+It is not uncommon that the employees are using the web browser for accessing untrusted content on 
+the Internet. It is in the interest of the company to ensure that 
 the sensitive information is not accessible outside the domain of the company.
-In this distributed setting, a \emph{web proxy} is a convenient way of delivering 
-the security monitor to all clients with little effort. 
-
+In this distributed setting, a \emph{web proxy} is a natural way of delivering 
+the security monitor to all clients. 
+%
 A web proxy is also appealing to a private user, as it includes the monitor in all browsed pages without modifying 
 the browser itself. By configuring the browser to use a web proxy, the user can ensure the security 
 of sensitive data.

@@ -223,14 +223,15 @@ original program is secure.
 
 Since the architectures are parametric in the actual monitor, we can
 draw on the properties of the monitor to guarantee the
-above requirements. It is essential for soundness and
-transparency that the monitor itself supports them. 
-\todo{Daniel: I find the following sentence hard to understand}
-Monitor integrity,
+above requirements.
+It is essential for soundness and transparency that the monitor itself supports them. 
+We note that monitor integrity,
 complete mediation, and TCB are particularly important in our security
-considerations because the choice of the architecture results in
-different implications for the security and transparency of the
-deployed monitor.
+considerations because they are crucially dependent on the choice of
+the architecture.
+%  results in
+% different implications for the security and transparency of the
+% deployed monitor.
 
 \paragraph{Instantiation}
 To illustrate the usefulness of the approach, we present an
@@ -1310,9 +1311,12 @@ goal to relieve the integrator from manual efforts, we develop a
 framework for secure communication that provides explicit support for
 integrating and monitored and unmonitored code.
 %
-The other direction we pursue is interplay of JavaScript-related
-information flows with those caused by other possibilities of running
-code in the browser: through Flash, PDF, SVG, and CSS.
+The other direction we pursue is 
+instantiating the architectures with a monitor for controlling network
+communication bandwidth.
+% interplay of JavaScript-related
+% information flows with those caused by other possibilities of running
+% code in the browser: through Flash, PDF, SVG, and CSS.
 
 \vspace{-.2cm}
 \paragraph{Acknowledgments}

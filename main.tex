@@ -1047,21 +1047,24 @@ sent to Google for aggregation. Using information-flow tracking, we
 can allow communication to Google Analytics but with the guarantee
 that the password will not be leaked to it.
 
-The sites that fall into the first category include 
+We have investigated a number of sites\footnote{\scriptsize{
 \url{https://testalosenord.pts.se/},
 \url{http://www.lbw-soft.de/},
 \url{http://www.inutile.ens.fr/estatis/password-security-checker/},
 \url{https://passfault.appspot.com/password_strength.html}, and
 \url{http://geodsoft.com/cgi-bin/pwcheck.pl}.
-
-The sites that fall into the second category include 
+}
+}
+that fall into the first category, and a number of sites\footnote{\scriptsize{
 \url{http://www.getsecurepassword.com/CheckPassword.aspx},
 \url{http://www.passwordmeter.com/},
 \url{http://howsecureismypassword.net},
 \url{https://www.microsoft.com/en-gb/security/pc-security/password-checker.aspx},
 \url{https://www.grc.com/haystack.htm}, and
 \url{https://www.my1login.com/password-strength-meter.php}.
-
+}
+}
+that fall into the second category.
 %For the server side services to function properly the security
 %policy must allow the password to be communicated to
 %the service provider.
@@ -1072,16 +1075,18 @@ The sites that fall into the second category include
 %password in a secure way, and make sure that no information about the password
 %is stored. 
 
-From the above list, it is worth commenting on two sites, 
-\url{https://testalosenord.pts.se/} and
-\url{http://www.getsecurepassword.com/CheckPassword.aspx}, one in each
-category. Interestingly, the first site is provided by the Swedish Post
-and Telecom Authority. The site contains a count of how many passwords 
-have been submitted to the service, with over 1,000,000 tried
-passwords so far. It is unclear why the Swedish authority follows the
-policy that requires more trust from the users. The second site is an example of a web site that uses
-Google Analytics. Our monitor rightfully allows communication to
-Google while ensuring the password cannot be leaked anywhere outside the browser. 
+Of those, it is worth commenting on two sites ---one from each category.  Interestingly, the first
+site, {\footnotesize{\url{https://testalosenord.pts.se/}}}, is provided by
+the Swedish Post and Telecom Authority. The site contains a count of how many
+passwords have been submitted to the service, with over 1,000,000 tried
+passwords so far. It is unclear why the Swedish authority follows the policy
+that requires more trust from the users.
+
+The second
+site, {\footnotesize{\url{http://www.getsecurepassword.com/CheckPassword.aspx}}}, is
+an example of a web site that uses Google Analytics. Our monitor rightfully
+allows communication to Google while ensuring the password cannot be leaked
+anywhere outside the browser. 
 
 The benefit of the architectures for the scenario of password-strength checking is
 that users can get strong security guarantees either by installing an

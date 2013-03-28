@@ -794,15 +794,16 @@ and the implications of interacting with the monitor.
 %For each deployment option, we describe how it is implemented and show how the integrity of the monitor
 %and complete mediation are achieved.
 This section details our implementations of the architectures
-from Section~\ref{sec:arch}. The code is available on request.
+from Section~\ref{sec:arch}. The code is readily available on request
+from the authors.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Browser extension}
 
 The browser extension is a Firefox extension based on Zaphod~\cite{Zaphod}
-
-When loaded, the extension first turns off the standard JavaScript engine by
+%
+When loaded, the extension turns off the standard JavaScript engine by
 disallowing JavaScript and listens for the \lstinline{DOMContentLoaded} event.  The
 \lstinline{DOMContentLoaded} event is fired as soon as the DOM tree construction is
 finished.  On this event the DOM tree is traversed twice. The first traversal
@@ -827,7 +828,7 @@ However, the exact order of loading is not standardized and differs between
 browsers. This forces scripts to be independent of such differences. Thus,
 using the method of executing scripts on the \lstinline{DOMContentLoaded} event is not
 necessarily a problem in practice. 
-
+%
 The extension consists of 1100 lines of JavaScript and XUL code.
 
 
@@ -886,11 +887,9 @@ be fed to the interpreting monitor. The method \lstinline{JSON.stringify()}
 provides this functionality and will properly escape the string to ensure that 
 it is semantically equivalent when interpreted by the monitor. The code string is then enclosed in a call to the monitors 
 interpreter, as exemplified in Listing~\ref{lst:wrap-monitor}.
-
 \begin{lstlisting}[language=langsmall,label=lst:wrap-monitor, caption=Example of monitor wrapping]
 code = 'Monitor.eval(' + JSON.stringify(code) + ')';
 \end{lstlisting}
-
 The implementation consists of 256 lines of JavaScript code.
 
 
@@ -944,7 +943,7 @@ of the modified domain name. To prevent clashing with the target domain or the p
 the port number is included between the two, e.g., \emph{http://target.domain.com.8080.proxy.domain/}.
 This does not clash with the target domain because the top domain of the target domain cannot be numeric.
 Neither does it clash with the proxy domain because it is still a subdomain of the proxy domain.
-
+%
 The implementation consists of 276 lines of JavaScript code.
 
 \subsection{Integrator}
@@ -987,7 +986,7 @@ This section presents practical experiments made by instantiating the deployment
 architectures with the \emph{JSFlow}~\cite{Hedin:Sabelfeld:CSF12,JSFlow} information-flow monitor. 
 We briefly describe the monitor and discuss security and performance experiments.
 
-\subsection{Monitor}
+\paragraph{Monitor}
 
 JSFlow is a dynamic information-flow monitor that tags values with runtime
 security labels. Whenever a potential security
@@ -1002,7 +1001,7 @@ including tracking of user input and preventing it from leaving the
 browser, as used in
 the security experiments below.
 
-\subsection{Security experiments}
+\paragraph{Security experiments}
 Our experiments focus on password-strength checkers. 
 After the user inputs a password, the strength of the password is computed according
 to some metric, and the result is displayed to the user, typically on a scale
@@ -1152,7 +1151,7 @@ information leaked to the third party.
 
 
 
-\subsection{Performance experiments}
+\paragraph{Performance experiments}
 %Jonas
 Experimental setup (machine, processor, OS,,,,)
 What we measure and on what pages

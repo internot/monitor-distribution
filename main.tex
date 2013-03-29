@@ -295,7 +295,7 @@ security considerations as well as the pros and cons for each choice.
 
 \subsection{Browser extension}\label{sec:arch:ext}
 
-Many websites require the user to provide sensitive information, e.g., user
+Many web sites require the user to provide sensitive information, e.g., user
 credentials, or payment information. It lies in the interest of the user to
 ensure the security of the sensitive information.  Modern browsers allow for
 the functionality of the browser to be enriched via \emph{extensions}. By
@@ -475,22 +475,21 @@ JavaScript, both script-tags and event handlers.
 \paragraph{Security considerations}
 
 As opposed to a browser extension, that replaces the 
-JavaScript engine, the monitor is executed by the engine of the browser, in the context of the page. Naturally 
+JavaScript engine, the monitor is executed by the engine of the browser in the context of the page. Naturally 
 this is the same context in which all scripts bundled with the 
 page are normally executed. 
-\todo{Daniel: The following sentences need improved flow}
-The web proxy must ensure that they are all executed within the 
-monitored context; an effort that must continue as the monitor executes. 
+%\todo{Daniel: The following sentences need improved flow}
+The web proxy ensures that they are all executed by
+the monitor through rewriting, but this effort must continue even as the monitor executes. 
 Various JavaScript features, such as 
 \lstinline{document.write}, allow an arbitrary string to be 
 interpreted and rendered as HTML. Any scripts present in the string will be 
-executed upon interpretation. Failing to address this problem, the script code will execute 
+executed upon interpretation. This problem must be addressed either in the web proxy or the monitor. Failing to address this problem, the script code will execute 
 along-side the monitor, thereby bypassing it. 
 Complete mediation is achieved given that all requests are relayed through the proxy 
 and all occurrences of JavaScript within the page are rewritten to direct execution to the monitor.
-%\todo{Jonas: reword slightly}
-% Daniel: I define HTTPS above now
-\todo{Daniel: this section must be revised based on this mornings experiments}
+
+%\todo{Daniel: this section must be revised based on this mornings experiments}
 Special consideration is required for HTTPS connections, as
 %
 HTTPS is designed to prevent the connection from being eavesdropped or modified in transit.
@@ -505,10 +504,19 @@ HTTPS is designed to prevent the connection from being eavesdropped or modified 
 %to the target domain, and that the response has not been modified in transit.
 This poses a challenge for a web proxy designed %exactly 
 to modify the response. 
-To circumvent the problem
-\todo{Massive todo!}
-
-%The solution 
+Normally a web proxy acts as tunnel between the client and target, unable 
+to read or manipulate the transmission. Instead the web proxy must establish 
+two separate HTTPS connection, one with the client and one with the target. 
+The client's request is passed on to the connection with the target
+and the rewritten response to the client. This is only transparent 
+to the user if the certificate provided by the proxy is trusted by the user, 
+otherwise the user will be notified that the certificate is invalid.
+%To make the certificate trusted, the web proxy must have its own root certificate, 
+%which is added 
+%This requires the web proxy to generate a new certificate for the target domain 
+%on-the-fly and signed it with the root certificate of the proxy. The root certificate 
+%must be added user to add the 
+%To make it transparent, the web proxy can create its own root certificate and generate a new certificate for the target and sign it with the .  
 %is for the proxy to act as a CA by generating a
 %new certificate for the target domain on-the-fly, and sign the 
 %public key of the certificate with the private key of the proxy. Naturally, 
@@ -640,7 +648,7 @@ policy by adding a JavaScript snippet that sets the \lstinline{document.domain} 
 to the proxy domain. 
 
 
-Recall from the previous section the rather complex procedure required to add HTTPS support.
+%Recall from the previous section the rather complex procedure required to add HTTPS support.
 Implementing support for HTTPS is easier in the suffix proxy compared to the web proxy. 
 Given that the suffix proxy builds on DNS wildcards, it is sufficient to issue a certificate
 for all subdomains of the proxy domain, e.g., \url{*.proxy.domain}. Such a 
@@ -836,19 +844,16 @@ The extension consists of 1100 lines of JavaScript and XUL code.
 
 \subsection{Web proxy}
 
-\todo{Daniel: should we not rework this based on the email discussion on content types?}
+%\todo{Daniel: should we not rework this based on the email discussion on content types?}
+% Jonas: I worked around it saying that the content is rewritten, but not in detail what and how.
 The web proxy is implemented as an HTTP-server. When the 
 proxy receives a request it extracts the target URL and in turn requests the 
-content from the target. 
+content from the target. Before the response is delivered to the client, the content is 
+rewritten to ensure that all JavaScript is executed by the monitor. 
 
-Before the response is delivered to the client, it is 
-rewritten. Each content-type related to JavaScript is 
-rewritten, e.g., \emph{text/html}, \emph{text/javascript}, or \emph{text/json}. 
-Since only content that can contain JavaScript is of interest, other 
-content-types are simply passed through to the user. In HTML, where 
-JavaScript is embedded in the code, the monitor must identify 
+In HTML, where 
+JavaScript is embedded in the code, the web proxy must first identify 
 the inline code in order to rewrite it.
-
 Identifying inline JavaScript in HTML files is a complex task. 
 Simple search and replace is not satisfactory due to the browser's error tolerant parsing of HTML-code, meaning that the 
 browser will make a best-effort attempt to make sense of malformed fragments of 
@@ -864,7 +869,7 @@ from an external domain.
 \begin{lstlisting}[language=langsmall,label=lst:crazy-html, caption=Example of complicated HTML]
 <script>0</script/> HTML </script>
 <script>0</script./> alert(JavaScript) </script>
-<p>a<sCript/"=/ src=//t.co/abcde a= >b</p></script>c<p>d
+<p>a<sCript/"=/ src=//t.co/abcde a= >b</p></script c<p>d
 \end{lstlisting}
 
 
@@ -1146,25 +1151,56 @@ information leaked to the third party.
 
 \paragraph{Performance experiments}
 %Jonas
-%xperimental setup (machine, processor, OS,,,,)
-What we measure and on what pages
-Results in a form of a table (8 numbers)
+%Experimental setup (machine, processor, OS,,,,)
+%What we measure and on what pages
+%Results in a form of a table (8 numbers)
 
-We measure the average overhead introduced by three 
-of the four architectures. The overhead of the fourth architecture would depend 
-entirely on its implementation and usage and can therefore not be generally measured.
+As the performance tests evaluate the performance of each approach rather than the associated monitor, we measure
+the time from issuing the request until the response is fully received. 
+We measure the average overhead introduced by architectures compared to a reference sample of unmodified requests. 
+The overhead is measured against two of the password-strength checkers listed 
+previously, namely \url{passwordmeter.com}, over HTTP, and \url{testalosenord.pts.se}, 
+over HTTPS. 
+Three out of the four architectures are evaluated; the browser extension, the web proxy and the suffix proxy. 
+The overhead of the integrator architecture would be specific to the 
+page that implements it and is therefore not comparable to the other three.
+The browser extension does not begin executing until the browser has received the page and has begun parsing it, therefore 
+its response time is the same as with the extension disabled. 
+Due to the rewriting mechanism being closely related, the web proxy and the suffix proxy show similar results. 
+The results are shown in Table~\ref{tab:comparison1} and Table~\ref{tab:comparison2}. 
 
-The tests were performed in Firefox under the Windows 7 64 bit Service Pack 1 operating system on a machine running on an Intel Core i7-3250M 2.9 GHz CPU, with 8 GB of memory.
+The tests were performed in the Firefox web browser under the Windows 7 64 bit SP1 operating system on a machine with a Intel Core i7-3250M 2.9 GHz CPU, and 8 GB of memory.
+
+%http://www.passwordmeter.com/
+%NP 434,420,445,443=~435=^0=+0%
+%WP 638,690,681,781=~697=^262=+62%
+%SP 663,775,689,694=~705=^270=+62%
+
+%http://testalosenord.pts.se/
+%NP 114,240,103,104=~140=^0=+0%
+%WP 372,308,311,305=~324=^184=+129%
+%SP 316,314,324,333=~321=^181=+129%
 
 \begin{table}[h!]
 \center
 \begin{tabular}{l|c|c|c|c}
-& Reference & Browser Extension & Web proxy & Suffix proxy \\ \hline
-Via HTTP & Yes & Yes & Yes \\ \hline
-Via HTTPS & Yes & Yes & No \\ \hline
+Proxy & Measurements (ms) & Average (ms) & Delta (ms) & Overhead (\%) \\ \hline
+Reference & 434, 420, 445, 443 & 435 & 0 & 0\% \\ \hline
+Browser extension & 434, 420, 445, 443 & 435 & 0 & 0\% \\ \hline
+Web proxy & 638, 690, 681, 781 & 697 & +262 & +60.2\% \\ \hline
+Suffix proxy & 663, 775, 689, 694 & 705 & +270 & +62.0\% \\ \hline
 \end{tabular}
-\caption{Comparison of browsers}
-\label{tab:comparison}
+\caption{Architecture overhead www.passwordmeter.com}
+\label{tab:comparison1}
+\begin{tabular}{l|c|c|c|c}
+Proxy & Measurements (ms) & Average (ms) & Delta (ms) & Overhead (\%) \\ \hline
+Reference & 114, 240, 103, 104 & 140 & 0 & 0\% \\ \hline
+Browser extension & 114, 240, 103, 104 & 140 & 0 & 0\% \\ \hline
+Web proxy & 372, 308, 311, 305 & 324 & +184 & +131.4\% \\ \hline
+Suffix proxy & 316, 314, 324, 333 & 321 & +181 & +129.2\% \\ \hline
+\end{tabular}
+\caption{Architecture overhead testalosenord.pts.se}
+\label{tab:comparison2}
 \end{table}
 
 %1 page 

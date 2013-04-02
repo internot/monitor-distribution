@@ -112,12 +112,12 @@ information-flow monitor with the different architectures.
 \label{sec:intro}
 JavaScript is at the heart of what defines the modern
 browsing experience on the web. JavaScript enables dynamic and interactive
-web pages as they are experienced by the users. Glued together,
+web pages. Glued together,
 JavaScript code from different sources provides
 a rich execution platform. Reliance on third-party code is
 pervasive~\cite{Nikiforakis+:CCS12}, with the included code ranging from
 format validation snippets, to helper
-libraries as jQuery, to helper services as Google Analytics, and to fully-fledged services as
+libraries such as jQuery, to helper services such as Google Analytics, and to fully-fledged services such as
 Google Maps and Yahoo!\@ Maps.
 
 \paragraph{Securing JavaScript}
@@ -180,7 +180,7 @@ themselves. This, seemingly bold, approach leverages two-fold
 flexibility. First, having complete information about a given
 execution, security-enhanced JavaScript interpreters are able to
 enforce such fine-grained security policies as \emph{information-flow
-security}~\cite{Sabelfeld:Myers:JSAC}. Second, because the monitor/interpreter is written itself in
+security}~\cite{Sabelfeld:Myers:JSAC}. Second, because the monitor/interpreter is itself written in
 JavaScript, we achieve great flexibility in the deployment options.
 
 \paragraph{Architectures for inlinig security monitors}
@@ -339,7 +339,7 @@ Hence, the scripts are not active; rather, they are passed as data to the
 monitor, and are only able to influence the execution environment implemented
 by the monitor and not the general execution environment.
 Since all scripts are executed using the monitor complete mediation is implied.
-In addition, this also implies that the deployment method is sound given that
+In addition, this also guarantees that the deployment method is sound given that
 the monitor is sound. 
 
 As described above, browser extensions are installed into the browser. In order
@@ -360,10 +360,10 @@ documents used in browsers. The DOM is a complex, richly linked tree structure.
 %which offers many challenges. 
 To a certain degree, which features that pose challenges depends on the deployment method. One example of a feature that can be handled with 
 relative easy when deploying via a browser extension is 
-\lstinline{innerHTML}. \lstinline{innerHTML} is a property on all DOM objects,
-that allows the object to be changed via the text representation of the object. 
+\lstinline{innerHTML}. \lstinline{innerHTML} is a property on all DOM nodes,
+that allows the node to be changed via the text representation of the node. 
 Changing the \lstinline{innerHTML} property 
-causes the content of the object to be rebuilt by parsing the new value. For other deployment methods this means that the value written to
+causes the content of the node to be rebuilt by parsing the new value. For other deployment methods this means that the value written to
 \lstinline{innerHTML} must be validated, and possibly changed before the write
 is allowed to occur. Although scripts added using \lstinline{innerHTML}
 are not executed, event handlers might still be run.
@@ -454,7 +454,7 @@ modify both the request and the response, making it
 %The opportunity to rewrite the response is crucial for this architecture.
 %A web proxy is 
 a convenient way to rewrite the response to include 
-the monitor in each page.Doing so makes the method more 
+the monitor in each page. Doing so makes the method more 
 intrusive to the HTML content, but less intrusive to the user's browser. 
 
 For the monitor to guarantee security, all scripts bundled with 
@@ -465,6 +465,7 @@ Apart from including the monitor in all browsed pages, all inline and external
 scripts must be identified and rewritten by the web proxy to direct execution to the monitor.
 This is achieved by wrapping all JavaScript source code, whether inline or 
 external, to be executed by the monitor.
+\todo{Daniel: the following sentence does not really make sense. I think reformulating the rest of the paragraph would be benefitial}
 Different rewriting rules apply depending on whether the 
 requested content is JavaScript, i.e., external, or HTML, i.e., inline. 
 For external 
@@ -484,11 +485,14 @@ The web proxy ensures that they are all executed by
 the monitor through rewriting, but this effort must continue even as the monitor executes. 
 Various JavaScript features, such as 
 \lstinline{document.write}, allow an arbitrary string to be 
-interpreted and rendered as HTML. Any scripts present in the string will be 
-executed upon interpretation. This problem must be addressed either in the web proxy or the monitor. Failing to address this problem, the script code will execute 
+interpreted and rendered as HTML. 
+\todo{Daniel: reformulated, and removed the use of the word 'problem'}
+Any scripts present in the string will be 
+executed upon interpretation, which must be addressed in the web proxy. If not, the script code will execute 
 along-side the monitor, thereby bypassing it. 
+\todo{Daniel: removed a 'direct' in 'direct execution' - couldn't see what was direct with it}
 Complete mediation is achieved given that all requests are relayed through the proxy 
-and all occurrences of JavaScript within the page are rewritten to direct execution to the monitor.
+and all occurrences of JavaScript within the page are rewritten to execution to the monitor.
 
 %\todo{Daniel: this section must be revised based on this mornings experiments}
 Special consideration is required for HTTPS connections, as
@@ -507,11 +511,11 @@ This poses a challenge for a web proxy designed %exactly
 to modify the response. 
 Normally a web proxy acts as tunnel between the client and target, unable 
 to read or manipulate the transmission. Instead the web proxy must establish 
-two separate HTTPS connection, one with the client and one with the target. 
+two separate HTTPS connections, one with the client and one with the target. 
 The client's request is passed on to the connection with the target
 and the rewritten response to the client. This is only transparent 
-to the user if the certificate provided by the proxy is trusted by the user, 
-otherwise the user will be notified that the certificate is invalid.
+to the user if the certificate provided by the proxy is trusted by the user. 
+Otherwise the user will be notified that the certificate is invalid.
 %To make the certificate trusted, the web proxy must have its own root certificate, 
 %which is added 
 %This requires the web proxy to generate a new certificate for the target domain 
@@ -535,8 +539,9 @@ the users their choice of browser.
 Neither is it intrusive to the browser, as the user is not required to modify the 
 browser in order to take advantage of security benefits. 
 
+\todo{users' -> user's, which is the way all other occurences are written}
 How the proxy is 
-deployed determines the users' influence over 
+deployed determines the user's influence over 
 the enforced policies.
 In a corporate environment, the web proxy is likely to be 
 administered centrally to apply the same policy for all users. When deployed by 
@@ -561,7 +566,8 @@ by the proxy.
 A \emph{suffix proxy} particularly suits a user who wants to run certain untrusted 
 pages monitored, but not include the monitor in trusted pages.
 
-%\todo{Daniel: I found the following paragraph hard to read}
+\todo{The following sentence implies that a proxy service only is allowed to provide for a small number. Rewrite 'It may be the case that a....' }
+\todo{In fact, I think the rest of this paragraph would benefit from another go}
 A proxy service may provide site-specific policies only for a small number 
 of web sites. In this case, relaying requests to other web sites is an 
 unnecessary waste of resources. To the service provider it would be beneficial to 
@@ -650,6 +656,7 @@ to the proxy domain.
 
 
 %Recall from the previous section the rather complex procedure required to add HTTPS support.
+\todo{Daniel: following is no longer true - and not supported by story i web proxy}
 Implementing support for HTTPS is easier in the suffix proxy compared to the web proxy. 
 Given that the suffix proxy builds on DNS wildcards, it is sufficient to issue a certificate
 for all subdomains of the proxy domain, e.g., \url{*.proxy.domain}. Such a 
@@ -665,7 +672,9 @@ While sharing a common foundation, there are several differences between a
 suffix proxy compared to a traditional web proxy. The differences lie, not in 
 how the monitor is included in the page, but in the way the proxy is 
 addressed. A consequence of the use of wildcard domain names is that the suffix proxy requires 
-heavier rewriting than the web proxy in order to capture all requests. On the other 
+heavier rewriting than the web proxy in order to capture all requests.
+\todo{Daniel: following also no longer true}
+On the other 
 hand, it helps in managing HTTPS requests, that is complicated in the web proxy.
 Another questionable consequence is that it allows for web sites to relax the 
 same-origin policy. 
@@ -822,15 +831,16 @@ monitor is used to execute the script.
 
 As discussed above, the downside of this method is that it breaks
 transparency, since the scripts all execute after the DOM
-tree has been constructed. As mentioned in Section~\ref{sec:arch:ext}, it is possible to regain transparency by using DOM
+tree has been constructed. It is possible to regain transparency by using DOM
 \lstinline{MutationEvent} instead of the \lstinline{DOMContentLoaded} event.  The idea is to listen
 to any addition of script nodes to the DOM tree under the construction, and
 execute the script on addition.  However, due to performance reasons the DOM
-Mutation events are deprecated, and are being replaced with DOM \lstinline{MutationObserver}~\cite{DOM4}. 
+\lstinline{MutationEvent}s are deprecated, and are being replaced with DOM \lstinline{MutationObserver}~\cite{DOM4}. 
 It is unclear whether the \lstinline{MutationObserver} can be used to
 provide transparency, since events are grouped together, i.e., the mutation
-observer will not necessarily get an event each time a script is added, but one
-event covering all script additions.
+observer will not necessarily get an event each time a script is added ---
+to improve performance single
+events may bundle several modifications together.
 
 On a final note, the exact order of loading is not standardized and differs between
 browsers. This forces scripts to be independent of such differences. Thus,

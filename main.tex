@@ -460,18 +460,16 @@ intrusive to the HTML content, but less intrusive to the user's browser.
 For the monitor to guarantee security, all scripts bundled with 
 the page must be executed by the monitor. The scripts can either be inline, 
 i.e., included as part of the HTML page, or external, i.e., referenced in the 
-HTML page to be downloaded from an external source.
-Apart from including the monitor in all browsed pages, all inline and external 
-scripts must be identified and rewritten by the web proxy to direct execution to the monitor.
-This is achieved by wrapping all JavaScript source code, whether inline or 
-external, to be executed by the monitor.
-\todo{Daniel: the following sentence does not really make sense. I think reformulating the rest of the paragraph would be benefitial}
-Different rewriting rules apply depending on whether the 
-requested content is JavaScript, i.e., external, or HTML, i.e., inline. 
-For external 
-JavaScript resources, containing only JavaScript, the entire response is rewritten to use the monitor to execute, whereas 
-for HTML the web proxy has to identify and wrap all occurrences of inline 
-JavaScript, both script-tags and event handlers.
+HTML page to be downloaded from an external source. Inline scripts appear both in the form of script-tags as well as inline event handlers, e.g., onclick or onload.
+Apart from including the monitor in all browsed pages, all scripts, whether inline or 
+external, must be rewritten by the web proxy to be executed by the monitor.
+%This is achieved by wrapping all JavaScript source code, whether inline or 
+%external, to be executed by the monitor.
+%\todo{Daniel: the following sentence does not really make sense. I think reformulating the rest of the paragraph would be benefitial}
+%Different rewriting rules apply depending on whether the 
+%requested content is JavaScript, i.e., external, or HTML, i.e., inline. 
+External scripts are rewritten in their entirety, whereas 
+for inline scripts the web proxy must identify all scripts within the page and rewrite them individually.
 
 
 \paragraph{Security considerations}
@@ -486,13 +484,13 @@ the monitor through rewriting, but this effort must continue even as the monitor
 Various JavaScript features, such as 
 \lstinline{document.write}, allow an arbitrary string to be 
 interpreted and rendered as HTML. 
-\todo{Daniel: reformulated, and removed the use of the word 'problem'}
+%\todo{Daniel: reformulated, and removed the use of the word 'problem'}
 Any scripts present in the string will be 
 executed upon interpretation, which must be addressed in the web proxy. If not, the script code will execute 
 along-side the monitor, thereby bypassing it. 
-\todo{Daniel: removed a 'direct' in 'direct execution' - couldn't see what was direct with it}
+%\todo{Daniel: removed a 'direct' in 'direct execution' - couldn't see what was direct with it}
 Complete mediation is achieved given that all requests are relayed through the proxy 
-and all occurrences of JavaScript within the page are rewritten to execution to the monitor.
+and all occurrences of JavaScript within the page are rewritten to be executed by the monitor.
 
 %\todo{Daniel: this section must be revised based on this mornings experiments}
 Special consideration is required for HTTPS connections, as
@@ -539,7 +537,7 @@ the users their choice of browser.
 Neither is it intrusive to the browser, as the user is not required to modify the 
 browser in order to take advantage of security benefits. 
 
-\todo{users' -> user's, which is the way all other occurences are written}
+%\todo{users' -> user's, which is the way all other occurences are written}
 How the proxy is 
 deployed determines the user's influence over 
 the enforced policies.
@@ -566,13 +564,12 @@ by the proxy.
 A \emph{suffix proxy} particularly suits a user who wants to run certain untrusted 
 pages monitored, but not include the monitor in trusted pages.
 
-\todo{The following sentence implies that a proxy service only is allowed to provide for a small number. Rewrite 'It may be the case that a....' }
-\todo{In fact, I think the rest of this paragraph would benefit from another go}
-A proxy service may provide site-specific policies only for a small number 
-of web sites. In this case, relaying requests to other web sites is an 
-unnecessary waste of resources. To the service provider it would be beneficial to 
-control precisely which web sites will be relayed through the proxy. 
-This is not possible in a web proxy, that covers all requests, but a suffix proxy 
+%\todo{The following sentence implies that a proxy service only is allowed to provide for a small number. Rewrite 'It may be the case that a....' }
+%\todo{In fact, I think the rest of this paragraph would benefit from another go}
+From the perspective of the provider of the proxy service, relaying security irrelevant content, e.g., images, is an 
+unnecessary waste of resources. To the service provider it is beneficial to be able to
+control precisely which content will be relayed through the proxy. 
+This is not possible in a web proxy, that must relay all requests, but a suffix proxy 
 provides the means to do so.
 
 
@@ -588,7 +585,7 @@ i.e., in DNS terms \emph{*.proxy.domain $\Rightarrow$ proxy.domain}.
 %\todo{Daniel: maybe using q=proxy is unfortunate, we should use another search term}
 Typically, the user navigates to a 
 web application associated with the proxy and enters the target URL, e.g., \url{http://google.com/search?q=sunrise}, in 
-an input field. To direct the request to the proxy, the target domain name is altered
+an input field. To redirect the request to the proxy, the target domain name is altered
 by appending the domain name of the proxy, making the target domain a subdomain of the proxy domain, e.g., \url{http://google.com.proxy.domain/search?q=sunrise}. 
 The browser is then navigated to the modified URL.
 The suffix proxy is set up so
@@ -601,11 +598,11 @@ relaying the request to the target URL gives the suffix proxy an opportunity to 
 include the monitor in the response.
 
 As the web proxy, the suffix proxy must ensure that all script bundled with a 
-page is executed by the monitor. The procedure to rewrite script is much the same as the one
-detailed in Section~\ref{sec:arch-web}. Apart from that, the URLs of links and 
-resources referring to content outside the target domain must also be rewritten to point to the suffix proxy. 
-Otherwise the content to will not be requested through the monitor which will 
-prevent it from being rewritten.
+page is executed by the monitor. The procedure to rewrite scripts is much the same as the one
+detailed in Section~\ref{sec:arch-web}. However, apart from rewriting inline scripts in a page, 
+the suffix proxy must also find all references to external scripts and rewrite the URLs to include the proxy domain.
+Otherwise the script will not be requested through the monitor which will 
+prevent it from being rewritten and thereby it will execute along-side the monitor.
 
 
 In the suffix proxy, not only the content is rewritten
@@ -656,11 +653,11 @@ to the proxy domain.
 
 
 %Recall from the previous section the rather complex procedure required to add HTTPS support.
-\todo{Daniel: following is no longer true - and not supported by story i web proxy}
-Implementing support for HTTPS is easier in the suffix proxy compared to the web proxy. 
+%\todo{Daniel: following is no longer true - and not supported by story i web proxy}
+Implementing support for HTTPS is simple in the suffix proxy. 
 Given that the suffix proxy builds on DNS wildcards, it is sufficient to issue a certificate
 for all subdomains of the proxy domain, e.g., \url{*.proxy.domain}. Such a 
-certificate is valid for all target URLs relayed through the proxy.
+wildcard certificate is valid for all target URLs relayed through the proxy.
 %\todo{Daniel: I find the following sentence a tad odd}
 %The main benefit of wildcard certificates is that the user can browse HTTPS pages. 
 %The drawback is that the user must trust the monitor to correctly verify the 
@@ -673,25 +670,25 @@ suffix proxy compared to a traditional web proxy. The differences lie, not in
 how the monitor is included in the page, but in the way the proxy is 
 addressed. A consequence of the use of wildcard domain names is that the suffix proxy requires 
 heavier rewriting than the web proxy in order to capture all requests.
-\todo{Daniel: following also no longer true}
-On the other 
-hand, it helps in managing HTTPS requests, that is complicated in the web proxy.
+%\todo{Daniel: following also no longer true}
+%On the other 
+%hand, it helps in managing HTTPS requests, that is complicated in the web proxy.
 Another questionable consequence is that it allows for web sites to relax the 
 same-origin policy. 
 %\todo{Daniel, again - devastating is very strong}
 From a monitor perspective this can be problematic under the wrong circumstances, 
 while beneficial under other.
 
-Another significant difference is that the suffix proxy lets the user and the 
-service provider decide which pages to proxy on a per-domain basis, making it 
-more general than a traditional web proxy that covers all requests. 
+Another significant difference is that the suffix proxy lets the user decide which 
+pages to proxy on a per-domain basis. Deciding whether to apply the monitor or 
+not is as simple as browsing to an alternate URL.
 %\todo{Daniel: I have misthought twice here before realizing it is true; maybe clarify?}
-The suffix proxy can be set up to only relay requests for a few selected 
-web sites and for all other web sites immediately respond with a redirect to the target
-URL, telling the browser to make the request itself. This can both reduce the load on the proxy service, as well as decrease the 
+Also, the suffix proxy can ensure that only resources relevant to security are 
+relayed via the proxy, making it 
+more general than a traditional web proxy that covers all requests. 
+This both reduces the load on the proxy service, as well as decreases the 
 overhead for the end user, thus benefiting both the user and the service provider.
-For a user, deciding whether to apply the monitor or not is as simple as browsing 
-to an alternate URL.
+
 
 A beneficial difference is that the suffix proxy does not require any 
 configuration and leaves the browser completely unchanged. The user can take
@@ -921,12 +918,13 @@ The implementation consists of 256 lines of JavaScript code.
 
 %Just as the web proxy, the suffix proxy is implemented in NodeJS. 
 As mentioned in Section~\ref{sec:arch-suffix}, the web proxy serves as a 
-foundation for the suffix proxy, as they share much of the code. The suffix proxy is extended with an additional step of rewriting. 
+foundation for the suffix proxy, as they share much of the code. The suffix 
+proxy is extended with an additional step of rewriting to deal with external resources.
 %The additional rewriting is also related to the wildcard subdomain approach.
 %\paragraph{Additional rewriting of HTML}
 Since the suffix proxy is referenced by altering the domain name of the target, 
-the proxy must ensure that resources associated with the target page are also 
-retrieved through the proxy. Resources with URLs relative to the current domain 
+the proxy must ensure that relevant resources, e.g., scripts, associated with the target page are also 
+retrieved through the proxy. Resources with relative URLs 
 requires no processing, as they are relative to the proxy domain and will by 
 definition be loaded through the monitor. 
 However, the URLs of resources targeting external domains must be rewritten to 
@@ -934,10 +932,10 @@ include the proxy domain. Similarly, links to external pages must include the do
 for the %user to stay %within the 
 monitor %ed %domain 
 to apply 
-when links are followed.
-Apart from the rewriting of inline 
-scripts and event handlers done in the web proxy, the suffix proxy must 
-identify and rewrite the domain of all such external references. 
+when the user follows a links.
+%Apart from the rewriting of inline 
+%scripts and event handlers done in the web proxy, the suffix proxy must 
+%identify and rewrite the domain of all such external references. 
 The external references are identified in the same manner as inline JavaScript, 
 by parsing the HTML to a DOM-tree and traversing the tree. When found, the 
 URL is substituted using a regular expression.% in Listing~\ref{lst:reg-exp}.

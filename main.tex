@@ -124,13 +124,15 @@ Google Maps and Yahoo!\@ Maps.
 Securing JavaScript in the browser is an open and challenging
 problem. Third-party code inclusion exacerbates the
 problem. The \emph{same-origin policy (SOP)}, enforced by the modern
-browsers, allows free communication to the Internet origin of a given web page 
+browsers, allows free communication to the Internet origin of a given web page, 
 while it
-places some restrictions on communication to Internet domains
+places restrictions on communication to Internet domains
 outside the origin. However, once third-party code is
 included in a web page, it is executed with the same privileges as the code
-that uses the libraries. This gives rise to a number of attack possibilities,
-such as location
+that uses the libraries. This gives rise to a number of attack
+possibilities that
+include
+location
 hijacking, behavioral tracking, leaking cookies, and sniffing browsing history~\cite{Jang+:CCS10}. 
 
 \paragraph{Security policy stakeholders}
@@ -146,25 +148,30 @@ calculators.
 %
 \emph{Code developers} clearly have an interest in protecting the
 secrets associated with the web application. For example, they might
-allow access to the first-party cookie to code from third-party
-services, like Google (this is needed for the proper functioning of
+allow access to the first-party cookie for code from third-party
+services, like Google (as needed for the proper functioning of
 such services
 as Google Analytics), but under the condition that no sensitive part
 of the cookie is leaked to the third party.
 %
 \emph{Code integrators} might have different levels of trust to the
 different integrated components, perhaps depending on the origin. It
-is desirable to be able to invoke different protection mechanisms for 
+makes sense to invoke different protection mechanisms for 
 different code that is integrated into the web application.
 For example, an e-commerce web site might include jQuery from a trusted
-web site without protection while it might load advertisement scripts
+web site without protection, while it might load advertisement scripts
 with protection turned on. 
 %
 Finally, \emph{system and network administrators} also have a
-stake in the security goals. It might be desirable to configure the
+stake in the security goals. It is often desirable to configure the
 system and/or network so that certain users are protected to a larger
 extent or communication to certain web sites is restricted to a larger
-extent than to the others.  
+extent.
+%
+For example, some Internet Service Providers, like Comcast, inject
+JavaScript into the users' web traffic but so far only to display browser
+notifications for sensitive 
+alerts\footnote{\scriptsize{\url{https://gist.github.com/ryankearney/4146814}}}. 
 
 \paragraph{Secure inlining for JavaScript}
 This paper proposes a novel approach to securing JavaScript in web
@@ -174,9 +181,9 @@ We focus on securing JavaScript code by \emph{inlining}
 security checks in the code before it is executed.
 %
 A key feature
-of our approach is focusing on security monitors implemented as
-security-enhanced JavaScript interpreters, written in JavaScript
-themselves. This, seemingly bold, approach leverages two-fold
+of our approach is focusing on security monitors implemented, in JavaScript, as
+security-enhanced JavaScript interpreters.
+This, seemingly bold, approach leverages two-fold
 flexibility. First, having complete information about a given
 execution, security-enhanced JavaScript interpreters are able to
 enforce such fine-grained security policies as \emph{information-flow
@@ -204,16 +211,16 @@ Our evaluation of the architectures explores the relative security
 considerations.
 When introducing reference monitoring, Anderson~\cite{Anderson:72}
 identifies the following principles:
-(i) the monitor must be tamperproof (\emph{monitor integrity}),
-(ii) the monitor must be always invoked (\emph{complete
-  mediation}~\cite{Saltzer:Schroeder:TCB}), and
+(i) the monitor must be tamperproof \emph{(monitor integrity)},
+(ii) the monitor must be always invoked \emph{(complete
+  mediation)}~\cite{Saltzer:Schroeder:TCB}, and
 (iii) the monitor must be small enough to be subject to correctness
-analysis (\emph{small trusted computing base
-  (TCB)}~\cite{Saltzer:Schroeder:TCB,DBLP:dblp_conf/sosp/Rushby81}). Overall,
+analysis \emph{(small trusted computing base
+  (TCB))}~\cite{Saltzer:Schroeder:TCB,DBLP:dblp_conf/sosp/Rushby81}. Overall,
 the key requirements often considered in the context of monitoring are 
 that the monitor must enforce the desired security policy
-(\emph{soundness}) and that the monitor is transparent to the
-applications (\emph{transparency}). Note the relation of
+\emph{(soundness)} and that the monitor is transparent to the
+applications \emph{(transparency)}. Note the relation of
 the soundness to Anderson's principles: while the principles do not
 automatically imply soundness, they facilitate establishing soundness. 
 Transparency requirements are often in place for reference monitors to
@@ -288,7 +295,7 @@ information-flow monitor with the different architectures.
 This section presents the architectures for inlining
 security monitors. We motivate each architecture by scenarios of
 intended usage, describe the architectures, report on
-security considerations as well as the pros and cons for each choice.
+security considerations, as well as the pros and cons for each choice.
 
 
 
@@ -844,7 +851,7 @@ browsers. This forces scripts to be independent of such differences. Thus,
 using the method of executing scripts on the \lstinline{DOMContentLoaded} event is not
 necessarily a problem in practice. 
 %
-The extension consists of 1100 lines of JavaScript and XUL code.
+The extension consists of 1200 lines of JavaScript and XUL code.
 
 
 
@@ -1016,14 +1023,14 @@ from \emph{weak} to \emph{strong}. This type of service is ubiquitous
 on the web, with service providers ranging from private web sites to web sites
 of national telecommunication authorities.
 
-Clearly, the confidentiality of the password needs to be protected.  The
+Clearly, the confidentiality of the password needs protection.  The
 strength of the password is of no importance if the password is leaked.  We
 have investigated a number of password-strength services. 
 Our experiments identify services that enforce two types of policies: (i)
 allow the password to be sent back to the origin web site, but not to
 any other site (suitable for server-side checkers); and (ii) disallow the password
 to leave the browser (suitable for client-side checkers). 
-Clearly, the first type places trust on the service provider not to
+The first type places trust on the service provider not to
 abuse the password, while the second type does not require such trust,
 in line with the \emph{principle of least
 privilege}~\cite{Saltzer:Schroeder:TCB}.
@@ -1041,7 +1048,7 @@ sent to Google for aggregation. Using information-flow tracking, we
 can allow communication to Google Analytics but with the guarantee
 that the password will not be leaked to it.
 
-We have investigated a number of sites\footnote{\scriptsize{
+We have investigated a selection of sites\footnote{\scriptsize{
 \url{https://testalosenord.pts.se/},
 \url{http://www.lbw-soft.de/},
 \url{http://www.inutile.ens.fr/estatis/password-security-checker/},
@@ -1049,7 +1056,7 @@ We have investigated a number of sites\footnote{\scriptsize{
 \url{http://geodsoft.com/cgi-bin/pwcheck.pl}.
 }
 }
-that fall into the first category, and a number of sites\footnote{\scriptsize{
+that fall into the first category, and a selection of sites\footnote{\scriptsize{
 \url{http://www.getsecurepassword.com/CheckPassword.aspx},
 \url{http://www.passwordmeter.com/},
 \url{http://howsecureismypassword.net},
@@ -1069,7 +1076,7 @@ that fall into the second category.
 %password in a secure way, and make sure that no information about the password
 %is stored. 
 
-Of those, it is worth commenting on two sites --- one from each category.  Interestingly, the first
+Of these, it is worth commenting on two sites, one from each category.  Interestingly, the first
 site, {\footnotesize{\url{https://testalosenord.pts.se/}}}, is provided by
 the Swedish Post and Telecom Authority. The site contains a count of how many
 passwords have been submitted to the service, with over 1,000,000 tried
@@ -1084,7 +1091,7 @@ anywhere outside the browser.
 
 The benefit of the architectures for the scenario of password-strength checking is
 that users can get strong security guarantees either by installing an
-extension, using a web proxy or a suffix proxy. In the latter two
+extension, using a web proxy, or a suffix proxy. In the latter two
 cases, the system and network administrators have a stake in deciding
 what policies to enforce. Further, the integrator architecture is an
 excellent fit for including a third-party password-strength checker
@@ -1175,9 +1182,9 @@ We measure the average overhead introduced by architectures compared to a refere
 The overhead is measured against two of the password-strength checkers listed 
 previously, namely \url{passwordmeter.com}, over HTTP, and \url{testalosenord.pts.se}, 
 over HTTPS. 
-Three out of the four architectures are evaluated; the browser extension, the web proxy and the suffix proxy. 
-The overhead of the integrator architecture would be specific to the 
-page that implements it and is therefore not comparable to the other three.
+Three out of the four architectures are evaluated; the browser extension, the web proxy, and the suffix proxy. 
+The overhead of the integrator architecture is specific to the 
+page that implements it, and is therefore not comparable to the other three.
 The browser extension does not begin executing until the browser has received the page and has begun parsing it, therefore 
 its response time is the same as with the extension disabled. 
 Due to the rewriting mechanism being closely related, the web proxy and the suffix proxy show similar results. 
@@ -1204,7 +1211,7 @@ Browser extension & 434, 420, 445, 443 & 435 & 0 & 0\% \\ \hline
 Web proxy & 638, 690, 681, 781 & 697 & +262 & +60.2\% \\ \hline
 Suffix proxy & 663, 775, 689, 694 & 705 & +270 & +62.0\% \\ %\hline
 \end{tabular}
-\caption{Architecture overhead www.passwordmeter.com}
+\caption{Architecture overhead passwordmeter.com}
 \label{tab:comparison1}
 \begin{tabular}{l|c|c|c|c}
 Proxy & Measurements (ms) & Average (ms) & Delta (ms) & Overhead (\%) \\ \hline
@@ -1239,9 +1246,9 @@ Inlined reference monitors
 have been proposed in a variety of languages and settings: from
 assembly code~\cite{DBLP:conf/nspw/ErlingssonS99} to Java~\cite{DBLP:conf/ecoop/DamJLP09,DBLP:journals/jcs/DamJLP10,DBLP:conf/ccs/DamGL12}.
 
-Ligatti et al. \cite{Ligatti05editautomata:} present a 
-general framework for security policies that can
-be enforced by monitoring and modifying programs at runtime. 
+Ligatti et al.~\cite{Ligatti05editautomata:} present a 
+framework for enforcing security policies
+by monitoring and modifying programs at runtime. 
 They introduce \emph{edit automata} that enable
 monitors to stop, suppress, and modify the behavior of programs. 
 
@@ -1264,14 +1271,16 @@ monitor is ensured by bisimulation of the inlined monitor and the
 original monitor.
 
 Magazinius et
-al.~\cite{Magazinius+:SEC10,DBLP:journals/compsec/MagaziniusRS12} show
-how to cope with dynamic code evaluation instructions by inlining
+al.~\cite{Magazinius+:SEC10,DBLP:journals/compsec/MagaziniusRS12} 
+cope with dynamic code evaluation instructions by inlining
 on-the-fly. 
 Dynamic code evaluation instructions are
 rewritten to make use of auxiliary functions that, when invoked at
 runtime, inject security checks into the available string. 
 The inlined code manipulates shadow variables to keep track of the
-security labels of the program's variables.
+security labels of the program's variables. In similar vein,
+Bello and Bonelli~\cite{DBLP:conf/ifip1-7/BelloB11} investigate
+on-the-fly inlining for a dynamic dependency analysis.
 
 However, there are fundamental limits in the scalability of the shadow-variable
 approach.  The execution of a vast majority of the JavaScript operations (with
@@ -1361,6 +1370,8 @@ communication bandwidth.
 
 \vspace{-.2cm}
 \paragraph{Acknowledgments}
+%Ack Arnar for the Comcast link and Luciano for playing with pwd
+%strength checkers
 This work was funded by 
 the European Community under the ProSecuToR and WebSand projects
 and

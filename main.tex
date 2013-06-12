@@ -1,6 +1,28 @@
 \documentclass{llncs}
 %\documentclass[10pt, conference, compsocconf]{IEEEtran}
 
+
+\if 0
+%%%%%%%%%%%%%%%%%%%% Nasty space tricks
+% \pdfpagesattr{/CropBox [92 92 523 778]} % LNCS page: 152x235 mm %%
+%\pdfpagesattr{/CropBox [92 82 533 788]}
+
+\addtolength{\textfloatsep}{-4ex}
+\addtolength{\intextsep}{-4ex}
+% \addtolength{\abovecaptionskip}{-2ex}
+\addtolength{\belowcaptionskip}{2ex}
+
+\renewcommand\floatpagefraction{.9}
+\renewcommand{\dblfloatpagefraction}{0.9}
+\renewcommand\topfraction{.9}
+\renewcommand\bottomfraction{.9}
+\renewcommand\textfraction{.1}
+\setcounter{totalnumber}{50}
+\setcounter{topnumber}{50}
+\setcounter{bottomnumber}{50}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\fi
+
 % From ESORICS'13 CFP
 % Submitted papers should be at most 16 pages (using 10-point font), excluding 
 % the bibliography and well-marked appendices, and at most 20 pages total.
@@ -34,6 +56,8 @@ March 12 - implementation half-way
 March 11 - architecture first pass
 \fi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 \lstdefinelanguage{lang}
 {
  sensitive=true,
@@ -57,7 +81,6 @@ fontadjust=true
 \pagestyle{plain}
 
 \begin{document}
-
 
 \maketitle
 
@@ -108,8 +131,10 @@ information-flow monitor with the different architectures.
 
 
 % 1-2 pages
+\vspace{-.4cm}
 \section{Introduction}
 \label{sec:intro}
+\vspace{-.2cm}
 JavaScript is at the heart of what defines the modern
 browsing experience on the web. JavaScript enables dynamic and interactive
 web pages. Glued together,
@@ -120,6 +145,7 @@ format validation snippets, to helper
 libraries such as jQuery, to helper services such as Google Analytics, and to fully-fledged services such as
 Google Maps and Yahoo!\@ Maps.
 
+\vspace{-.4cm}
 \paragraph{Securing JavaScript}
 Securing JavaScript in the browser is an open and challenging
 problem. Third-party code inclusion exacerbates the
@@ -135,6 +161,7 @@ include
 location
 hijacking, behavioral tracking, leaking cookies, and sniffing browsing history~\cite{Jang+:CCS10}. 
 
+\vspace{-.4cm}
 \paragraph{Security policy stakeholders}
 An additional complication is that the different stakeholders have
 different interests in the security policies to be enforced
@@ -173,6 +200,7 @@ JavaScript into the users' web traffic but so far only to display browser
 notifications for sensitive 
 alerts\footnote{\scriptsize{\url{https://gist.github.com/ryankearney/4146814}}}. 
 
+\vspace{-.4cm}
 \paragraph{Secure inlining for JavaScript}
 This paper proposes a novel approach to securing JavaScript in web
 applications in the presence of different stakeholders.
@@ -190,6 +218,7 @@ enforce such fine-grained security policies as \emph{information-flow
 security}~\cite{Sabelfeld:Myers:JSAC}. Second, because the monitor/interpreter is itself written in
 JavaScript, we achieve great flexibility in the deployment options.
 
+\vspace{-.4cm}
 \paragraph{Architectures for inlinig security monitors}
 As our main contribution,
 we propose architectures for inlining security monitors for JavaScript: via
@@ -240,6 +269,7 @@ the architecture.
 % different implications for the security and transparency of the
 % deployed monitor.
 
+\vspace{-.4cm}
 \paragraph{Instantiation}
 To illustrate the usefulness of the approach, we present an
 instantiation of the architectures to enforce secure information flow
@@ -288,10 +318,11 @@ information-flow monitor with the different architectures.
 
 %Describe mashups, difficulties in mashup security and information flows in mashups.
 
-%4 pages 
+%4 pages
+\vspace{-.4cm} 
 \section{Architectures}
 \label{sec:arch}
-\vspace{-.04cm}
+\vspace{-.2cm}
 This section presents the architectures for inlining
 security monitors. We motivate each architecture by scenarios of
 intended usage, describe the architectures, report on
@@ -300,9 +331,9 @@ security considerations, as well as the pros and cons for each choice.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\vspace{-.4cm}
 \subsection{Browser extension}\label{sec:arch:ext}
-
+\vspace{-.2cm}
 Many web sites require the user to provide sensitive information, e.g., user
 credentials, or payment information. It lies in the interest of the user to
 ensure the security of the sensitive information.  Modern browsers allow for
@@ -312,7 +343,7 @@ properties not normally offered by browsers.  Regardless of whether the user is
 private or corporate, browser extensions provide a simple 
 install-once deployment method.
 
-
+\vspace{-.4cm}
 \paragraph{Description}
 
 A browser extension is a program that is installed into the browser in order to
@@ -337,7 +368,7 @@ This method was pioneered by Zaphod~\cite{Zaphod}, a
 Firefox extension, that replaces the standard JavaScript engine with the
 experimental Narcissus~\cite{Narcissus} engine.
 
-
+\vspace{-.4cm}
 \paragraph{Security considerations}
 
 The integrity of the deployment method is guaranteed by virtue of the fact that the
@@ -356,6 +387,7 @@ running with elevated privileges. Compared to the other methods of deployment
 this means that a faulty monitor not only jeopardizes the property enforced by
 the monitor, but might jeopardize the integrity of the entire browser.
 
+\vspace{-.4cm}
 \paragraph{Pros and cons}
 
 Since the extension is installed locally in the browser of the user, it has
@@ -433,9 +465,10 @@ the intended behavior can be implemented by the monitor.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\vspace{-.4cm}
 \subsection{Web proxy}
 \label{sec:arch-web}
+\vspace{-.2cm}
 
 In a corporate setting, it is essential to protect 
 sensitive information pertaining to both the organization and its employees. 
@@ -449,6 +482,7 @@ A web proxy is also appealing to a private user, as it includes the monitor in a
 the browser itself. By configuring the browser to use a web proxy, the user can ensure the security 
 of sensitive data.
 
+\vspace{-.4cm}
 \paragraph{Description}
 All modern browsers support %using proxies to 
 relaying all requests through a proxy.
@@ -478,7 +512,7 @@ external, must be rewritten by the web proxy to be executed by the monitor.
 External scripts are rewritten in their entirety, whereas 
 for inline scripts the web proxy must identify all scripts within the page and rewrite them individually.
 
-
+\vspace{-.4cm}
 \paragraph{Security considerations}
 
 As opposed to a browser extension, that replaces the 
@@ -534,7 +568,7 @@ Otherwise the user will be notified that the certificate is invalid.
 %the user's list of trusted CAs, or having the key signed by a CA that the user trusts.
 
 
-
+\vspace{-.4cm}
 \paragraph{Pros and cons}
 The main benefit of using a web proxy 
 compared to a browser extension is that the implementation is browser independent. The 
@@ -559,9 +593,10 @@ in the hands of the proxy administrator.
 
 
 
-
+\vspace{-.4cm}
 \subsection{Suffix proxy (service)}
 \label{sec:arch-suffix}
+\vspace{-.2cm}
 
 
 For trusted web sites, a user of a proxy service may not want to disclose
@@ -580,7 +615,7 @@ This is not possible in a web proxy, that must relay all requests, but a suffix 
 provides the means to do so.
 
 
-
+\vspace{-.4cm}
 \paragraph{Description}
 A \emph{suffix proxy} is a specialized web proxy, with a different approach to relaying the request. 
 %The web proxy serves as a foundation for the suffix proxy, as they have much in common.
@@ -630,7 +665,7 @@ need to be rewritten to include the monitor domain.
 
 
 
-
+\vspace{-.4cm}
 \paragraph{Security considerations}
 
 A consequence of modifying the domain name is that the domain of the
@@ -670,6 +705,7 @@ wildcard certificate is valid for all target URLs relayed through the proxy.
 %The drawback is that the user must trust the monitor to correctly verify the 
 %certificate of the page.
 
+\vspace{-.4cm}
 \paragraph{Pros and cons}
 
 While sharing a common foundation, there are several differences between a 
@@ -702,8 +738,10 @@ configuration and leaves the browser completely unchanged. The user can take
 advantage of the security benefits without being concerned with the integrity 
 of the browser.
 
+\vspace{-.4cm}
 \subsection{Integrator}
 \label{sec:arch-integrator}
+\vspace{-.2cm}
 %The mashup integrator includes the monitor and decides which JavaScript should 
 %run within the monitor. (Don't mention sandbox.) You're done.
 %\begin{itemize}
@@ -727,6 +765,7 @@ trust the library not to abuse this privilege. To a developer, an appealing alte
 is to run untrusted code in the monitored context, while running trusted code outside of the 
 monitor. 
 
+\vspace{-.4cm}
 \paragraph{Description}
 Integrator-driven monitor inclusion is suitable for an integrating web page 
 that makes use of third-party code.
@@ -760,7 +799,7 @@ makes it less error-prone. A more advanced solution is a set of shared variables
 that are bidirectionally reflected from one context to the other when 
 their values are updated.
 
-
+\vspace{-.4cm}
 \paragraph{Security considerations}
 
 Despite the fact that the integrator is using the suffix proxy, none of the 
@@ -785,6 +824,7 @@ it can access and manipulate the state of the monitor and thereby the state of
 the untrusted code. It is impossible for the monitored code to protect against 
 such manipulation.
 
+\vspace{-.4cm}
 \paragraph{Pros and cons}
 
 This developer-centric approach gives the integrator full control over the 
@@ -808,8 +848,10 @@ and the implications of interacting with the monitor.
 
 
 % 2-3 pages 
+\vspace{-.4cm}
 \section{Implementation}
 \label{sec:impl}
+\vspace{-.2cm}
 
 %Describe features and drawbacks with each implementation.
 %For each deployment option, we describe how it is implemented and show how the integrity of the monitor
@@ -820,7 +862,10 @@ from the authors.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\vspace{-.4cm}
 \subsection{Browser extension}
+\vspace{-.2cm}
+
 
 The browser extension is a Firefox extension based on Zaphod~\cite{Zaphod}.
 %
@@ -856,8 +901,9 @@ The extension consists of 1200 lines of JavaScript and XUL code.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\vspace{-.4cm}
 \subsection{Web proxy}
+\vspace{-.2cm}
 
 %\todo{Daniel: should we not rework this based on the email discussion on content types?}
 % Jonas: I worked around it saying that the content is rewritten, but not in detail what and how.
@@ -907,8 +953,9 @@ code = 'Monitor.eval(' + JSON.stringify(code) + ')';
 The implementation consists of 256 lines of JavaScript code.
 
 
-
+\vspace{-.4cm}
 \subsection{Suffix proxy (service)}
+\vspace{-.2cm}
 
 %\begin{itemize}
 %\item rewrite all or some, can pass configuration through cookie
@@ -960,7 +1007,9 @@ Neither does it clash with the proxy domain because it is still a subdomain of t
 %
 The implementation consists of 276 lines of JavaScript code.
 
+\vspace{-.4cm}
 \subsection{Integrator}
+\vspace{-.2cm}
 
 %\begin{itemize}
 %\item- rewrite some, integrator driven, no or limited user configuration
@@ -993,13 +1042,16 @@ is returned to the trusted code.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % 2-3 pages 
+\vspace{-.4cm}
 \section{Instantiation}
 \label{sec:case}
+\vspace{-.4cm}
 
 This section presents practical experiments made by instantiating the deployment
 architectures with the \emph{JSFlow}~\cite{Hedin:Sabelfeld:CSF12,JSFlow} information-flow monitor. 
 We briefly describe the monitor and discuss security and performance experiments.
 
+\vspace{-.4cm}
 \paragraph{Monitor}
 
 JSFlow is a dynamic information-flow monitor that tags values with runtime
@@ -1015,6 +1067,7 @@ including tracking of user input and preventing it from leaving the
 browser, as used in
 the security experiments below.
 
+\vspace{-.4cm}
 \paragraph{Security experiments}
 Our experiments focus on password-strength checkers. 
 After the user inputs a password, the strength of the password is computed according
@@ -1169,7 +1222,7 @@ information leaked to the third party.
 
 
 
-
+\vspace{-.4cm}
 \paragraph{Performance experiments}
 %Jonas
 %Experimental setup (machine, processor, OS,,,,)
@@ -1224,9 +1277,11 @@ Suffix proxy & 316, 314, 324, 333 & 321 & +181 & +129.2\% \\ %\hline
 \label{tab:comparison2}
 \end{table}
 
-%1 page 
+%1 page
+\vspace{-.4cm} 
 \section{Related work}
 \label{sec:related}
+\vspace{-.2cm}
 We first discuss the original work on reference monitors and their
 inlining, then
 inlining for secure information flow, 
@@ -1234,6 +1289,7 @@ and, finally,
 inlining security checks in the context of
 JavaScript.
 
+\vspace{-.4cm}
 \paragraph{Inlined reference monitors}
 Anderson~\cite{Anderson:72} introduces reference monitors and
 outlines the basic principles, recounted in Section~\ref{sec:intro}.
@@ -1253,7 +1309,7 @@ They introduce \emph{edit automata} that enable
 monitors to stop, suppress, and modify the behavior of programs. 
 
 
-
+\vspace{-.4cm}
 \paragraph{Inlining for secure information flow}
 Language-based information-flow security~\cite{Sabelfeld:Myers:JSAC}
 features work on inlining monitor for security information flow.
@@ -1292,6 +1348,7 @@ coercions must be wrapped. The end result of this is that the inlined code ends
 up emulating the interpreter, leaving no advantages to the shadow-variable
 approach.
 
+\vspace{-.4cm}
 \paragraph{Inlining for secure JavaScript}
 Inlining has been explored for JavaScript, although focusing on
 simple properties or preventing against fixed classes of vulnerabilities.
@@ -1326,9 +1383,11 @@ reach for the current methods~\cite{Vogt+:NDSS07,DBLP:conf/pldi/ChughMJL09,Yip:N
 modify the browser or perform the analysis out-of-the-browser.
 
 %1 page 
+\vspace{-.4cm}
 \section{Conclusions}
 \label{sec:conc}
-Different stakeholders have different interests in the security of web
+\vspace{-.2cm}
+ Different stakeholders have different interests in the security of web
 applications. We have presented architectures for inlining security
 monitors, to take into account the security goals of the users, system and
 network administrators, and service providers and integrators.
@@ -1368,7 +1427,7 @@ communication bandwidth.
 % information flows with those caused by other possibilities of running
 % code in the browser: through Flash, PDF, SVG, and CSS.
 
-\vspace{-.2cm}
+\vspace{-.4cm}
 \paragraph{Acknowledgments}
 %Ack Arnar for the Comcast link and Luciano for playing with pwd
 %strength checkers
@@ -1378,7 +1437,9 @@ and
 the Swedish agencies SSF and VR.
 
 
-% Less than 4 pages 
+% Less than 4 pages
+
 \bibliographystyle{plain}
+\tiny
 \bibliography{literature}
 \end{document}

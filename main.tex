@@ -757,23 +757,22 @@ this privilege. To a developer, an appealing alternative is to run untrusted
 code in the monitored context, while running trusted code outside of the
 monitor. 
 
-\vspace{-.4cm}
-\paragraph{Description}
-Integrator-driven monitor inclusion is suitable for an integrating web page 
-that makes use of third-party code.
-The security of the information contained on the web 
-page relies not only on the web page itself, but also on the security of all 
-included libraries. To protect against malicious or compromised libraries, 
-an integrator can execute part of, or all of the code in the monitor.
-The code executing outside of the monitor is trusted with full access to the 
-sensitive information in the page, and the untrusted code will be executed 
-by the monitor, restricted from accessing the information.
-This can be achieved by manually including the monitor in the page and loading the 
-third-party code either through the suffix proxy, or from cached rewritten 
-versions of the code. %The suffix proxy will rewrite the 
+\vspace{-.4cm} \paragraph{Description} Integrator-driven monitor inclusion is
+suitable for an integrating web page that makes use of third-party code.  The
+security of the information contained on the web page relies not only on the
+web page itself, but also on the security of all included libraries. To protect
+against malicious or compromised libraries, an integrator can execute part of,
+or all of the code in the monitor.  Unlike the other deployment alternatives,
+that consider all code as untrusted, this approach requires a line to be drawn
+between trusted and untrusted code.  The code executing outside of the monitor
+is trusted with full access to the sensitive information in the page, and the
+untrusted code will be executed by the monitor, restricted from accessing the
+information.  This can be achieved by manually including the monitor in the
+page and loading the third-party code either through the suffix proxy, or from
+cached rewritten versions of the code. %The suffix proxy will rewrite the 
 %response to direct execution of the library to the monitor. 
 This approach allows for a well defined, site-specific policy specification.
-The monitor is setup and configured with policies best suiting the need of the 
+The monitor is setup and configured with policies best suiting the need of the
 site. 
 
 
@@ -1413,19 +1412,23 @@ architectures.
 % and point out to the relative pros and cons from the
 %performance point of view.
 
-Future work is focused on two promising directions. Recall that the
-integrator architecture relies on the developer to establish
-communication between the monitored and unmonitored code. With the
-goal to relieve the integrator from manual efforts, we develop a
-framework for secure communication that provides explicit support for
-integrating and monitored and unmonitored code.
+Future work is focused on three promising directions. 
 %
-The other direction we pursue is 
-instantiating the architectures with a monitor for controlling network
-communication bandwidth.
-% interplay of JavaScript-related
-% information flows with those caused by other possibilities of running
-% code in the browser: through Flash, PDF, SVG, and CSS.
+First, JavaScript may occur outside script elements, e.g., as part of css. To
+provide a more complete solution, we aim to investigate extending the approach
+to handle such cases.
+%
+Second, recall that the integrator architecture relies on the developer to
+establish communication between the monitored and unmonitored code. With the
+goal to relieve the integrator from manual efforts, we develop a framework for
+secure communication that provides explicit support for integrating and
+monitored and unmonitored code.
+%
+Third, we pursue instantiating the architectures with a monitor for
+controlling network communication bandwidth.
+% interplay of JavaScript-related information flows with those caused by other
+% possibilities of running code in the browser: through Flash, PDF, SVG, and
+% CSS.
 
 \vspace{-.2cm}
 \paragraph{Acknowledgments}

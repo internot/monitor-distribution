@@ -349,38 +349,39 @@ install-once deployment method.
 \paragraph{Description}
 
 A browser extension is a program that is installed into the browser in order to
-change or enrich the functionality.  The basic idea behind
-deploying via an extension is to replace the JavaScript engine with the monitor.
+change or enrich the functionality. By employing a method pioneered by
+Zaphod~\cite{Zaphod} it is possible to use the monitor as JavaScript engine. 
 (Recall that we consider only monitors that function as interpreters.)
+The basic idea is to turn off JavaScript and have the extension traverse the
+page once loaded using the monitor to execute the scripts. This method leverages 
+that the implementation language for extensions and the monitor is JavaScript.
 
-Even though the internal JavaScript engine cannot actually be replaced the same
-effect can be achieved by turning off the standard JavaScript engine, and have
-the extension traverse the page and execute the JavaScript scripts
-using the monitor. 
-In addition to traversing the page, the extension must register the monitor as the target of
-all events to ensure that the event handlers are run by the monitor. However, failing to
-do so will not compromise security. Since the internal engine is turned off
-the event handler would simply not run, preventing the loaded page from functioning
-properly.
+%Even though the internal JavaScript engine cannot actually be replaced the same
+%effect can be achieved by turning off the standard JavaScript engine, and have
+%the extension traverse the page and execute the JavaScript scripts using the
+%monitor.  In addition to traversing the page, the extension must register the
+%monitor as the target of all events to ensure that the event handlers are run
+%by the monitor. However, failing to do so will not compromise security. Since
+%the internal engine is turned off the event handler would simply not run,
+%preventing the loaded page from functioning properly.
 
-The most common extension implementation language is JavaScript. Given that
-the monitor is written in JavaScript it is a simple matter to embed the 
-monitor in an extension.
-This method was pioneered by Zaphod~\cite{Zaphod}, a
-Firefox extension, that replaces the standard JavaScript engine with the
-experimental Narcissus~\cite{Narcissus} engine.
+%The most common extension implementation language is JavaScript. Given that
+%the monitor is written in JavaScript it is a simple matter to embed the 
+%monitor in an extension.
+%This method was pioneered by Zaphod~\cite{Zaphod}, a
+%Firefox extension, that replaces the standard JavaScript engine with the
+%experimental Narcissus~\cite{Narcissus} engine.
 
 \vspace{-.4cm}
 \paragraph{Security considerations}
 
-The integrity of the deployment method is guaranteed by virtue of the fact that the
-JavaScript engine is turned off and all scripts are interpreted by the monitor.
-Hence, the scripts are not active; rather, they are passed as data to the
-monitor, and are only able to influence the execution environment implemented
-by the monitor and not the general execution environment.
-Since all scripts are executed using the monitor complete mediation is implied.
-In addition, this also guarantees that the deployment method is sound given that
-the monitor is sound. 
+The integrity of the deployment method is guaranteed by virtue of the fact that
+the JavaScript engine is turned off and all scripts are interpreted by the
+monitor.  Hence, the scripts are passed as data to the monitor, and are only
+able to influence the execution environment implemented by the monitor and not
+the general execution environment.  Since all scripts are executed using the
+monitor complete mediation is implied.  In addition, this also guarantees that
+the deployment method is sound given that the monitor is sound. 
 
 As described above, browser extensions are installed into the browser. In order
 to be able to enrich the functionality of the browser, the extensions run with
@@ -396,57 +397,46 @@ Since the extension is installed locally in the browser of the user, it has
 the benefit of giving the user direct control over what security policies to 
 enforce on the browsed pages without relying on and trusting other parties.
 
-The \emph{Document Object Model} (DOM)~\cite{DOM2} provides the tree model of HTML
-documents used in browsers. The DOM is a complex, richly linked tree structure.
-%which offers many challenges. 
-To a certain degree, which features that pose challenges depends on the deployment method. One example of a feature that can be handled with 
-relative easy when deploying via a browser extension is 
-\lstinline{innerHTML}. \lstinline{innerHTML} is a property on all DOM nodes,
-that allows the node to be changed via the text representation of the node. 
-Changing the \lstinline{innerHTML} property 
-causes the content of the node to be rebuilt by parsing the new value. For other deployment methods this means that the value written to
-\lstinline{innerHTML} must be validated, and possibly changed before the write
-is allowed to occur. Although scripts added using \lstinline{innerHTML}
-are not executed, event handlers might still be run.
-%
-For the extension-based deployment this is not a problem.  Since the standard
-JavaScript execution engine is turned off, it is safe to write to the
-\lstinline{innerHTML} property. The write will trigger the parser to rebuild
-the content of the node, but no scripts will be executed, and the result can be
-handled similarly to the scripts on a loading page.
+In general, to provide transparency, all functionality provided by the browser
+must be faithfully implemented. To a certain degree, depending on the deployment method 
+different features pose challenges.
 
-In addition, no special consideration is needed for secure HTTP connections
+For instance, no special consideration is needed for secure HTTP connections
 (HTTPS). The extension uses the browser to perform the operation making
 it indistinguishable from the standard operation of the browser.
 
-%Some DOM features remain challenging for the extension deployment%
-%method. 
-In order to respect transparency, all
-functionality provided by the browser must be faithfully implemented.
-% as any
-%discrepancies can be detected, which breaks transparency. 
+Additionally, consider the \emph{Document Object Model} (DOM)~\cite{DOM2}.  The
+DOM provides a representation of HTML documents, as a complex, richly linked
+tree structure.
+%which offers many challenges. 
+One example of a DOM feature that can be handled with relative easy when deploying
+via a browser extension is \lstinline{innerHTML}.  \lstinline{innerHTML} is a
+property on all DOM nodes, that allows the node to be changed via the text
+representation of the node.  Changing the \lstinline{innerHTML} property causes
+the content of the node to be rebuilt by parsing the new value, which 
+can cause event handlers to be run.
+This means that the value written to \lstinline{innerHTML}
+must be validated, and possibly changed before the write is allowed to occur.
 %
-Crucially, the order in which scripts are executed is important.  When web pages
-are loaded, the scripts of the pages are executed as they are encountered while
-parsing the web page. This means that the DOM tree of the page might not have
-been fully constructed when the scripts execute. Differences in the state of
-the DOM tree can be detected by scripts at execution time. Hence, to guarantee
-transparency the execution of scripts must occur at the same times in the DOM
-tree construction as they would have in the unmodified browser.
-This can be achieved using DOM \lstinline{MutationEvent}~\cite{DOM3Event}.
+For the extension-based deployment this is not a problem.  Since the standard
+JavaScript execution engine is turned off, it is safe to write to the
+\lstinline{innerHTML} property. Potential scripts and event handlers are
+treated in the same way as if they occured on the main page.
 
-An example of functionality that requires particular care is
-\lstinline{document.write}. The effect of \lstinline{document.write} is
-prescribed~\cite{DOM:LVL2} to write a string into the current position of the
-document.  Intuitively, \lstinline{document.write} writes into the character
-stream that is fed to the HTML parser, which can have
-drastic effects on the parsing of the page. For security reasons, extensions are
-prohibited from calling \lstinline{document.write}. Hence, when run via an
-extension, the monitor cannot practically provide the full functionality of
-\lstinline{document.write}. To implement \lstinline{document.write}
-the monitor has to take the interaction between the content
-written by \lstinline{document.write}, the already parsed parts of the page and
-the remaining page into account.  Consider the following example, where
+On the other hand, one example of a DOM feature that requires particular care
+is \lstinline{document.write}. 
+%
+The effect of \lstinline{document.write} is prescribed~\cite{DOM:LVL2} to write
+a string into the current position of the document.  Intuitively,
+\lstinline{document.write} writes into the character stream that is fed to the
+HTML parser, which can have drastic effects on the parsing of the page. For
+security reasons, extensions are prohibited from calling
+\lstinline{document.write}. Hence, when run via an extension, the monitor
+cannot practically provide the full functionality of
+\lstinline{document.write}. To implement \lstinline{document.write} the monitor
+has to take the interaction between the content written by
+\lstinline{document.write}, the already parsed parts of the page and the
+remaining page into account.  Consider the following example, where
 \lstinline{document.write} is used inside a div element.
 
 \begin{lstlisting}[language=langsmall]
@@ -755,16 +745,16 @@ of the browser.
 %\item- Run independent part of the code outside the monitor, possible performance gains
 %\end{itemize}
 
-As discussed earlier, today's
- web pages make extensive use of third-party code to add features 
-and functionality to the page. The code is retrieved from external resources in 
-the form of JavaScript libraries. The third-party code is considered to be part 
-of the document and is executed in the same context as any other script 
-included in the document. Executing the code in the context of the page gives the code full access to all the information 
-of the page, including sensitive information such as form data and cookies. 
-Granting such access requires that the code integrator must 
-trust the library not to abuse this privilege. To a developer, an appealing alternative 
-is to run untrusted code in the monitored context, while running trusted code outside of the 
+As discussed earlier, today's web pages make extensive use of third-party code
+to add features and functionality to the page. The code is retrieved from
+external resources in the form of JavaScript libraries. The third-party code is
+considered to be part of the document and is executed in the same context as
+any other script included in the document. Executing the code in the context of
+the page gives the code full access to all the information of the page,
+including sensitive information such as form data and cookies.  Granting such
+access requires that the code integrator must trust the library not to abuse
+this privilege. To a developer, an appealing alternative is to run untrusted
+code in the monitored context, while running trusted code outside of the
 monitor. 
 
 \vspace{-.4cm}
@@ -869,21 +859,29 @@ from the authors.
 \vspace{-.2cm}
 
 
-The browser extension is a Firefox extension based on Zaphod~\cite{Zaphod}.
+The browser extension is a Firefox extension based on Zaphod~\cite{Zaphod}, a
+Firefox extension that allows for the use of experimental
+Narcissus~\cite{Narcissus} engine as JavaScript engine.  
 %
 When loaded, the extension turns off the standard JavaScript engine by
-disallowing JavaScript and listens for the \lstinline{DOMContentLoaded} event.  The
-\lstinline{DOMContentLoaded} event is fired as soon as the DOM tree construction is
-finished.  On this event the DOM tree is traversed twice. The first traversal
-checks every node for event handlers, e.g., onclick, and registers the monitor
-to handle them. The second traversal looks for JavaScript script nodes.  For
-each found script node, the source is downloaded and the
+disallowing JavaScript and listens for the \lstinline{DOMContentLoaded} event.
+The \lstinline{DOMContentLoaded} event is fired as soon as the DOM tree
+construction is finished.  On this event the DOM tree is traversed twice. The
+first traversal checks every node for event handlers, e.g., onclick, and
+registers the monitor to handle them. The second traversal looks for JavaScript
+script nodes.  For each found script node, the source is downloaded and the
 monitor is used to execute the script.
 
-As discussed above, the downside of this method is that it breaks
-transparency, since the scripts all execute after the DOM
-tree has been constructed. It is possible to regain transparency by using DOM
-\lstinline{MutationEvent} instead of the \lstinline{DOMContentLoaded} event.  The idea is to listen
+The downside of this way of implementing the extension is that 
+the order in which scripts are executed is important.  When web pages
+are loaded, the scripts of the pages are executed as they are encountered while
+parsing the web page. This means that the DOM tree of the page might not have
+been fully constructed when the scripts execute. Differences in the state of
+the DOM tree can be detected by scripts at execution time. Hence, to guarantee
+transparency the execution of scripts must occur at the same times in the DOM
+tree construction as they would have in the unmodified browser.
+This can be achieved using DOM \lstinline{MutationEvent}~\cite{DOM3Event}
+instead of the \lstinline{DOMContentLoaded} event.  The idea is to listen
 to any addition of script nodes to the DOM tree under the construction, and
 execute the script on addition.  However, due to performance reasons the DOM
 \lstinline{MutationEvent}s are deprecated, and are being replaced with DOM \lstinline{MutationObserver}~\cite{DOM4}. 

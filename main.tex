@@ -591,8 +591,9 @@ in the hands of the proxy administrator.
 \label{sec:arch-suffix}
 \vspace{-.2cm}
 
-
-For trusted web sites, a user of a proxy service may not want to disclose
+The web proxy's ability to intercept all traffic gives the provider of the service access to all 
+information that the user relays through it.
+For trusted web sites, a user may not want to disclose
 sensitive information, e.g., passwords or cookies, to the provider of the proxy service.
 Still, for untrusted web sites the user wants the increased security provided 
 by the proxy.
@@ -1082,8 +1083,8 @@ from \emph{weak} to \emph{strong}. This type of service is ubiquitous
 on the web, with service providers ranging from private web sites to web sites
 of national telecommunication authorities.
 
-Clearly, the confidentiality of the password needs protection.  The
-strength of the password is of no importance if the password is leaked.  We
+Clearly,  the password needs to stay confidential;  The
+strength of the password is irrelevant if the password is leaked.  We
 have investigated a number of password-strength services. 
 Our experiments identify services that enforce two types of policies: (i)
 allow the password to be sent back to the origin web site, but not to
@@ -1094,7 +1095,7 @@ abuse the password, while the second type does not require such trust,
 in line with the \emph{principle of least
 privilege}~\cite{Saltzer:Schroeder:TCB}.
 Note that these policies are indistinguishable from SOP's point of
-view because SOP is not powerful enough to express the second type.
+view because it is not powerful enough to express the second type.
 %The services can be
 %categorized based on whether the computation is server side or client side.
 
@@ -1317,7 +1318,9 @@ monitors to stop, suppress, and modify the behavior of programs.
 \vspace{-.4cm}
 \paragraph{Inlining for secure information flow}
 Language-based information-flow security~\cite{Sabelfeld:Myers:JSAC}
-features work on inlining monitor for security information flow.
+features work on 
+%monitor 
+inlining for secure information flow.
 Secure information flow is not
 a safety property~\cite{McLean:SSP94}, but can be approximated by
 safety properties
@@ -1342,7 +1345,7 @@ The inlined code manipulates shadow variables to keep track of the
 security labels of the program's variables. In similar vein,
 Bello and Bonelli~\cite{DBLP:conf/ifip1-7/BelloB11} investigate
 on-the-fly inlining for a dynamic dependency analysis.
-
+%
 However, there are fundamental limits in the scalability of the shadow-variable
 approach.  The execution of a vast majority of the JavaScript operations (with
 the prime example being the \lstinline{+} operation) is dependent on the types
@@ -1370,7 +1373,8 @@ Phung et al.~\cite{DBLP:conf/ccs/PhungSC09} and
 Magazinius et al.~\cite{DBLP:conf/nordsec/MagaziniusPS10} develop
 secure wrapping for self-protecting JavaScript. This approach is based
 on wrapping built-in JavaScript methods with secure wrappers that
-keep track of the security state and regulate access to the original built-ins.  
+%keep track of the security state and 
+regulate access to the original built-ins.  
 
 
 

@@ -204,7 +204,7 @@ alerts\footnote{\scriptsize{\url{https://gist.github.com/ryankearney/4146814}}}.
 
 \vspace{-.4cm}
 \paragraph{Secure inlining for JavaScript}
-This paper proposes a novel approach to securing JavaScript in web
+This paper proposes a novel approach to securing Java-Script in web
 applications in the presence of different stakeholders.
 %
 We focus on securing JavaScript code by \emph{inlining}
@@ -298,7 +298,7 @@ JavaScript, because alternative approaches to inlining suffer from
 scalability problems, as discussed in Section~\ref{sec:related}. 
 
 Our instantiation results demonstrate how to deploy
-\emph{JSFlow}~\cite{Hedin:Sabelfeld:CSF12,JSFlow}, secure information-flow
+\emph{JSFlow}~\cite{Hedin:Sabelfeld:CSF12,JSFlow}, a secure infor-mation-flow
 monitor for JavaScript by Hedin et al., via
 browser extension, via web proxy, and via suffix proxy (web service).
 %
@@ -401,8 +401,8 @@ In general, to provide transparency, all functionality provided by the browser
 must be faithfully implemented. To a certain degree, depending on the deployment method 
 different features pose challenges.
 
-For instance, no special consideration is needed for secure HTTP connections
-(HTTPS). The extension uses the browser to perform the operation making
+For instance, no special consideration is needed for secure HTTP (HTTPS) connections.
+The extension uses the browser to perform the operation making
 it indistinguishable from the standard operation of the browser.
 
 Additionally, consider the \emph{Document Object Model} (DOM)~\cite{DOM2}.  The
@@ -593,7 +593,7 @@ in the hands of the proxy administrator.
 
 
 For trusted web sites, a user of a proxy service may not want to disclose
-sensitive information, e.g., passwords or cookies, to the provider of the service.
+sensitive information, e.g., passwords or cookies, to the provider of the proxy service.
 Still, for untrusted web sites the user wants the increased security provided 
 by the proxy.
 A \emph{suffix proxy} particularly suits a user who wants to run certain untrusted 
@@ -871,7 +871,7 @@ Narcissus~\cite{Narcissus} engine as JavaScript engine.
 %
 When loaded, the extension turns off the standard JavaScript engine by
 disallowing JavaScript and listens for the \lstinline{DOMContentLoaded} event.
-The \lstinline{DOMContentLoaded} event is fired as soon as the DOM tree
+\lstinline{DOMContentLoaded} is fired as soon as the DOM tree
 construction is finished.  On this event the DOM tree is traversed twice. The
 first traversal checks every node for event handlers, e.g., onclick, and
 registers the monitor to handle them. The second traversal looks for JavaScript
@@ -1363,8 +1363,8 @@ checks for known vulnerabilities.
 
 Yu et al.~\cite{Yu+:POPL07} and Kikuchi et
 al.~\cite{DBLP:conf/aplas/2008} present an instrumentation approach
-for JavaScript in the browser. Their framework allows instrumented
-code to encode edit automata-based policies.
+for Java-Script in the browser. Their framework allows instrumented
+code to encode edit auto-mata-based policies.
 
 Phung et al.~\cite{DBLP:conf/ccs/PhungSC09} and 
 Magazinius et al.~\cite{DBLP:conf/nordsec/MagaziniusPS10} develop
@@ -1376,7 +1376,7 @@ keep track of the security state and regulate access to the original built-ins.
 
 Agten et al.~\cite{DBLP:conf/acsac/AgtenABPDP12} present JSand, a
 server-driven client-side sandboxing framework. The framework mediates
-attempts of untrusted code to access to resources in the browser.  
+attempts of untrusted code to access resources in the browser.  
 In contrast to its predecessors such as
 ConScript~\cite{DBLP:conf/sp/MeyerovichL10}, WebJail~\cite{DBLP:conf/acsac/AckerRDPJ11}, and Contego~\cite{DBLP:conf/trust/LuoD11},
 the sandboxing is done purely at JavaScript level, requiring no

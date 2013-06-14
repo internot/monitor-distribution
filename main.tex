@@ -464,13 +464,13 @@ the intended behavior can be implemented by the monitor.
 
 In a corporate setting, it is essential to protect 
 sensitive information pertaining to both the organization and its employees. 
-It is not uncommon that the employees are using the web browser for accessing untrusted content on 
+It is not uncommon that employees are using the web browser to access untrusted content on 
 the Internet. It is in the interest of the company to ensure that 
-the sensitive information is not accessible outside the domain of the company.
-In this distributed setting, a \emph{web proxy} is a natural way of delivering 
+the sensitive information is not leaked outside the domain of the company.
+In this distributed setting, a \emph{web proxy} is a natural way of distributing 
 the security monitor to all clients. 
 %
-A web proxy is also appealing to a private user, as it includes the monitor in all browsed pages without modifying 
+A web proxy also appeals to a private user, as it includes the monitor in all browsed pages without modifying 
 the browser itself. By configuring the browser to use a web proxy, the user can ensure the security 
 of sensitive data.
 
@@ -493,7 +493,8 @@ intrusive to the HTML content, but less intrusive to the user's browser.
 For the monitor to guarantee security, all scripts bundled with 
 the page must be executed by the monitor. The scripts can either be inline, 
 i.e., included as part of the HTML page, or external, i.e., referenced in the 
-HTML page to be downloaded from an external source. Inline scripts appear both in the form of script-tags as well as inline event handlers, e.g., onclick or onload.
+HTML page to be downloaded from an external source. Inline scripts appear both 
+in the form of script-tags as well as inline event handlers, e.g., onclick or onload.
 Apart from including the monitor in all browsed pages, all scripts, whether inline or 
 external, must be rewritten by the web proxy to be executed by the monitor.
 %This is achieved by wrapping all JavaScript source code, whether inline or 
@@ -502,7 +503,7 @@ external, must be rewritten by the web proxy to be executed by the monitor.
 %Different rewriting rules apply depending on whether the 
 %requested content is JavaScript, i.e., external, or HTML, i.e., inline. 
 External scripts are rewritten in their entirety, whereas 
-for inline scripts the web proxy must identify all scripts within the page and rewrite them individually.
+inline scripts must be identified within the page and rewritten them individually.
 
 \vspace{-.4cm}
 \paragraph{Security considerations}
@@ -563,10 +564,10 @@ Otherwise the user will be notified that the certificate is invalid.
 \vspace{-.4cm}
 \paragraph{Pros and cons}
 The main benefit of using a web proxy 
-compared to a browser extension is that the implementation is browser independent. The 
-rewriting technique is the same regardless of the browser used. Hence, there is no 
-need to adapt the web proxy to suit a particular browser, allowing 
-the users their choice of browser.
+compared to a browser extension is that it is browser independent. 
+The rewriting technique is the same regardless of the browser used, 
+hence, there is no 
+need to adapt the web proxy to suit a particular browser.
 Neither is it intrusive to the browser, as the user is not required to modify the 
 browser in order to take advantage of security benefits. 
 
@@ -621,9 +622,9 @@ Typically, the user navigates to a
 web application associated with the proxy and enters the target URL, e.g., \url{http://google.com/search?q=sunrise}, in 
 an input field. To redirect the request to the proxy, the target domain name is altered
 by appending the domain name of the proxy, making the target domain a subdomain of the proxy domain, e.g., \url{http://google.com.proxy.domain/search?q=sunrise}. 
-The browser is then navigated to the modified URL.
+%The browser is then navigated to the modified URL.
 The suffix proxy is set up so
-that all requests to any subdomain of the proxy domain are directed to the proxy domain. 
+that all requests to any subdomain are directed to the proxy domain. 
 A web application on the proxy domain is set up to listen for such subdomain requests.
 When a request for a subdomain is registered, it is intercepted by the web application.
 The web application strips the proxy domain from the URL, leaving the original target URL, 
@@ -631,7 +632,7 @@ and makes the request on behalf of the client. As with the web proxy,
 relaying the request to the target URL gives the suffix proxy an opportunity to modify and 
 include the monitor in the response.
 
-As the web proxy, the suffix proxy must ensure that all script bundled with a 
+As the web proxy, the suffix proxy must ensure that all scripts bundled with a 
 page is executed by the monitor. The procedure to rewrite scripts is much the same as the one
 detailed in Section~\ref{sec:arch-web}. However, apart from rewriting inline scripts in a page, 
 the suffix proxy must also find all references to external scripts and rewrite the URLs to include the proxy domain.
@@ -661,20 +662,24 @@ need to be rewritten to include the monitor domain.
 \paragraph{Security considerations}
 
 A consequence of modifying the domain name is that the domain of the
-target URL and the modified URL no longer matches, making them two 
-separate origin as per the same-origin policy. This implies that all information in 
+target URL no longer matches the modified URL, making them two 
+separate origins as per the same-origin policy. This implies that all information in 
 the browser specific to the target origin, e.g., cookies and local storage, 
 are no longer associated with the modified origin, and vice versa. This results 
 in a clean separation between the proxied and unproxied content.  
 
-Another interesting consequence of altering the domain name, also relating to 
-the same-origin policy, is the concept of domain relaxing. Modern web browsers 
+Altering the domain name has another interesting effect on the  %, also relating to 
+the same-origin policy.
+%is the concept of domain relaxing. 
+Modern web browsers 
 allow relaxing of the same-origin policy for subdomains. Documents from different subdomains of the same 
 domain can relax their domains by setting the \lstinline{document.domain} attribute
 to their common domain. In doing so, they set aside the restrictions of the 
 same-origin policy and can freely access each others resources across subdomains. 
-Since the principle behind the suffix proxy is to make the target domain a subdomain of the proxy domain, two 
-domains loaded via the proxy, each relaxing their domain to the domain of the 
+%Since the principle behind the suffix proxy is to make 
+%the target domain a subdomain of the proxy domain, 
+This means that two 
+pages of separate origins loaded via the proxy, each relaxing their domain attribute to the domain of the 
 proxy, can access each others resources across domains.
 %\todo{Daniel: devastating is such a strong word}
 This is problematic for monitors that rely on the same-origin policy to enforce 
@@ -682,8 +687,8 @@ separation between origins. However, the flexibility of disabling the same-origi
 policy opens up for monitors whose policies are aimed
 at replacing the same-origin policy. 
 For such usage, the suffix proxy can effectively disable the same-origin 
-policy by adding a JavaScript snippet that sets the \lstinline{document.domain} property
-to the proxy domain. 
+policy by including JavaScript that relax the domain.
+%to the proxy domain. 
 
 
 %Recall from the previous section the rather complex procedure required to add HTTPS support.
@@ -708,20 +713,21 @@ heavier rewriting than the web proxy in order to capture all requests.
 %\todo{Daniel: following also no longer true}
 %On the other 
 %hand, it helps in managing HTTPS requests, that is complicated in the web proxy.
-Another questionable consequence is that it allows for web sites to relax the 
+Another consequence is that it allows for web sites to relax the 
 same-origin policy. 
 %\todo{Daniel, again - devastating is very strong}
 From a monitor perspective this can be problematic under the wrong circumstances, 
 while beneficial under other.
 
 Another significant difference is that the suffix proxy lets the user decide which 
-pages to proxy on a per-domain basis. Deciding whether to apply the monitor or 
-not is as simple as browsing to an alternate URL.
+pages to proxy on a per-domain basis.% Deciding whether to apply the monitor or 
+%not is as simple as browsing to an alternate URL.
 %\todo{Daniel: I have misthought twice here before realizing it is true; maybe clarify?}
 Also, the suffix proxy can ensure that only resources relevant to security are 
-relayed via the proxy, making it 
-more general than a traditional web proxy that covers all requests. 
-This both reduces the load on the proxy service, as well as decreases the 
+relayed via the proxy, whereas
+a traditional web proxy must cover all requests. 
+This both reduces the load on the proxy service, as well as %decreases 
+the 
 overhead for the end user, thus benefiting both the user and the service provider.
 
 
@@ -806,7 +812,8 @@ reflecting information from one context to the other, will
 have severe security implications. If the trusted code depend on a 
 shared variable, the untrusted code can manipulate the value to control the
 execution.
-If the trusted code is required to share information 
+If the trusted code %is required to 
+share information 
 with the untrusted code, such as giving access to non-sensitive information, it 
 must be done by manually introducing it in the monitored context.
 
@@ -848,8 +855,8 @@ and the implications of interacting with the monitor.
 %For each deployment option, we describe how it is implemented and show how the integrity of the monitor
 %and complete mediation are achieved.
 This section details our implementations of the architectures
-from Section~\ref{sec:arch}. The code is readily available on request
-from the authors.
+from Section~\ref{sec:arch}. The code is readily available and can be obtained 
+from the authors upon request.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -941,15 +948,15 @@ Because all instances of the modified script code will reference the monitor,
 the monitor must be added as the first script to be executed.
 
 
-Rewriting JavaScript requires converting the source code to a string, which can 
-be fed to the interpreting monitor. The method \lstinline{JSON.stringify()} 
+Rewriting JavaScript requires converting the source code to a string that can 
+be fed to the monitor. The method \lstinline{JSON.stringify()} 
 provides this functionality and will properly escape the string to ensure that 
 it is semantically equivalent when interpreted by the monitor. The code string is then enclosed in a call to the monitors 
-interpreter, as exemplified in Listing~\ref{lst:wrap-monitor}.
+interpreter, as shown in Listing~\ref{lst:wrap-monitor}. 
+The implementation consists of 256 lines of JavaScript code.
 \begin{lstlisting}[language=langsmall,label=lst:wrap-monitor, caption=Example of monitor wrapping]
 code = 'Monitor.eval(' + JSON.stringify(code) + ')';
 \end{lstlisting}
-The implementation consists of 256 lines of JavaScript code.
 
 
 \vspace{-.4cm}
@@ -1127,16 +1134,15 @@ that fall into the second category.
 %the strength computation puts a lot of trust in the service provider to transfer the
 %password in a secure way, and make sure that no information about the password
 %is stored. 
-
+%
 Of these, it is worth commenting on two sites, one from each category.  Interestingly, the first
 site, {\footnotesize{\url{https://testalosenord.pts.se/}}}, is provided by
 the Swedish Post and Telecom Authority. The site contains a count of how many
 passwords have been submitted to the service, with over 1,000,000 tried
 passwords so far. It is unclear why the Swedish authority follows the policy
 that requires more trust from the users.
-
-The second
-site, {\footnotesize{\url{http://www.getsecurepassword.com/CheckPassword.aspx}}}, is
+%
+The second, {\footnotesize{\url{http://www.getsecurepassword.com/CheckPassword.aspx}}}, is
 an example of a web site that uses Google Analytics. Our monitor rightfully
 allows communication to Google while ensuring the password cannot be leaked
 anywhere outside the browser. 
